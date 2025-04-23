@@ -1,15 +1,66 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Input from "@/components/form/input/InputField";
 import Button from "../ui/button/Button";
+import { useGet2FaQuery } from "@/services";
+import Loading from "../ui/loading/Loading";
+import { QRCodeSVG } from "qrcode.react";
+import { useSearchParams } from "next/navigation";
+
+interface ParsedOtpAuthData {
+  label: string;
+  issuer: string;
+}
 
 export default function EnableGoogleAuthForm() {
   const [showQR, setShowQR] = useState(false);
   const handleQR = () => {
-setShowQR(true)
+    setShowQR(true);
+  };
+  const searchParams = useSearchParams();
+  // const token = searchParams.get("token") || localStorage.getItem("authToken");
+  const { data, isLoading } = useGet2FaQuery();
+
+  const googlePlayUrl =
+    "https://chromewebstore.google.com/detail/authenticator/bhghoamapcdpbohphigoooaddinpkbai";
+
+  const parsedData = useMemo(() => {
+    if (!data) return null;
+
+    const parseOtpAuthUrl = (otpauthUrl: string): ParsedOtpAuthData => {
+      try {
+        const url = new URL(otpauthUrl);
+        const pathname = url.pathname.slice(1);
+        const label = decodeURIComponent(pathname);
+        const issuer = url.searchParams.get("issuer") ?? "";
+        return { label, issuer };
+      } catch (error) {
+        console.error("Invalid OTP Auth URL:", error);
+        return { label: "", issuer: "" };
+      }
+    };
+
+    const { label, issuer } = parseOtpAuthUrl(data.qr);
+    const secret = data?.formattedKey;
+
+    return {
+      otpauthUrl: `otpauth://totp/${label}?secret=${secret}&issuer=${issuer}&algorithm=SHA1&digits=6&period=30`,
+      secret,
+      label,
+      issuer,
+    };
+  }, [data]);
+
+  if (isLoading || !parsedData) {
+    return <Loading />;
   }
+
+  const handleDownloadClick = () => {
+    // This will open the appropriate store based on the user's device
+    window.open(googlePlayUrl, "_blank");
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
@@ -39,85 +90,93 @@ setShowQR(true)
               Authenticator app should be installed on your device to use 2FA.
             </p>
           </div>
-{!showQR ?  <form>
-            <div className="space-y-7">
-              <Image
-                src="/images/logo/google-auth.webp"
-                alt="google auth"
-                width={90}
-                height={90}
-                className="block mx-auto my-[1rem]"
-              />
-
-              <p className="text-[1.25rem] font-AzoSansTest-medium text-[#7BD481] text-center">
-                DOWNLOAD APP
-              </p>
-
-              <div className="flex items-center justify-center w-full gap-[1.25rem]">
+          {!showQR ? (
+            <form>
+              <div className="space-y-7">
                 <Image
-                  src="/images/logo/google-play.webp"
+                  src="/images/logo/google-auth.webp"
                   alt="google auth"
-                  width={168}
-                  height={50}
+                  width={90}
+                  height={90}
+                  className="block mx-auto my-[1rem]"
                 />
-                <Image
-                  src="/images/logo/app-store.webp"
-                  alt="google auth"
-                  width={168}
-                  height={50}
-                />
+
+                <button
+                  onClick={handleDownloadClick}
+                  className="text-[1.25rem] font-AzoSansTest-medium text-[#7BD481] text-center"
+                >
+                  DOWNLOAD APP
+                </button>
+
+                <div className="flex items-center justify-center w-full gap-[1.25rem]">
+                  <Image
+                    src="/images/logo/google-play.webp"
+                    alt="google auth"
+                    width={168}
+                    height={50}
+                  />
+                  <Image
+                    src="/images/logo/app-store.webp"
+                    alt="google auth"
+                    width={168}
+                    height={50}
+                  />
+                </div>
+
+                {/* Button */}
+                <div>
+                  <Button
+                    className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base"
+                    size="sm"
+                    onClick={handleQR}
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
-
-              {/* Button */}
-              <div>
-                <Button className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base" size="sm" onClick={handleQR}>
-                  Next
-                </Button>
-              </div>
-            </div>
-          </form>
-:
-          <form>
-            <div className="space-y-7">
-           
-
-
-              <div className="flex items-center justify-center w-full gap-[1.25rem]">
-                <Image
+            </form>
+          ) : (
+            <form>
+              <div className="space-y-7">
+                <div className="flex items-center justify-center w-full gap-[1.25rem]">
+                  {/* <Image
                   src="/images/logo/qr-code.webp"
                   alt="google auth"
                   width={151}
                   height={151}
-                />
-               
-              </div>
-              <div className="relative">
-                <Input
-                  type="twxt"
-                  id="code"
-                  name="code"
-                  placeholder="3PRWRJFCBVJ45VD5FBX57"
-                  defaultValue='3PRWRJFCBVJ45VD5FBX57'
-                />
-                <button className="bg-transparent flex items-center justify-center h-[1.875rem] w-[1.875rem] absolute right-4 top-3">
-                <Image
-                  src="/images/logo/copy-icon.png"
-                  alt="copy"
-                  width={28}
-                  height={28}
-                />
-                </button>
-              </div>
+                /> */}
+                  <QRCodeSVG value={parsedData && parsedData?.otpauthUrl} size={200} level="H" />
+                </div>
+                <div className="relative">
+                  <Input
+                    type="twxt"
+                    id="code"
+                    name="code"
+                    placeholder="3PRWRJFCBVJ45VD5FBX57"
+                    defaultValue="3PRWRJFCBVJ45VD5FBX57"
+                  />
+                  <button className="bg-transparent flex items-center justify-center h-[1.875rem] w-[1.875rem] absolute right-4 top-3">
+                    <Image
+                      src="/images/logo/copy-icon.png"
+                      alt="copy"
+                      width={28}
+                      height={28}
+                    />
+                  </button>
+                </div>
 
-              {/* Button */}
-              <div>
-                <Button className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base" size="sm">
-                  Next
-                </Button>
+                {/* Button */}
+                <div>
+                  <Button
+                    className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base"
+                    size="sm"
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
-            </div>
-          </form> }
-         
+            </form>
+          )}
         </div>
       </div>
     </div>
