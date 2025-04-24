@@ -1,9 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthState } from "./auth.type";
-import { setSessionStorage } from "@/utils";
+import { IAdmin } from "@/services/auth-api/auth-api.types";
 
 const initialState: AuthState = {
-  authToken: null,
+  token: null,
+  user: null,
 };
 
 const slice = createSlice({
@@ -11,16 +12,16 @@ const slice = createSlice({
   initialState,
   reducers: {
     token: (state: AuthState, action) => {
-      state.authToken = action?.payload;
+      state.token = action?.payload;
     },
-    login: (state: AuthState, action) => {
-      state.authToken = action?.payload?.token;
-      setSessionStorage("accessToken", action?.payload?.token);
+    login: (state, action: PayloadAction<{ token: string; user: IAdmin }>) => {
+      state.token = action.payload.token;
+      state.user = action.payload.user;
     },
     logout: (state) => {
       const savedTheme = localStorage.getItem("theme");
 
-      state.authToken = null;
+      state.token = null;
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user");
       if (savedTheme) {

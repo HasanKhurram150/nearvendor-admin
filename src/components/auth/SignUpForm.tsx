@@ -16,9 +16,8 @@ import {
   useSetPasswordMutation,
   useVerifyInviteTokenQuery,
 } from "@/services/auth-api";
-import type {
-  ApiErrorResponse,
-} from "@/services/auth-api/auth-api.types";
+import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import Loading from "../atoms/loading/loading";
 
 const passwordValidationRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -263,9 +262,8 @@ const SignUpForm = () => {
                   size="sm"
                   type="submit"
                   disabled={isLoading}
-                  aria-busy={isLoading}
                 >
-                  {isLoading ? "Processing..." : "Sign Up"}
+                  {isLoading ? <Loading /> : "Sign in"}
                 </Button>
               </div>
             </div>

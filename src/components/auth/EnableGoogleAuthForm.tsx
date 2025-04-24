@@ -5,9 +5,9 @@ import Image from "next/image";
 import Input from "@/components/form/input/InputField";
 import Button from "../ui/button/Button";
 import { useGet2FaQuery } from "@/services";
-import Loading from "../ui/loading/Loading";
 import { QRCodeSVG } from "qrcode.react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import Loading from "../atoms/loading/loading";
 
 interface ParsedOtpAuthData {
   label: string;
@@ -15,6 +15,7 @@ interface ParsedOtpAuthData {
 }
 
 export default function EnableGoogleAuthForm() {
+  const router = useRouter();
   const [showQR, setShowQR] = useState(false);
   const handleQR = () => {
     setShowQR(true);
@@ -53,13 +54,17 @@ export default function EnableGoogleAuthForm() {
     };
   }, [data]);
 
-  if (isLoading || !parsedData) {
-    return <Loading />;
-  }
+  // if (isLoading || !parsedData) {
+  //   return <Loading />;
+  // }
 
   const handleDownloadClick = () => {
     // This will open the appropriate store based on the user's device
     window.open(googlePlayUrl, "_blank");
+  };
+
+  const handleNext = () => {
+    router.push("/enter-auth-code");
   };
 
   return (
@@ -139,13 +144,15 @@ export default function EnableGoogleAuthForm() {
             <form>
               <div className="space-y-7">
                 <div className="flex items-center justify-center w-full gap-[1.25rem]">
-                  {/* <Image
-                  src="/images/logo/qr-code.webp"
-                  alt="google auth"
-                  width={151}
-                  height={151}
-                /> */}
-                  <QRCodeSVG value={parsedData && parsedData?.otpauthUrl} size={200} level="H" />
+                  {isLoading ? (
+                    <Loading />
+                  ) : (
+                    <QRCodeSVG
+                      value={parsedData?.otpauthUrl || ""}
+                      size={200}
+                      level="H"
+                    />
+                  )}
                 </div>
                 <div className="relative">
                   <Input
@@ -170,6 +177,7 @@ export default function EnableGoogleAuthForm() {
                   <Button
                     className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base"
                     size="sm"
+                    onClick={handleNext}
                   >
                     Next
                   </Button>
