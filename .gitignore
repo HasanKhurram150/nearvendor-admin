@@ -49,3 +49,15 @@ jspm_packages
 *.zip
 .idea
 
+# Tell Git to forget the already‑added large paths
+git rm -r --cached .next node_modules/@next
+
+# Prevent them from ever being added again
+cat >> .gitignore <<'EOF'
+# Build output
+.next/
+# Next.js SWC binaries
+node_modules/@next/swc-*/next-swc.*.node
+# General dependencies
+node_modules/
+EOF
