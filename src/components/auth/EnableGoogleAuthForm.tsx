@@ -19,7 +19,7 @@ export default function EnableGoogleAuthForm() {
   const handleQR = () => {
     setShowQR(true);
   };
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   // const token = searchParams.get("token") || localStorage.getItem("authToken");
   const { data, isLoading } = useGet2FaQuery();
 

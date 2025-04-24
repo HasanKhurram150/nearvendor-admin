@@ -57,6 +57,15 @@ import EventsIcon from "./events.svg";
 import AdIcon from "./ad.svg";
 import PlacementIcon from "./task.svg";
 import InventoryListIcon from "./inventory-list.svg";
+import YoutubeIcon from "./youtube.svg";
+import InstagramIcon from "./instagram.svg";
+import TwitterIcon from "./twitter.svg";
+import TelegramIcon from "./telegram.svg";
+import ExportIcon from "./export.svg";
+import TickMarkIcon from "./tick-circle.svg";
+import GoldenIcon from "./golden.svg";
+import BlueIcon from "./blue.svg";
+import SilverIcon from "./silver.svg";
 
 export {
   DownloadIcon,
@@ -118,4 +127,13 @@ export {
   AdIcon,
   PlacementIcon,
   InventoryListIcon,
+  YoutubeIcon,
+  InstagramIcon,
+  TwitterIcon,
+  TelegramIcon,
+  ExportIcon,
+  TickMarkIcon,
+  GoldenIcon,
+  BlueIcon,
+  SilverIcon,
 };

@@ -1,20 +1,42 @@
+"use client"
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface BreadcrumbProps {
   pageTitle: string;
+  counter?: boolean;
+  counterText?: string;
+  counterValue?: number;
+  btnCampaign?: boolean;
+  btnInventory?: boolean;
 }
 
-const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
+const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle, counter, counterText, counterValue, btnCampaign, btnInventory }) => {
+  const router = useRouter();
+
+  const handleAddCampaign = () => {
+    router.push('/add-campaign')
+  }
+
+  const handleCreateInventory = () => {
+    router.push('/create-inventory')
+  }
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
       <h2
-        className="text-xl font-semibold text-gray-800 dark:text-white/90"
+        className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90"
         x-text="pageName"
       >
         {pageTitle}
+        {counter && <span className="text-base font-normal mt-[1rem]">{counterText}: {counterValue}</span> }
+        
       </h2>
-      <nav>
+      {btnCampaign &&  <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md" onClick={handleAddCampaign}>Create Campaign</button>}
+      {btnInventory &&  <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md" onClick={handleCreateInventory}>Create Inventory</button>}
+     
+      <nav className="hidden">
         <ol className="flex items-center gap-1.5">
           <li>
             <Link

@@ -779,3 +779,8 @@ span.flatpickr-weekday,
 .menu-item-icon-active svg path {
   fill: white !important;
 }
+
+label {
+  font-family: AzoSansTest Medium;
+  font-size: 1rem;
+}

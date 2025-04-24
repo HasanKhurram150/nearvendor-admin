@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function page() {
   return (
     <div>
-      <PageBreadcrumb pageTitle="Placement List" />
+      <PageBreadcrumb pageTitle="Placement List" counter={true} counterText="Total Placement" counterValue={0} />
       <PlacementList />
     </div>
   );
