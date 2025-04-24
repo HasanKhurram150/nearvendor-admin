@@ -41,8 +41,8 @@ const navItems: NavItem[] = [
   },
   {
     icon: <ListIcon />,
-    name: "Advertiser Management",
-    path: "/advertiser-management",
+    name: "Campaign Management",
+    path: "/campaign-management",
   },
 ];
 
