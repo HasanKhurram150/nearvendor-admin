@@ -7,9 +7,9 @@ type LoginAction = PayloadAction<any>;
 export const loginSuccess = (state: AuthState, action: LoginAction): void => {
   const { data } = action.payload;
 
-  state.user = {
-    ...data?.user,
-  };
+  // state.user = {
+  //   ...data?.user,
+  // };
 
   setSessionStorage("accessToken", data.token);
   setSessionStorage("refreshToken", data.refreshToken ?? null);
