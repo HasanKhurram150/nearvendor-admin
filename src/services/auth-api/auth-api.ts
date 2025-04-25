@@ -2,8 +2,12 @@ import { ENDPOINTS } from "@/config";
 import { baseAPI } from "../base-api";
 import {
   IGet2Fa,
+  ILogin,
+  ILoginRes,
   ISetPassword,
   ISetPasswordRes,
+  IVerify2Fa,
+  IVerify2FaRes,
   IVerifyInviteToken,
 } from "./auth-api.types";
 
@@ -52,11 +56,34 @@ export const authAPI = baseAPI.injectEndpoints({
         return response?.data as IGet2Fa;
       },
     }),
+    verify2Fa: builder.mutation<IVerify2FaRes, IVerify2Fa>({
+      query: (body) => ({
+        url: ENDPOINTS.verify2Fa,
+        method: "POST",
+        body,
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      }),
+      transformResponse: (response: any) => {
+        return response?.data as IVerify2FaRes;
+      },
+    }),
+    login: builder.mutation<ILoginRes, ILogin>({
+      query: (credentials) => ({
+        url: ENDPOINTS.login,
+        method: "POST",
+        body: credentials,
+      }),
+      transformResponse: (response: any) => {
+        return response?.data as ILoginRes;
+      },
+    }),
   }),
 });
 
 export const {
   useVerifyInviteTokenQuery,
-  useGet2FaQuery,
   useSetPasswordMutation,
+  useGet2FaQuery,
+  useVerify2FaMutation,
+  useLoginMutation,
 } = authAPI;

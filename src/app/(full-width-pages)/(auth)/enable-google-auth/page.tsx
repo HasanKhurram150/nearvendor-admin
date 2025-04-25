@@ -1,5 +1,6 @@
 import EnableGoogleAuthForm from "@/components/auth/EnableGoogleAuthForm";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Enable Google Authenticator | Admin Panel",
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function EnableGoogleAuth() {
-  return <EnableGoogleAuthForm />;
+  return (
+    <Suspense fallback={<div>Loading ...</div>}>
+      {" "}
+      <EnableGoogleAuthForm />
+    </Suspense>
+  );
 }

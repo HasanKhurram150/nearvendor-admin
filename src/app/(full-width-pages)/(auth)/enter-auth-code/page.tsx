@@ -1,6 +1,6 @@
-
 import EnterAuthCodeForm from "@/components/auth/EnterAuthCodeForm";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Enter Authentication Code | Admin Panel",
@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function EnterAuthCode() {
-  return <EnterAuthCodeForm />;
+  return (
+    <Suspense fallback={<div>Loading ...</div>}>
+      <EnterAuthCodeForm />
+    </Suspense>
+  );
 }

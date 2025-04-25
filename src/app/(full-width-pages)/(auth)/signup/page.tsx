@@ -9,8 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function SignUp() {
-  return;
-  <Suspense fallback={<p>loading</p>}>
-    <SignUpForm />
-  </Suspense>;
+  return (
+    <Suspense fallback={<div>Loading ...</div>}>
+      {" "}
+      <SignUpForm />
+    </Suspense>
+  );
 }

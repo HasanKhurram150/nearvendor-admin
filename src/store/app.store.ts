@@ -17,12 +17,14 @@ import {
   persistReducer,
 } from "redux-persist";
 
-import {
-  authReducer,
-  themeReducer,
-} from "./slices";
+import { authReducer, themeReducer } from "./slices";
 import { baseAPI } from "@/services/base-api";
-import { clearLocalStorage, clearSessionStorage, getLocalStorage, setLocalStorage } from "@/utils";
+import {
+  clearLocalStorage,
+  clearSessionStorage,
+  getLocalStorage,
+  setLocalStorage,
+} from "@/utils";
 
 const persistConfig = {
   key: "root",
