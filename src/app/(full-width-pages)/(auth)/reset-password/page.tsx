@@ -2,8 +2,8 @@ import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Reset Password | Admin Panel",
-  description: "Reset Password | Admin Panel",
+  title: "Reset Password",
+  description: "Reset Password",
 };
 
 export default function ResetPassword() {

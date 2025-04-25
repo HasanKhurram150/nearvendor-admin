@@ -80,10 +80,10 @@ const CreateNewPasswordForm = () => {
                 Confirm New Password <span className="text-error-500">*</span>
                 </Label>
                 <div className="relative">
-                  {/* <Input
+                  <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Confirm your new password"
-                  /> */}
+                  />
                   <span
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute top-1/2 right-4 -translate-y-1/2 z-30 cursor-pointer"

@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Enable Google Authenticator | Admin Panel",
-  description: "Enable Google Authenticator | Admin Panel",
+  title: "Enable Google Authenticator",
+  description: "Enable Google Authenticator",
   // other metadata
 };
 
