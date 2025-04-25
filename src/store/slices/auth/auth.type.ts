@@ -1,5 +1,8 @@
+import { IAdmin } from "@/services/auth-api/auth-api.types";
+
 export interface AuthState {
-  authToken: string | null;
+  token: string | null;
+  user: IAdmin | null;
 }
 
 export interface LoginCredentials {
