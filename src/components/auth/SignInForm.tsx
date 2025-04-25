@@ -96,7 +96,7 @@ const SignInForm = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="info@gmail.com"
+                  placeholder="Enter your email"
                   registration={register("email")}
                   error={errors.email?.message}
                 />

@@ -2,8 +2,8 @@ import AccountCreatedSuccessfullyForm from "@/components/auth/AccountCreatedSucc
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Account Created Successfully | Admin Panel",
-  description: "Account Created Successfully | Admin Panel",
+  title: "Account Created Successfully",
+  description: "Account Created Successfully",
   // other metadata
 };
 

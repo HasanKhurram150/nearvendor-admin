@@ -56,7 +56,7 @@ export default function ForgotPasswordForm() {
                 <Label>
                   Email <span className="text-error-500">*</span>
                 </Label>
-                <Input placeholder="info@gmail.com" type="email" />
+                <Input placeholder="Enter your email" type="email" />
               </div>
               <div className="flex flex-col items-center justify-between">
                 <Button className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base" size="sm" onClick={handleEmailSent}>

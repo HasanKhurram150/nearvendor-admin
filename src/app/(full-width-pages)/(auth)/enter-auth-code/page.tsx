@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Enter Authentication Code | Admin Panel",
-  description: "Enter Authentication Code | Admin Panel",
+  title: "Enter Authentication Code",
+  description: "Enter Authentication Code",
   // other metadata
 };
 
