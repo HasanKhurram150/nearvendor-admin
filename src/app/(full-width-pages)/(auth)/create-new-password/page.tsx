@@ -1,5 +1,3 @@
-"use client"
-
 import CreateNewPasswordForm from "@/components/auth/CreateNewPasswordForm";
 import { Metadata } from "next";
 // import dynamic from "next/dynamic";

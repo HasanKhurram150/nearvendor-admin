@@ -1,27 +1,29 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { getLocalStorage } from "@/utils";
 import { IAdmin } from "@/services/auth-api/auth-api.types";
 import { useRouter } from "next/navigation";
 import { authActions, useDispatch } from "@/store";
+import Loading from "../atoms/loading/loading";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const [isMounted, setIsMounted] = useState(false);
+  const [user, setUser] = useState<IAdmin | null>(null);
 
-  const user = useMemo<IAdmin | null>(() => {
+  useEffect(() => {
+    setIsMounted(true);
     try {
-      if (typeof window === "undefined") return null;
       const userData = localStorage.getItem("user");
-      return userData ? (JSON.parse(userData) as IAdmin) : null;
+      setUser(userData ? (JSON.parse(userData) as IAdmin) : null);
     } catch (error) {
       console.error("Failed to parse user data", error);
-      return null;
     }
   }, []);
 
@@ -42,6 +44,15 @@ export default function UserDropdown() {
       console.error("Logout failed:", error);
     }
   };
+
+   if (!isMounted) {
+    return (
+      <div className="flex items-center">
+        <div className="mr-3 h-11 w-11 rounded-full bg-gray-200 dark:bg-gray-700" />
+        <div className="h-4 w-24 rounded bg-gray-200 dark:bg-gray-700" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
