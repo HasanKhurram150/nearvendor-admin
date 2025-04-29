@@ -1,183 +1,113 @@
 "use client";
 import React from "react";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "../ui/table";
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { useGetAllPlacementsQuery } from "@/services/placement-api";
+import Loading from "../atoms/loading/loading";
+import PageBreadcrumb from "../common/PageBreadCrumb";
 
 const PlacementList: React.FC = () => {
+  const { data, isLoading } = useGetAllPlacementsQuery();
 
-  // Define the TypeScript interface for the table rows
-interface Placements {
-  id: number;
-  placementCode: string; 
-  placementName: string; 
-  form: string; 
-  size: string; 
-  material: string; 
-  inventory: string;
-  adid: string;
-  sbt: string;
-}
- 
-// Define the table data using the interface
-const tableData: Placements[] = [
-  {
-    id: 1,
-    placementCode: "H1",
-    placementName: "홈중단배너",
-    form: "Banner",
-    size: "320*100 테두리",
-    material:'Video',
-    inventory: '0',
-    adid: '5',
-    sbt: '5',
-  },
-  {
-    id: 2,
-    placementCode: "H1",
-    placementName: "홈중단배너",
-    form: "Banner",
-    size: "320*100 테두리",
-    material:'Image',
-    inventory: '0',
-    adid: '5',
-    sbt: '5',
-  },
-  {
-    id: 3,
-    placementCode: "H1",
-    placementName: "홈중단배너",
-    form: "Banner",
-    size: "320*100 테두리",
-    material:'Video',
-    inventory: '0',
-    adid: '5',
-    sbt: '5',
-  },
-  {
-    id: 4,
-    placementCode: "H1",
-    placementName: "홈중단배너",
-    form: "Banner",
-    size: "320*100 테두리",
-    material:'Video',
-    inventory: '0',
-    adid: '5',
-    sbt: '5',
-  },
-  {
-    id: 5,
-    placementCode: "H1",
-    placementName: "홈중단배너",
-    form: "Banner",
-    size: "320*100 테두리",
-    material:'Video',
-    inventory: '0',
-    adid: '5',
-    sbt: '5',
-  },
-];
+  console.log("placements", data);
+
+  const columns = [
+    { id: "1", header: "Placement Code", className: "min-w-[15rem]" },
+    { id: "2", header: "Placement Name", className: "min-w-[12rem]" },
+    { id: "3", header: "Form", className: "min-w-[8.125rem]" },
+    { id: "4", header: "Size", className: "min-w-[15rem]" },
+    { id: "5", header: "Material", className: "min-w-[12rem]" },
+    { id: "6", header: "Inventory", className: "min-w-[10rem]" },
+  ];
 
   return (
-
-
-<div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
-      <div className="max-w-full overflow-x-auto">
-        <Table>
-          {/* Table Header */}
-          <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
-            <TableRow>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[15rem]"
-              >
-                Placement Code
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
-              >
-               Placement Name
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[8.125rem]"
-              >
-               Form
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[15rem]"
-              >
-               Size
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
-              >
-               Material
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
-              >
-               Inventory
-              </TableCell>
-             
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
-              >
-               ADID
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white  min-w-[8.125rem]"
-              >
-               SBT
-              </TableCell>
-             
-            </TableRow>
-          </TableHeader>
-
-          {/* Table Body */}
-
-          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {tableData.map((user) => (
-              <TableRow key={user.id} className="">
-            <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                        {user.placementCode}
-                </TableCell>
-                <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                  {user.placementName}
-                </TableCell>
-                <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
-                {user.form}
-                </TableCell>
-                <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                {user.size}
-                </TableCell>
-                <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                  {user.material}
-                </TableCell>
-                <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                {user.inventory}
-                </TableCell>
-                <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
-                  {user.adid}
-                </TableCell>
-                <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                 {user.sbt}
-                </TableCell>
-             
+    <>
+      <PageBreadcrumb
+        pageTitle="Placement List"
+        counter={true}
+        counterText="Total Placement"
+        counterValue={data?.length}
+      />
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
+        <div className="max-w-full overflow-x-auto">
+          <Table>
+            {/* Table Header */}
+            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+              <TableRow>
+                {columns.map((col) => (
+                  <TableCell
+                    key={col?.id}
+                    isHeader
+                    className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white ${col.className}`}
+                  >
+                    {col.header}
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            {/* Table Body */}
+
+            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              {isLoading ? (
+                <TableRow>
+                  <TableCell className="text-center py-8">
+                    <div className="flex justify-center">
+                      <Loading size="lg" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <>
+                  {data?.map(
+                    ({
+                      id,
+                      placementCode,
+                      placementName,
+                      form,
+                      width,
+                      height,
+                      support,
+                    }) => (
+                      <TableRow key={id} className="">
+                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                          {/* {user.placementCode} */}
+                          {placementCode}
+                        </TableCell>
+                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                          {/* {user.placementName} */}
+                          {placementName}
+                        </TableCell>
+                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
+                          {/* {user.form} */}
+                          {form}
+                        </TableCell>
+                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                          {width}* {height}
+                        </TableCell>
+                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                          {/* {user.material} */}
+                          {support}
+                        </TableCell>
+                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                          {/* {user.inventory} */}0
+                        </TableCell>
+                      </TableRow>
+                    ),
+                  )}
+                </>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
-    </div>
-      
+    </>
   );
 };
-
 
 export default PlacementList;
