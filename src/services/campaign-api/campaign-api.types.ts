@@ -17,17 +17,36 @@ export interface ICampaignMeta {
 }
 
 export interface ICampaign {
-  // Define campaign properties here based on your actual data structure
-  id?: string;
-  name?: string;
-  // Add other campaign properties
+  createdAt: string;
+  updatedAt: string;
+  id: string;
+  uniqueId: string;
+  name: string;
+  campaignType: string;
+  status: number;
+  agencyId: string;
+  channelId: any;
+  agencyFee: number;
+  budgetTotal: string;
+  coinBudgetTotal: string;
+  budgetRemaining: string;
+  settlement: string;
+  budgetEvent: string;
+  remainingBudgetEvent: string;
+  remainingBudgetChannel: string;
+  remainingBudgetInventory: string;
+  budgetInventory: string;
+  budgetChannel: string;
+  startDate: string;
+  endDate: string;
+  trackerUseYn: string;
+  trackerEventYn: string;
+  trackerChannelYn: string;
+  trackerInventoryYn: string;
+  document: string;
 }
 
 export interface ICampaignResponse {
-  statusCode: number;
-  message: string;
-  data: {
-    meta: ICampaignMeta;
-    data: ICampaign[];
-  };
+  meta: ICampaignMeta;
+  data: ICampaign[];
 }

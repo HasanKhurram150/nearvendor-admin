@@ -15,7 +15,7 @@ export const inventoryAPI = baseAPI.injectEndpoints({
         params,
       }),
       transformResponse: (response: any) => {
-        return response as IInventoryResponse;
+        return response?.data as IInventoryResponse;
       },
     }),
   }),
