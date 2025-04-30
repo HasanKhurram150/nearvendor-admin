@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,20 +9,34 @@ interface BreadcrumbProps {
   counter?: boolean;
   counterText?: string;
   counterValue?: number;
+  btnAdvertiser?: boolean;
   btnCampaign?: boolean;
   btnInventory?: boolean;
 }
 
-const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle, counter, counterText, counterValue, btnCampaign, btnInventory }) => {
+const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
+  pageTitle,
+  counter,
+  counterText,
+  counterValue,
+  btnCampaign,
+  btnInventory,
+  btnAdvertiser,
+}) => {
   const router = useRouter();
 
+  const handleAddAdvertiser = () => {
+    router.push("/add-advertiser");
+  };
+
   const handleAddCampaign = () => {
-    router.push('/add-campaign')
-  }
+    router.push("/add-campaign");
+  };
 
   const handleCreateInventory = () => {
-    router.push('/create-inventory')
-  }
+    router.push("/create-inventory");
+  };
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
       <h2
@@ -30,12 +44,37 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle, counter, counter
         x-text="pageName"
       >
         {pageTitle}
-        {counter && <span className="text-base font-normal mt-[1rem]">{counterText}: {counterValue}</span> }
-        
+        {counter && (
+          <span className="text-base font-normal mt-[1rem]">
+            {counterText}: {counterValue}
+          </span>
+        )}
       </h2>
-      {btnCampaign &&  <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md" onClick={handleAddCampaign}>Create Campaign</button>}
-      {btnInventory &&  <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md" onClick={handleCreateInventory}>Create Inventory</button>}
-     
+      {btnAdvertiser && (
+        <button
+          className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
+          onClick={handleAddAdvertiser}
+        >
+          Create Advertiser
+        </button>
+      )}
+      {btnCampaign && (
+        <button
+          className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
+          onClick={handleAddCampaign}
+        >
+          Create Campaign
+        </button>
+      )}
+      {btnInventory && (
+        <button
+          className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
+          onClick={handleCreateInventory}
+        >
+          Create Inventory
+        </button>
+      )}
+
       <nav className="hidden">
         <ol className="flex items-center gap-1.5">
           <li>

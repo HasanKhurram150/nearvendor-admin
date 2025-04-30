@@ -10,20 +10,12 @@ import {
 import { useGetAllPlacementsQuery } from "@/services/placement-api";
 import Loading from "../atoms/loading/loading";
 import PageBreadcrumb from "../common/PageBreadCrumb";
+import { placementColumns } from "./columns";
 
 const PlacementList: React.FC = () => {
-  const { data, isLoading } = useGetAllPlacementsQuery();
+  const { data: placements, isLoading } = useGetAllPlacementsQuery();
 
-  console.log("placements", data);
-
-  const columns = [
-    { id: "1", header: "Placement Code", className: "min-w-[15rem]" },
-    { id: "2", header: "Placement Name", className: "min-w-[12rem]" },
-    { id: "3", header: "Form", className: "min-w-[8.125rem]" },
-    { id: "4", header: "Size", className: "min-w-[15rem]" },
-    { id: "5", header: "Material", className: "min-w-[12rem]" },
-    { id: "6", header: "Inventory", className: "min-w-[10rem]" },
-  ];
+  console.log("placements", placements);
 
   return (
     <>
@@ -31,7 +23,7 @@ const PlacementList: React.FC = () => {
         pageTitle="Placement List"
         counter={true}
         counterText="Total Placement"
-        counterValue={data?.length}
+        counterValue={placements?.length}
       />
       <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
         <div className="max-w-full overflow-x-auto">
@@ -39,7 +31,7 @@ const PlacementList: React.FC = () => {
             {/* Table Header */}
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
-                {columns.map((col) => (
+                {placementColumns.map((col) => (
                   <TableCell
                     key={col?.id}
                     isHeader
@@ -64,42 +56,28 @@ const PlacementList: React.FC = () => {
                 </TableRow>
               ) : (
                 <>
-                  {data?.map(
-                    ({
-                      id,
-                      placementCode,
-                      placementName,
-                      form,
-                      width,
-                      height,
-                      support,
-                    }) => (
-                      <TableRow key={id} className="">
-                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                          {/* {user.placementCode} */}
-                          {placementCode}
-                        </TableCell>
-                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                          {/* {user.placementName} */}
-                          {placementName}
-                        </TableCell>
-                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
-                          {/* {user.form} */}
-                          {form}
-                        </TableCell>
-                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                          {width}* {height}
-                        </TableCell>
-                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                          {/* {user.material} */}
-                          {support}
-                        </TableCell>
-                        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                          {/* {user.inventory} */}0
-                        </TableCell>
-                      </TableRow>
-                    ),
-                  )}
+                  {placements?.map((placement) => (
+                    <TableRow key={placement?.id} className="">
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                        {placement?.placementCode}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                        {placement?.placementName}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
+                        {placement?.form}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                        {placement?.width}* {placement?.height}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                        {placement?.support}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                        0
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </>
               )}
             </TableBody>

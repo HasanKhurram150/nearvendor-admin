@@ -7,7 +7,7 @@ import { WeekdayCheckboxes } from "./week-days";
 import RadioButtonGroup from "./radio-button-group";
 import CustomSelect from "./custom-select";
 import FileUpload from "./file-upload";
-import SearchableDropdown from "./searchable-dropdown";
+import SearchableDropdown from "../common/searchable-dropdown";
 
 type Option = {
   label: string;
