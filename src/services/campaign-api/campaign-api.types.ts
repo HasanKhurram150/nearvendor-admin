@@ -50,3 +50,10 @@ export interface ICampaignResponse {
   meta: ICampaignMeta;
   data: ICampaign[];
 }
+
+export interface IAddCampaignPayload {
+  advertiserId: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+}

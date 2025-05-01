@@ -4,8 +4,8 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Add Campaign",
-  description: "Add Campaign",
+  title: "Add Advertisern",
+  description: "Add Advertiser",
 };
 export default function page() {
   return (

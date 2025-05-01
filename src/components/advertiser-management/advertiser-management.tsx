@@ -78,7 +78,7 @@ const AdvertiserManagement: React.FC = () => {
                         {advertiser?.bankName}
                       </TableCell>
                       <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
-                        {advertiser?.accountHolderName}
+                        {advertiser?.businessRegistrationDocument}
                       </TableCell>
                     </TableRow>
                   ))}

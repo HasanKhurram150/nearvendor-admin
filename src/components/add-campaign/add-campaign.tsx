@@ -8,6 +8,11 @@ import toast from "react-hot-toast";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import SearchableDropdown from "../common/searchable-dropdown";
+import { useAddCampaignMutation, useGetAllAdvertiserQuery } from "@/services";
+import Select from "../form/Select";
+import { useRouter } from "next/navigation";
+import Loading from "../atoms/loading/loading";
+import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 
 type Option = {
   label: string;
@@ -22,77 +27,120 @@ const validationSchema = Yup.object().shape({
     })
     .nullable()
     .required("Advertiser is required"),
-  campaignName: Yup.string().required("Campaign name is required"),
-  agencyInfo: Yup.string().required("Agency info is required"),
-  campaignDetail: Yup.string().required("Campaign detail is required"),
-  agencyFee: Yup.string().required("Agency fee is required"),
-  category: Yup.string().required("Category is required"),
-  subCategory: Yup.string().required("Sub category is required"),
-  periodStart: Yup.date()
+  name: Yup.string().required("Campaign name is required"),
+  campaignType: Yup.string()
+    .required("Campaign type is required")
+    .oneOf(["event", "inventory", "channel", "mixed"], "Invalid campaign type"),
+  status: Yup.number()
+    .required("Status is required")
+    .oneOf([0, 1], "Invalid status"),
+  // agencyInfo: Yup.string().required("Agency info is required"),
+  // campaignDetail: Yup.string().required("Campaign detail is required"),
+  // agencyFee: Yup.string().required("Agency fee is required"),
+  // category: Yup.string().required("Category is required"),
+  // subCategory: Yup.string().required("Sub category is required"),
+  startDate: Yup.date()
     .required("Start date is required")
     .typeError("Invalid start date"),
-  periodEnd: Yup.date()
+  endDate: Yup.date()
     .required("End date is required")
-    .min(Yup.ref("periodStart"), "End date must be after start date")
+    .min(Yup.ref("startDate"), "End date must be after start date")
     .typeError("Invalid end date"),
-  totalBudget: Yup.string()
+  budgetTotal: Yup.string()
     .required("Total budget is required")
     .matches(/^\d+$/, "Budget must be a number"),
-  settlement: Yup.string().required("Settlement is required"),
+  // settlement: Yup.string().required("Settlement is required"),
 });
 
 const AddCampaign: React.FC = () => {
-  const [selected, setSelected] = useState<Option | null>(null);
-
-  console.log("selected", selected);
+  // const [selected, setSelected] = useState<Option | null>(null);
+  const router = useRouter();
+  const { data, isLoading: isFetching } = useGetAllAdvertiserQuery();
+  const [mutate, { isLoading }] = useAddCampaignMutation();
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    reset,
     control,
     formState: { errors },
   } = useForm<any>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       advertiser: null,
-      campaignName: "",
-      agencyInfo: "",
-      campaignDetail: "",
-      agencyFee: "",
-      category: "",
-      subCategory: "",
-      periodStart: "",
-      periodEnd: "",
-      totalBudget: "",
-      settlement: "",
+      campaignType: null,
+      status: 1,
+      name: "",
+      // agencyInfo: "",
+      // campaignDetail: "",
+      // agencyFee: "",
+      // category: "",
+      // subCategory: "",
+      startDate: "",
+      endDate: "",
+      budgetTotal: "",
+      // settlement: "",
     },
   });
 
-  const advertiserOptions = [
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-    { label: "Orange", value: "orange" },
+  const advertiserOptions =
+    data?.map((advertiser) => ({
+      label: advertiser?.nickName,
+      value: advertiser?.id,
+    })) || [];
+
+  const typeOptions = [
+    { value: "event", label: "Event" },
+    { value: "inventory", label: "Inventory" },
+    { value: "channel", label: "Channel" },
+    { value: "mixed", label: "Mixed" },
   ];
 
-  // const selectedAdvertiser = watch("advertiser");
+  const statusOptions = [
+    { value: "1", label: "Active" },
+    { value: "0", label: "Inactive" },
+  ];
 
-  const handleSelect = (option: Option | null) => {
+  const handleSelectAdvertiser = (option: Option | null) => {
     setValue("advertiser", option, { shouldValidate: true });
   };
 
-  const onSubmit = async (data: FormData) => {
-    // setIsSubmitting(true);
+  const handleSelectType = (type: string) => {
+    setValue("campaignType", type, { shouldValidate: true });
+  };
+
+  const handleSelectStatus = (value: string) => {
+    setValue("status", Number(value), { shouldValidate: true });
+  };
+
+  const onSubmit = async (formData: any) => {
     try {
-      // Here you would typically call your API
-      console.log("Form data:", data);
+      const payload = {
+        advertiserId: formData.advertiser.value,
+        name: formData?.name,
+        campaignType: formData?.campaignType,
+        status: formData.status,
+        startDate: formData?.startDate,
+        endDate: formData?.endDate,
+        budgetTotal: Number(formData?.budgetTotal),
+      };
+      console.log({ payload });
+
+      await mutate(payload).unwrap();
+
       toast.success("Campaign created successfully!");
-      // Reset form or navigate away if needed
+      router.push("/campaign-management");
+
+      reset();
     } catch (error) {
-      toast.error("Failed to create campaign. Please try again.");
-    } finally {
-      // setIsSubmitting(false);
+      console.error("Error creating campaign:", error);
+      const apiError = error as ApiErrorResponse;
+      if (apiError.data && apiError.data.message) {
+        toast.error(apiError.data.message);
+      } else {
+        toast.error("Failed to create campaign. Please try again");
+      }
     }
   };
 
@@ -105,10 +153,11 @@ const AddCampaign: React.FC = () => {
             <Controller
               name="advertiser"
               control={control}
-              render={({ field }) => (
+              render={() => (
                 <SearchableDropdown
+                  isLoading={isFetching}
                   options={advertiserOptions}
-                  onSelect={handleSelect}
+                  onSelect={handleSelectAdvertiser}
                   placeholder="Search and select advertiser"
                 />
               )}
@@ -124,11 +173,62 @@ const AddCampaign: React.FC = () => {
             <Input
               placeholder="Automatically Generated after creation"
               type="text"
-              registration={register("campaignName")}
-              error={errors.campaignName?.message as string}
+              registration={register("name")}
+              error={errors.name?.message as string}
             />
           </div>
           <div className="pb-4">
+            <Label>Campaign Type</Label>
+            {/* <Input
+              placeholder="Automatically Generated after creation"
+              type="text"
+              registration={register("campaignType")}
+              error={errors.campaignType?.message as string}
+            /> */}
+
+            <Controller
+              name="campaignType"
+              control={control}
+              render={() => (
+                <Select
+                  options={typeOptions}
+                  placeholder="Select Type"
+                  onChange={handleSelectType}
+                  className="dark:bg-dark-900"
+                />
+              )}
+            />
+            {errors.campaignType && (
+              <p className="mt-1 text-sm text-error-500">
+                {errors.campaignType.message as string}
+              </p>
+            )}
+          </div>
+          <div className="pb-4">
+            <Label>Status</Label>
+            <Controller
+              name="status"
+              control={control}
+              render={() => (
+                <Select
+                  options={statusOptions}
+                  placeholder="Select status"
+                  onChange={handleSelectStatus}
+                  // onChange={(value) => {
+                  //   field.onChange(Number(value)); // Ensure number conversion
+                  //   handleSelectStatus(value);
+                  // }}
+                  className="dark:bg-dark-900 p-2"
+                />
+              )}
+            />
+            {errors.status && (
+              <p className="mt-1 text-sm text-error-500">
+                {errors.status.message as string}
+              </p>
+            )}
+          </div>
+          {/* <div className="pb-4">
             <Label>Agency Info</Label>
             <Input
               placeholder="Automatically Generated after creation"
@@ -172,14 +272,14 @@ const AddCampaign: React.FC = () => {
               registration={register("subCategory")}
               error={errors.subCategory?.message as string}
             />
-          </div>
+          </div> */}
           <div className="pb-4">
             <Label>Period (Start)</Label>
             <Input
               placeholder="MM/DD/YYYY"
               type="date"
-              registration={register("periodStart")}
-              error={errors.periodStart?.message as string}
+              registration={register("startDate")}
+              error={errors.startDate?.message as string}
             />
           </div>
           <div className="pb-4">
@@ -187,8 +287,8 @@ const AddCampaign: React.FC = () => {
             <Input
               placeholder="MM/DD/YYYY"
               type="date"
-              registration={register("periodEnd")}
-              error={errors.periodEnd?.message as string}
+              registration={register("endDate")}
+              error={errors.endDate?.message as string}
             />
           </div>
           <div className="pb-4">
@@ -196,11 +296,11 @@ const AddCampaign: React.FC = () => {
             <Input
               placeholder="Enter budget"
               type="text"
-              registration={register("totalBudget")}
-              error={errors.totalBudget?.message as string}
+              registration={register("budgetTotal")}
+              error={errors.budgetTotal?.message as string}
             />
           </div>
-          <div className="pb-4">
+          {/* <div className="pb-4">
             <Label>Settlement</Label>
             <Input
               placeholder="can select : Upfront(prepayment) / Postpaid"
@@ -208,14 +308,18 @@ const AddCampaign: React.FC = () => {
               registration={register("settlement")}
               error={errors.settlement?.message as string}
             />
-          </div>
+          </div> */}
         </div>
         <div className="flex justify-end gap-4">
-          <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[10rem] rounded-[5rem]">
+          {/* <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[10rem] rounded-[5rem]">
             Save
-          </button>
-          <button className="flex items-center justify-center  text-[#000] bg-white border border-[#D9D9D9] h-[2.5rem] w-[10rem] rounded-[5rem]">
-            Submit
+          </button> */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="flex items-center justify-center  text-[#000] bg-white border border-[#D9D9D9] h-[2.5rem] w-[10rem] rounded-[5rem]"
+          >
+            {isLoading ? <Loading /> : "Submit"}
           </button>
         </div>
       </form>

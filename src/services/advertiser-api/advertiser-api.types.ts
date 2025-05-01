@@ -17,3 +17,13 @@ export interface Iadvertiser {
   accountNumber: string;
   accountHolderName: string;
 }
+
+export interface IAddAdvertiser {
+  companyName: string;
+  nickName: string;
+  registrationNumber: string;
+  representative: string;
+  businessRegistrationDocument: string;
+  departmentName: string;
+  bankName: string;
+}
