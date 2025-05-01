@@ -5,7 +5,8 @@ export const EXAMPLE = "EXAMPLE";
 // export const TAGS = [EXAMPLE];
 
 export const TAGS = {
-  // CURRENT_USER: "CurrentUser",
+  CAMPAIGN: "Campaign",
+  ADVERTISER: "Advertiser",
 };
 
 export const generateTags = (result: any, TAG: string) => {

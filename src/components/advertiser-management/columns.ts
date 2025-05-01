@@ -6,7 +6,7 @@ export const advertiserColumns = [
   },
   {
     id: "2",
-    header: "Nick Name",
+    header: "Advertiser Name",
     className: "min-w-[15rem]",
   },
   {
@@ -31,7 +31,7 @@ export const advertiserColumns = [
   },
   {
     id: "7",
-    header: "Account Holder Name",
+    header: "Business Registration Document",
     className: "min-w-[12rem]",
   },
 ];

@@ -11,5 +11,7 @@ export const ENDPOINTS = {
   getAllPlacements: "/placement/all", //GET
   getAllAdvertiser: "/advertiser/all", //GET
   getAllInventory: "/inventory/all", //GET
+  addCampaign: "/campaign", //POST
+  addAdvertiser: "/advertiser", //POST
 };
 //----------------------------------------------------------------
