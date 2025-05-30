@@ -31,7 +31,7 @@ import PaperPlaneIcon from "./paper-plane.svg";
 import LockIcon from "./lock.svg";
 import EnvelopeIcon from "./envelope.svg";
 import UserIcon from "./user-line.svg";
-import CalenderIcon from "./calender-line.svg";
+import CalenderIcon from "./calendar.svg";
 import EyeIcon from "./eye.svg";
 import EyeCloseIcon from "./eye-close.svg";
 import TimeIcon from "./time.svg";
@@ -66,6 +66,16 @@ import TickMarkIcon from "./tick-circle.svg";
 import GoldenIcon from "./golden.svg";
 import BlueIcon from "./blue.svg";
 import SilverIcon from "./silver.svg";
+import CategoriesIcon from "./categories.svg";
+import EditIcon from "./edit.svg";
+import SearchIcon from "./search.svg";
+import AddCategoryIcon from "./add-category.svg";
+import CloseModalIcon from "./close-modal-icon.svg";
+import AddCalendarIcon from "./add-calendar.svg";
+import BackupIcon from "./backup.svg";
+import TicketIcon from "./ticket.svg";
+import UploadIcon from "./upload.svg";
+import DownloadIcon2 from "./import.svg";
 
 export {
   DownloadIcon,
@@ -136,4 +146,14 @@ export {
   GoldenIcon,
   BlueIcon,
   SilverIcon,
+  CategoriesIcon,
+  EditIcon,
+  SearchIcon,
+  AddCategoryIcon,
+  CloseModalIcon,
+  AddCalendarIcon,
+  BackupIcon,
+  TicketIcon,
+  UploadIcon,
+  DownloadIcon2,
 };

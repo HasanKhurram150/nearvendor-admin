@@ -1,2 +1,1 @@
-export * from "./loading";
 export * from "./profile-photo-upload";

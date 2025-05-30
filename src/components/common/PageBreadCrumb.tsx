@@ -6,6 +6,9 @@ import React from "react";
 
 interface BreadcrumbProps {
   pageTitle: string;
+  categoryInfo?: boolean;
+  calendarInfo?: boolean;
+  eventsInfo?: boolean;
   counter?: boolean;
   counterText?: string;
   counterValue?: number;
@@ -16,6 +19,9 @@ interface BreadcrumbProps {
 
 const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
   pageTitle,
+  categoryInfo,
+  calendarInfo,
+  eventsInfo,
   counter,
   counterText,
   counterValue,
@@ -44,6 +50,22 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
         x-text="pageName"
       >
         {pageTitle}
+
+        {categoryInfo && (
+          <span className="text-base font-normal mt-[1rem]">
+            Manage your Categories and their settings
+          </span>
+        )}
+         {calendarInfo && (
+          <span className="text-base font-normal mt-[1rem]">
+            Manage your Calendars and their settings
+          </span>
+        )}
+                 {eventsInfo && (
+          <span className="text-base font-normal mt-[1rem]">
+            Manage your Events and their settings
+          </span>
+        )}
         {counter && (
           <span className="text-base font-normal mt-[1rem]">
             {counterText}: {counterValue}

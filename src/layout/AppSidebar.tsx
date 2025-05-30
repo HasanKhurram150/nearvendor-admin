@@ -5,6 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
+  CalenderIcon,
+  CategoriesIcon,
   ChevronDownIcon,
   DashboardIcon,
   EventsIcon,
@@ -13,6 +15,7 @@ import {
   ListIcon,
   PeopleIcon,
   PlacementIcon,
+  TicketIcon,
 } from "../icons/index";
 
 type NavItem = {
@@ -61,6 +64,21 @@ const othersItems: NavItem[] = [
     icon: <InventoryListIcon />,
     name: "Inventory List",
     path: "/inventory-list",
+  },
+  {
+    icon: <CategoriesIcon />,
+    name: "Categories Management",
+    path: "/categories-management",
+  },
+  {
+    icon: <CalenderIcon />,
+    name: "Calendars Management",
+    path: "/calendars-management",
+  },
+  {
+    icon: <TicketIcon />,
+    name: "Events Management",
+    path: "/events-management",
   },
 ];
 
