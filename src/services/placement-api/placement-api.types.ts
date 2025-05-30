@@ -1,0 +1,32 @@
+export interface IPlacements {
+  createdAt: string;
+  updatedAt: string;
+  id: string;
+  sort: number;
+  status: number;
+  placementName: string;
+  placementType: string;
+  support: string;
+  mediaCd: any;
+  width: number;
+  height: number;
+  first?: string;
+  second: string;
+  third: string;
+  fourth: string;
+  fifth: string;
+  promotionUrl: string;
+  adidMax: number;
+  adidWeight: number;
+  sbtMax: number;
+  sbtWeight: number;
+  placementCode: string;
+  placementLocation: string;
+  form: string;
+  rollingControl?: number;
+  rollingCycle?: number;
+  adsMin?: number;
+  adsMax?: number;
+  image_count: number;
+  video_count: number;
+}

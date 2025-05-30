@@ -2,7 +2,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Store + configuration
-// import { TAGS } from "./tags";
+import { TAGS } from "./tags";
 import { environment } from "@/config";
 
 // Create baseQuery instance
@@ -22,6 +22,6 @@ const baseQuery = fetchBaseQuery({
 export const baseAPI = createApi({
   reducerPath: "api",
   baseQuery,
-  // tagTypes: [TAGS.CURRENT_USER],
+  tagTypes: [TAGS.CAMPAIGN, TAGS.ADVERTISER],
   endpoints: () => ({}),
 });

@@ -7,7 +7,7 @@ import { WeekdayCheckboxes } from "./week-days";
 import RadioButtonGroup from "./radio-button-group";
 import CustomSelect from "./custom-select";
 import FileUpload from "./file-upload";
-import SearchableDropdown from "./searchable-dropdown";
+import SearchableDropdown from "../common/searchable-dropdown";
 
 type Option = {
   label: string;
@@ -47,7 +47,7 @@ const CreateInventory: React.FC = () => {
           <Label>Campaign</Label>
           <Input placeholder="Search and select the campaign" type="text" />
         </div>
-        <div className="pb-4"> 
+        {/* <div className="pb-4"> 
           <Label>Advertiser Code</Label>
           <Input placeholder="Enter your code" type="text" />
         </div>
@@ -70,13 +70,13 @@ const CreateInventory: React.FC = () => {
         <div className="pb-4"> 
           <Label>Target Group Code</Label>
           <Input placeholder="Enter your code" type="text" />
-        </div>
+        </div> */}
         <p className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90">Basic Inventory Information</p>
         <div />
-        <div className="pb-4"> 
+        {/* <div className="pb-4"> 
           <Label>Inventory Code</Label>
           <Input placeholder="Enter your code" type="text" />
-        </div>
+        </div> */}
         <div className="pb-4"> 
           <Label>Inventory Selection</Label>
           <Input placeholder="Search and select inventory" type="text" />
@@ -117,11 +117,11 @@ const CreateInventory: React.FC = () => {
           <Label>Inventory Allocated/Remaining Budget</Label>
           <Input placeholder="Enter your description" type="text" />
         </div>
-        <div className="pb-4"> 
-          <Label>Inventory Total Budget</Label>
-          <Input placeholder="Enter your description" type="text" />
-        </div>
-        <div className="pb-4"> 
+          {/* <div className="pb-4"> 
+            <Label>Inventory Total Budget</Label>
+            <Input placeholder="Enter your description" type="text" />
+          </div> */}
+        {/* <div className="pb-4"> 
           <Label>Bonus Budget Setting (%)</Label>
           <Input placeholder="Enter your description" type="text" />
         </div>
@@ -144,7 +144,7 @@ const CreateInventory: React.FC = () => {
         <div className="pb-4"> 
           <Label>Early Consumption Daily Budget Setting</Label>
           <Input placeholder="Enter your description" type="text" />
-        </div>
+        </div> */}
 
         <p className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90">Inventory Details</p>
         <div />
@@ -184,7 +184,7 @@ const CreateInventory: React.FC = () => {
           <Label>Creative File</Label>
           <FileUpload />
         </div>
-        <div className="pb-4"> 
+        {/* <div className="pb-4"> 
           <Label>Optimization Setting Selection</Label>
           <CustomSelect placeholder="Yes/No"/>
         </div>
@@ -203,7 +203,7 @@ const CreateInventory: React.FC = () => {
         <div className="pb-4"> 
           <Label>C Grade Ratio</Label>
           <Input placeholder="Search and select the campaign" type="text" />
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-end gap-4">
         <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[10rem] rounded-[5rem]">Save</button>
