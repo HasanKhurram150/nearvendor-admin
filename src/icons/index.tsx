@@ -76,6 +76,8 @@ import BackupIcon from "./backup.svg";
 import TicketIcon from "./ticket.svg";
 import UploadIcon from "./upload.svg";
 import DownloadIcon2 from "./import.svg";
+import GlobalIcon from "./global.svg";
+import FiltersIcon from "./filters.svg";
 
 export {
   DownloadIcon,
@@ -156,4 +158,6 @@ export {
   TicketIcon,
   UploadIcon,
   DownloadIcon2,
+  GlobalIcon,
+  FiltersIcon,
 };

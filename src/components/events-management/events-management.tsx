@@ -23,6 +23,7 @@ import { GenericModal } from "../atoms/generic-modal";
 import { EditCategoryModal } from "./edit-category-modal";
 import { AddEventModal } from "./add-event-modal";
 import CSVUploadButton from "../atoms/csv-upload-button/csv-upload-button";
+import SearchFilterDropdown from "./search-filter-dropdown";
 
 const EventsManagement: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -68,12 +69,16 @@ const EventsManagement: React.FC = () => {
 
   const convertToCSV = (data: any[]) => {
     if (data.length === 0) return "";
-  
+
     const headers = Object.keys(data[0]);
-    const rows = data.map(row =>
-      headers.map(field => `"${(row[field] ?? "").toString().replace(/"/g, '""')}"`).join(",")
+    const rows = data.map((row) =>
+      headers
+        .map(
+          (field) => `"${(row[field] ?? "").toString().replace(/"/g, '""')}"`,
+        )
+        .join(","),
     );
-  
+
     return [headers.join(","), ...rows].join("\r\n");
   };
 
@@ -81,7 +86,7 @@ const EventsManagement: React.FC = () => {
     const csv = convertToCSV(calendarData);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-  
+
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", "calendar_events.csv");
@@ -93,10 +98,11 @@ const EventsManagement: React.FC = () => {
   return (
     <div className="flex flex-col gap-[2.5rem] items-start w-full">
       <div className="flex justify-start flex-wrap gap-4 items-center w-full">
+        <SearchFilterDropdown />
         <GenericSearchField
           value={query}
           onChange={setQuery}
-          placeholder="Search by name, type or location"
+          placeholder="Search"
         />
         <CSVUploadButton />
         <GenericButton
@@ -108,7 +114,6 @@ const EventsManagement: React.FC = () => {
           height="2.5rem"
           width="9.813rem"
           handleClick={handleDownloadCSV}
-
         />
         <GenericButton
           icon={<PlusIcon />}
@@ -156,17 +161,23 @@ const EventsManagement: React.FC = () => {
                       <TableCell className=" pl-6 pr-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
                         {item?.eventName}
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-8rem]">
                         {item?.type}
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-8rem]">
+                        {item?.calendar}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-8rem]">
+                        {item?.category}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
                         {item?.date}{" "}
                         <span className="text-[#201D1D80]">
                           {" "}
                           {item?.startTime} - {item?.endTime}
                         </span>
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
                         {item?.location}
                       </TableCell>
                       <TableCell className=" pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-right min-w-[12rem]">
@@ -190,6 +201,7 @@ const EventsManagement: React.FC = () => {
         isOpen={addEventModal}
         // isOpen={true}
         onClose={handleCloseAddEventModal}
+        maxWidth="47.563rem"
       >
         <AddEventModal onClose={handleCloseAddEventModal} />
       </GenericModal>

@@ -8,7 +8,7 @@ const GenericSearchField: React.FC<GenericSearchFieldProps> = ({
   onChange,
 }) => {
   return (
-    <div className="flex items-center border border-[#736C9900] rounded-3xl px-3 py-3 bg-white w-full max-w-[30rem]">
+    <div className="flex items-center border border-[#736C9900] rounded-3xl px-3 py-3 bg-white w-full max-w-[34.5rem]">
       <SearchIcon className="w-5 h-5 mr-2" />
       <input
         type="text"

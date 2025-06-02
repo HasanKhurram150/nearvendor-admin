@@ -1,7 +1,7 @@
 export const categoryColumns = [
   { id: "1", header: "Name", className: "min-w-[15rem]" },
   { id: "2", header: "SourceId", className: "min-w-[12rem]" },
-  { id: "3", header: "Event Code", className: "min-w-[8.125rem]" },
+  { id: "3", header: "Event Count", className: "min-w-[8.125rem]" },
   { id: "4", header: "Order by", className: "min-w-[15rem]" },
   { id: "5", header: "Actions", className: "min-w-[12rem]" },
 ];

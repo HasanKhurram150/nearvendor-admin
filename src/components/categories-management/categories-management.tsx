@@ -62,7 +62,11 @@ const CategoriesManagement: React.FC = () => {
   return (
     <div className="flex flex-col gap-[2.5rem] items-start w-full">
       <div className="flex justify-start flex-wrap gap-4 items-center w-full">
-        <GenericSearchField value={query} onChange={setQuery} placeholder="Search by name" />
+        <GenericSearchField
+          value={query}
+          onChange={setQuery}
+          placeholder="Search by name"
+        />
         <GenericButton
           icon={<PlusIcon />}
           btnText="Add New"
@@ -113,7 +117,9 @@ const CategoriesManagement: React.FC = () => {
                         {item?.sourceId}
                       </TableCell>
                       <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
-                        {item?.eventCount}
+                        <div className="bg-[#1862D417] text-base text-[#1862D4] h-[1.5rem] w-[6.563rem] rounded-xl text-center">
+                          {item?.eventCount} events
+                        </div>
                       </TableCell>
                       <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
                         {item?.orderBy}

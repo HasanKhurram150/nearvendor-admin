@@ -57,9 +57,8 @@ export const AddCalendarModal = ({ onClose }: { onClose: () => void }) => {
             </div>
             <div>
               <Label>Theme Color</Label>
-             
-                <ColorPicker />
-             
+
+              <ColorPicker />
             </div>{" "}
             <div>
               <Label>Source ID</Label>
@@ -93,6 +92,26 @@ export const AddCalendarModal = ({ onClose }: { onClose: () => void }) => {
                 <Input id="longitude" type="longitude" placeholder="6" />
               </div>
             </div>
+            <div>
+              <Label>Socials</Label>
+              <Input
+                id="socials"
+                type="socials"
+                placeholder="Enter your social handle"
+                // registration={register("email")}
+                // error={errors.email?.message}
+              />
+            </div>{" "}
+            <div>
+              <Label>Website Link</Label>
+              <Input
+                id="website"
+                type="website"
+                placeholder="Enter your web link"
+                // registration={register("email")}
+                // error={errors.email?.message}
+              />
+            </div>{" "}
           </div>
 
           <div className="flex items-center gap-4 justify-end">
