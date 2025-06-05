@@ -72,25 +72,25 @@ export default function Users() {
             <TableRow>
               <TableCell
                 isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white"
+                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
               >
                 Users
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white"
+                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[15rem]"
               >
                 Email
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white"
+                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
               >
                 Phone Number
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white"
+                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
               >
                 Total Events
               </TableCell>
@@ -102,7 +102,7 @@ export default function Users() {
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {tableData.map((user) => (
               <TableRow key={user.id} className="">
-                <TableCell className="px-3 py-5">
+                <TableCell className="px-3 py-5 min-w-[12rem]">
                   <div className="flex items-center gap-3">
                     <div className="h-[27px] w-[27px] overflow-hidden rounded-md">
                       <Image
@@ -120,13 +120,13 @@ export default function Users() {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90">
+                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90  min-w-[15rem]">
                   {user.email}
                 </TableCell>
-                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90">
+                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
                   {user.phoneNumber}
                 </TableCell>
-                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90">
+                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
                 {user.totalEvents}
                 </TableCell>
               </TableRow>

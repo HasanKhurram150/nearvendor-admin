@@ -295,7 +295,7 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`pt-6 pb-8 hidden dark:flex  ${
+        className={`pt-6 pb-8 hidden lg:flex  ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
