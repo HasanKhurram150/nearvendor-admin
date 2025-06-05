@@ -1,0 +1,58 @@
+export const calendarColumns = [
+  { id: "1", header: "Name", className: "min-w-[15rem]" },
+  { id: "2", header: "Date", className: "min-w-[8rem]" },
+  { id: "3", header: "Time", className: "min-w-[15rem]" },
+  { id: "4", header: "Type", className: "min-w-[8rem]" },
+  { id: "5", header: "Address", className: "min-w-[15rem]" },
+  { id: "6", header: "Link", className: "min-w-[8rem]" },
+  { id: "7", header: "Mark as Featured", className: "min-w-[9.5rem]" },
+  { id: "8", header: "Actions", className: "min-w-[12rem]" },
+];
+
+export const calendarData = [
+  {
+    eventName: "Tech Conference 2024",
+    date: "Fri, 14 Mar",
+    startTime: "09:00 AM",
+    endTime: "17:00 PM",
+    type: "Tech",
+    address: "San Francisco, CA",
+    link: "#",
+  },
+  {
+    eventName: "Product Launch",
+    date: "Fri, 14 Mar",
+    startTime: "09:00 AM",
+    endTime: "17:00 PM",
+    type: "Tech",
+    address: "New York, NY",
+    link: "#",
+  },
+  {
+    eventName: "Team Building Workshop",
+    date: "Fri, 14 Mar",
+    startTime: "09:00 AM",
+    endTime: "17:00 PM",
+    type: "General",
+    address: "Austin, TX",
+    link: "#",
+  },
+  {
+    eventName: "Human Resources",
+    date: "Fri, 14 Mar",
+    startTime: "09:00 AM",
+    endTime: "17:00 PM",
+    type: "Tech",
+    address: "Austin, TX",
+    link: "#",
+  },
+  {
+    eventName: "Operations",
+    date: "Fri, 14 Mar",
+    startTime: "09:00 AM",
+    endTime: "17:00 PM",
+    type: "General",
+    address: "New York, NY",
+    link: "#",
+  },
+];

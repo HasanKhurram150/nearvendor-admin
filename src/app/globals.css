@@ -63,7 +63,7 @@ body {
   --color-black: #101828;
 
   --color-brand-25: #f2f7ff;
-  --color-brand-50: #7BD481;
+  --color-brand-50: #1862D4;
   --color-brand-100: #dde9ff;
   --color-brand-200: #c2d6ff;
   --color-brand-300: #9cb9ff;
@@ -769,11 +769,11 @@ span.flatpickr-weekday,
 }
 
 .btn-disabled-bg {
-  background-color: #7BD48199;
+  background-color: #1862D499;
 }
 
 .btn-bg {
-  background-color:#7BD481;
+  background-color:#1862D4;
 }
 
 .menu-item-icon-active svg path {

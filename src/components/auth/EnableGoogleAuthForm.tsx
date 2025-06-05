@@ -108,7 +108,7 @@ export default function EnableGoogleAuthForm() {
 
                 <button
                   onClick={handleDownloadClick}
-                  className="text-[1.25rem] font-AzoSansTest-medium text-[#7BD481] text-center"
+                  className="text-[1.25rem] font-AzoSansTest-medium text-[#1862D4] text-center"
                 >
                   DOWNLOAD APP
                 </button>
