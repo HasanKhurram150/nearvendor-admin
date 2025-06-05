@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export const States = () => {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
       {/* <!-- Metric Item Start --> */}
       <div className="flex justify-between items-center rounded-2xl bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
       
@@ -19,7 +19,7 @@ export const States = () => {
             </h4>
           </div>
         </div>
-        <div className="flex items-center justify-center w-[11.25rem] h-[10rem] bg-gray-100 rounded-xl dark:bg-gray-800">
+        <div className="flex items-center justify-center w-[11.25rem] h-[10rem] rounded-xl dark:bg-gray-800">
           <Image src="/images/logo/total-events.webp" width={180} height={160} alt="state" />
         </div>
       </div>
@@ -39,7 +39,7 @@ export const States = () => {
           </h4>
         </div>
       </div>
-      <div className="flex items-center justify-center w-[11.25rem] h-[10rem] bg-gray-100 rounded-xl dark:bg-gray-800">
+      <div className="flex items-center justify-center w-[11.25rem] h-[10rem] rounded-xl dark:bg-gray-800">
         <Image src="/images/logo/total-users.webp" width={180} height={160} alt="state" />
       </div>
     </div>
@@ -58,7 +58,7 @@ export const States = () => {
           </h4>
         </div>
       </div>
-      <div className="flex items-center justify-center w-[11.25rem] h-[10rem] bg-gray-100 rounded-xl dark:bg-gray-800">
+      <div className="flex items-center justify-center w-[11.25rem] h-[10rem] rounded-xl dark:bg-gray-800">
         <Image src="/images/logo/daily-events.webp" width={180} height={160} alt="state" />
       </div>
     </div>
