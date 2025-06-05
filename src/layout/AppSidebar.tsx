@@ -70,11 +70,11 @@ const othersItems: NavItem[] = [
     name: "Categories Management",
     path: "/categories-management",
   },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendars Management",
-    path: "/calendars-management",
-  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendars Management",
+  //   path: "/calendars-management",
+  // },
   {
     icon: <TicketIcon />,
     name: "Events Management",
@@ -295,7 +295,7 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`pt-6 pb-8 flex  ${
+        className={`pt-6 pb-8 hidden dark:flex  ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
@@ -319,6 +319,7 @@ const AppSidebar: React.FC = () => {
             </>
           ) : (
             <Image
+             
               src="/images/logo/logo-icon.svg"
               alt="Logo"
               width={32}
@@ -327,7 +328,7 @@ const AppSidebar: React.FC = () => {
           )}
         </Link>
       </div>
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar pt-4">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
             <div>

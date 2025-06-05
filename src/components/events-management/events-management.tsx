@@ -17,18 +17,22 @@ import {
   PlusIcon,
   TrashBinIcon,
   UploadIcon,
+  UploadWhiteIcon,
 } from "@/icons";
 import GenericSearchField from "../atoms/generic-search-field/generic-search-field";
 import { GenericModal } from "../atoms/generic-modal";
-import { EditCategoryModal } from "./edit-category-modal";
-import { AddEventModal } from "./add-event-modal";
-import CSVUploadButton from "../atoms/csv-upload-button/csv-upload-button";
-import SearchFilterDropdown from "./search-filter-dropdown";
+import { EditCategoryModal } from "./edit-event-modal";
+// import CSVUploadButton from "../atoms/csv-upload-button/csv-upload-button";
+// import SearchFilterDropdown from "./search-filter-dropdown";
+import Link from "next/link";
+import { GenericCheckbox } from "../atoms";
+import { UploadCSVModal } from "./upload-csv-modal";
 
 const EventsManagement: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [addEventModal, setAddEventModal] = useState(false);
+  const [uploadCSVModal, setUploadCSVModal] = useState(false);
   const [editCategoryModal, setEditCategoryModal] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   const { data: inventory, isLoading } = useGetAllInventoryQuery({
     page: 1,
@@ -53,11 +57,8 @@ const EventsManagement: React.FC = () => {
     totalClicks: string;
   }
 
-  const handleOpenAddEventModal = () => {
-    setAddEventModal(true);
-  };
-  const handleCloseAddEventModal = () => {
-    setAddEventModal(false);
+  const toggleUploadCSVModal = () => {
+    setUploadCSVModal((prevVal) => !prevVal);
   };
 
   const handleOpenEditCategoryModal = () => {
@@ -95,35 +96,42 @@ const EventsManagement: React.FC = () => {
     document.body.removeChild(link);
   };
 
+  const handleCheckboxChange = (checked: boolean) => {
+    setIsChecked(checked);
+    console.log("Checkbox is now:", checked);
+  };
+
   return (
     <div className="flex flex-col gap-[2.5rem] items-start w-full">
-      <div className="flex justify-start flex-wrap gap-4 items-center w-full">
-        <SearchFilterDropdown />
+      <div className="flex justify-between flex-wrap gap-4 items-center w-full">
         <GenericSearchField
           value={query}
           onChange={setQuery}
           placeholder="Search"
         />
-        <CSVUploadButton />
-        <GenericButton
-          icon={<DownloadIcon2 />}
-          btnText="Download CSV"
-          bgColor="white"
-          borderColor="#1024452E"
-          color="#102445"
-          height="2.5rem"
-          width="9.813rem"
-          handleClick={handleDownloadCSV}
-        />
-        <GenericButton
-          icon={<PlusIcon />}
-          btnText="Add New"
-          bgColor="#1862D4"
-          color="#fff"
-          height="2.5rem"
-          width="8.063rem"
-          handleClick={handleOpenAddEventModal}
-        />
+        <div className="flex flex-wrap sm:flex-nowarp gap-4 justify-start md:justify-end">
+          {/* <CSVUploadButton /> */}
+          <GenericButton
+            icon={<UploadWhiteIcon />}
+            btnText="Upload CSV"
+            bgColor="#1862D4"
+            color="#fff"
+            borderColor="#1862D4"
+            height="2.5rem"
+            width="8.688rem"
+            handleClick={toggleUploadCSVModal}
+          />
+          <GenericButton
+            icon={<DownloadIcon2 />}
+            btnText="Download Sample CSV"
+            bgColor="white"
+            borderColor="#1024452E"
+            color="#102445"
+            height="2.5rem"
+            width="13.688rem"
+            handleClick={handleDownloadCSV}
+          />
+        </div>
       </div>
       <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full">
         <div className="max-w-full overflow-x-auto">
@@ -135,7 +143,7 @@ const EventsManagement: React.FC = () => {
                   <TableCell
                     key={col.id}
                     isHeader
-                    className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white ${col.className} last:text-right first:pl-6 last:pr-6`}
+                    className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white ${col.className} [&:nth-child(7)]-text-center last:text-right first:pl-6 last:pr-6`}
                   >
                     {col.header}
                   </TableCell>
@@ -162,23 +170,26 @@ const EventsManagement: React.FC = () => {
                         {item?.eventName}
                       </TableCell>
                       <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-8rem]">
+                        {item?.date}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-15rem]">
+                        {item?.startTime} - {item?.endTime}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-8rem]">
                         {item?.type}
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-8rem]">
-                        {item?.calendar}
-                      </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-8rem]">
-                        {item?.category}
-                      </TableCell>
+
                       <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                        {item?.date}{" "}
-                        <span className="text-[#201D1D80]">
-                          {" "}
-                          {item?.startTime} - {item?.endTime}
-                        </span>
+                        {item?.address}
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
-                        {item?.location}
+                      <TableCell className="px-3 py-[1.25rem] text-[#067CC1] text-base dark:text-white/90 min-w-[8rem]">
+                        <Link href={item?.link}>View</Link>
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[9.5rem] flex justify-center">
+                        <GenericCheckbox
+                          checked={isChecked}
+                          onChange={handleCheckboxChange}
+                        />
                       </TableCell>
                       <TableCell className=" pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-right min-w-[12rem]">
                         <div className="flex justify-end gap-2">
@@ -198,12 +209,12 @@ const EventsManagement: React.FC = () => {
         </div>
       </div>
       <GenericModal
-        isOpen={addEventModal}
+        isOpen={uploadCSVModal}
         // isOpen={true}
-        onClose={handleCloseAddEventModal}
+        onClose={toggleUploadCSVModal}
         maxWidth="47.563rem"
       >
-        <AddEventModal onClose={handleCloseAddEventModal} />
+        <UploadCSVModal onClose={toggleUploadCSVModal} />
       </GenericModal>
       <GenericModal
         isOpen={editCategoryModal}

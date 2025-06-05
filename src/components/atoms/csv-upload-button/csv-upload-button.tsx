@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import GenericButton from "../generic-button/generic-button";
-import { UploadIcon } from "@/icons";
+import { UploadIcon, UploadWhiteIcon } from "@/icons";
 
 const CSVUploadButton = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -35,16 +35,15 @@ const CSVUploadButton = () => {
         className="hidden"
       />
       <GenericButton
-        icon={<UploadIcon />}
+        icon={<UploadWhiteIcon />}
         btnText="Upload CSV"
-        bgColor="white"
-        borderColor="#1024452E"
-        color="#102445"
+        bgColor="#1862D4"
+        color="#fff"
+        borderColor="#1862D4"
         height="2.5rem"
         width="8.688rem"
         handleClick={handleButtonClick}
       />
-     
     </div>
   );
 };

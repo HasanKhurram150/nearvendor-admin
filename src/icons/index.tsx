@@ -78,6 +78,10 @@ import UploadIcon from "./upload.svg";
 import DownloadIcon2 from "./import.svg";
 import GlobalIcon from "./global.svg";
 import FiltersIcon from "./filters.svg";
+import CaretIcon from "./caret.svg";
+import UploadWhiteIcon from "./upload-white.svg";
+import ActiveCheckBoxIcon from "./active-checkbox.svg";
+import InactiveCheckBoxIcon from "./inactive-checkbox.svg";
 
 export {
   DownloadIcon,
@@ -160,4 +164,8 @@ export {
   DownloadIcon2,
   GlobalIcon,
   FiltersIcon,
+  CaretIcon,
+  UploadWhiteIcon,
+  ActiveCheckBoxIcon,
+  InactiveCheckBoxIcon,
 };

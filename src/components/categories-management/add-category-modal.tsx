@@ -4,8 +4,17 @@ import React, { useState } from "react";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import GenericButton from "../atoms/generic-button/generic-button";
+import GenericSelectDropdown from "../atoms/generic-select-dropdown/generic-select-dropdown";
 
 export const AddCategoryModal = ({ onClose }: { onClose: () => void }) => {
+  const typeOptions = [
+    { label: "Tech", value: "tech" },
+    { label: "General", value: "general" },
+  ];
+
+  const handleTypeChange = (value: string) => {
+    console.log("Selected type:", value);
+  };
   return (
     <div className="flex flex-col gap-[2.5rem] items-start w-full">
       <div className="flex items-center justify-start gap-4">
@@ -26,38 +35,12 @@ export const AddCategoryModal = ({ onClose }: { onClose: () => void }) => {
               // error={errors.email?.message}
             />
           </div>
-
-          <div>
-            <Label>Source ID</Label>
-            <Input
-              id="sourceID"
-              type="sourceID"
-              placeholder="Enter source ID"
-              // registration={register("email")}
-              // error={errors.email?.message}
-            />
-          </div>
-          <div>
-            <Label>Event Count</Label>
-            <Input
-              id="eventCount"
-              type="eventCount"
-              placeholder="0"
-              // registration={register("email")}
-              // error={errors.email?.message}
-            />
-          </div>
-
-          <div>
-            <Label>Order</Label>
-            <Input
-              id="order"
-              type="order"
-              placeholder="0"
-              // registration={register("email")}
-              // error={errors.email?.message}
-            />
-          </div>
+          <GenericSelectDropdown
+            label="Type"
+            options={typeOptions}
+            defaultValue="tech"
+            onChange={handleTypeChange}
+          />
 
           <div className="flex items-center gap-4 justify-end">
             <GenericButton

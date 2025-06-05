@@ -113,18 +113,10 @@ const CategoriesManagement: React.FC = () => {
                       <TableCell className=" pl-6 pr-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
                         {item?.categoryName}
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                        {item?.sourceId}
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8rem]">
+                        {item?.type}
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
-                        <div className="bg-[#1862D417] text-base text-[#1862D4] h-[1.5rem] w-[6.563rem] rounded-xl text-center">
-                          {item?.eventCount} events
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                        {item?.orderBy}
-                      </TableCell>
-                      <TableCell className=" pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-right min-w-[12rem]">
+                      <TableCell className=" pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-right min-w-[10rem]">
                         <div className="flex justify-end gap-2">
                           <GenericButton
                             icon={<EditIcon />}
