@@ -5,7 +5,7 @@ import Image from "next/image";
 export const States = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-      {/* <!-- Metric Item Start --> */}
+      {/* <!-- State Item Start --> */}
       <div className="flex justify-between items-center rounded-2xl bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
       
 
@@ -23,9 +23,9 @@ export const States = () => {
           <Image src="/images/logo/total-events.webp" width={180} height={160} alt="state" />
         </div>
       </div>
-      {/* <!-- Metric Item End --> */}
+      {/* <!-- State Item End --> */}
 
-      {/* <!-- Metric Item Start --> */}
+      {/* <!-- State Item Start --> */}
       <div className="flex justify-between items-center rounded-2xl bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
       
 
@@ -43,8 +43,8 @@ export const States = () => {
         <Image src="/images/logo/total-users.webp" width={180} height={160} alt="state" />
       </div>
     </div>
-      {/* <!-- Metric Item End --> */}
-       {/* <!-- Metric Item Start --> */}
+      {/* <!-- State Item End --> */}
+       {/* <!-- State Item Start --> */}
        <div className="flex justify-between items-center rounded-2xl bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
       
 
@@ -62,7 +62,7 @@ export const States = () => {
         <Image src="/images/logo/daily-events.webp" width={180} height={160} alt="state" />
       </div>
     </div>
-      {/* <!-- Metric Item End --> */}
+      {/* <!-- State Item End --> */}
     </div>
   );
 };
