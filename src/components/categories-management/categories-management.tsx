@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -7,8 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { categoryColumns, categoryData } from "./columns";
-import { useGetAllInventoryQuery } from "@/services";
+import { categoryColumns } from "./columns";
 import Loading from "../atoms/loading/loading";
 import GenericButton from "../atoms/generic-button/generic-button";
 import { EditIcon, PlusIcon, TrashBinIcon } from "@/icons";
@@ -16,56 +15,165 @@ import GenericSearchField from "../atoms/generic-search-field/generic-search-fie
 import { GenericModal } from "../atoms/generic-modal";
 import { AddCategoryModal } from "./add-category-modal";
 import { EditCategoryModal } from "./edit-category-modal";
+import {
+  useDeleteCategoryMutation,
+  useGetCategoriesQuery,
+} from "@/services/categories-api";
+import type { ICategory } from "@/services/categories-api/categories-api.types";
+import toast from "react-hot-toast";
+import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 
 const CategoriesManagement: React.FC = () => {
-  const [query, setQuery] = useState("");
-  const [addCategoryModal, setAddCategoryModal] = useState(false);
-  const [editCategoryModal, setEditCategoryModal] = useState(false);
+  // State management
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
+    null,
+  );
+  const [deletingCategoryId, setDeletingCategoryId] = useState<string | null>(
+    null,
+  );
 
-  const { data: inventory, isLoading } = useGetAllInventoryQuery({
-    page: 1,
-    limit: 10,
-  });
+  // API hooks
+  const { data: categories, isLoading, isError } = useGetCategoriesQuery();
+  const [deleteCategory, { isLoading: isDeleting }] =
+    useDeleteCategoryMutation();
 
-  console.log("inventory", inventory);
+  // Memoized filtered categories
+  const filteredCategories = useMemo(() => {
+    if (!categories) return [];
+    return categories.filter((category) =>
+      category.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [categories, searchQuery]);
 
-  // Define the TypeScript interface for the table rows
-  interface Inventory {
-    id: number;
-    inventoryName: string;
-    inventoryCode: string;
-    status: string;
-    placement: string;
-    advertiser: string;
-    campaignName: string;
-    targetGroup: string;
-    adid: string;
-    creative: string;
-    exposure: string;
-    totalClicks: string;
-  }
+  // Event handlers
+  const handleOpenAddModal = useCallback(() => setIsAddModalOpen(true), []);
+  const handleCloseAddModal = useCallback(() => setIsAddModalOpen(false), []);
 
-  const handleOpenAddCategoryModal = () => {
-    setAddCategoryModal(true);
-  };
-  const handleCloseAddCategoryModal = () => {
-    setAddCategoryModal(false);
-  };
+  const handleOpenEditModal = useCallback((category: ICategory) => {
+    setSelectedCategory(category);
+    setIsEditModalOpen(true);
+  }, []);
 
-  const handleOpenEditCategoryModal = () => {
-    setEditCategoryModal(true);
-  };
-  const handleCloseEditCategoryModal = () => {
-    setEditCategoryModal(false);
+  const handleCloseEditModal = useCallback(() => {
+    setIsEditModalOpen(false);
+    setSelectedCategory(null);
+  }, []);
+
+  const handleDeleteCategory = useCallback(
+    async (id: string) => {
+      if (!id) return;
+
+      setDeletingCategoryId(id);
+      try {
+        await deleteCategory(id).unwrap();
+        toast.success("Category deleted successfully!");
+      } catch (error) {
+        const apiError = error as ApiErrorResponse;
+        toast.error(
+          apiError.data?.message ||
+            "Failed to delete category. Please try again.",
+        );
+      } finally {
+        setDeletingCategoryId(null);
+      }
+    },
+    [deleteCategory],
+  );
+
+  // Render helpers
+  const renderTableContent = () => {
+    if (isLoading) {
+      return (
+        <TableRow>
+          <TableCell
+            colSpan={categoryColumns.length}
+            className="text-center py-8"
+          >
+            <div className="flex justify-center">
+              <Loading size="lg" />
+            </div>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (isError) {
+      return (
+        <TableRow>
+          <TableCell
+            colSpan={categoryColumns.length}
+            className="text-center py-8"
+          >
+            <span className="text-red-500 dark:text-red-400 text-lg">
+              Failed to load categories. Please try again.
+            </span>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (filteredCategories.length === 0) {
+      return (
+        <TableRow>
+          <TableCell
+            colSpan={categoryColumns.length}
+            className="text-center py-8"
+          >
+            <span className="text-gray-500 dark:text-gray-400 text-lg">
+              {searchQuery
+                ? "No matching categories found"
+                : "No categories available"}
+            </span>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return filteredCategories.map((category) => (
+      <TableRow key={category.id}>
+        <TableCell className="pl-6 pr-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+          {category.name}
+        </TableCell>
+        <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[8rem]">
+          {category.type}
+        </TableCell>
+        <TableCell className="pl-3 pr-6 py-5 text-right min-w-[10rem]">
+          <div className="flex justify-end gap-2">
+            <GenericButton
+              icon={<EditIcon />}
+              aria-label={`Edit ${category.name}`}
+              handleClick={() => handleOpenEditModal(category)}
+            />
+            <GenericButton
+              icon={
+                deletingCategoryId === category.id ? (
+                  <Loading size="sm" />
+                ) : (
+                  <TrashBinIcon />
+                )
+              }
+              aria-label={`Delete ${category.name}`}
+              handleClick={() => handleDeleteCategory(category.id)}
+              disabled={deletingCategoryId === category.id && isDeleting}
+            />
+          </div>
+        </TableCell>
+      </TableRow>
+    ));
   };
 
   return (
-    <div className="flex flex-col gap-[2.5rem] items-start w-full">
-      <div className="flex justify-start flex-wrap gap-4 items-center w-full">
+    <div className="flex flex-col gap-10 items-start w-full">
+      {/* Search and Add Button Section */}
+      <div className="flex flex-wrap gap-4 items-center w-full">
         <GenericSearchField
-          value={query}
-          onChange={setQuery}
+          value={searchQuery}
+          onChange={setSearchQuery}
           placeholder="Search by name"
+          aria-label="Search categories"
         />
         <GenericButton
           icon={<PlusIcon />}
@@ -74,14 +182,16 @@ const CategoriesManagement: React.FC = () => {
           color="#fff"
           height="2.5rem"
           width="7.188rem"
-          handleClick={handleOpenAddCategoryModal}
+          handleClick={handleOpenAddModal}
+          aria-label="Add new category"
         />
       </div>
+
+      {/* Categories Table */}
       <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full">
         <div className="max-w-full overflow-x-auto">
-          <Table>
-            {/* Table Header */}
-            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+          <Table aria-label="Categories management table">
+            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-4">
               <TableRow>
                 {categoryColumns.map((col) => (
                   <TableCell
@@ -95,58 +205,36 @@ const CategoriesManagement: React.FC = () => {
               </TableRow>
             </TableHeader>
 
-            {/* Table Body */}
-
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {isLoading ? (
-                <TableRow>
-                  <TableCell className="text-center py-8">
-                    <div className="flex justify-center">
-                      <Loading size="lg" />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                <>
-                  {categoryData.map((item, index) => (
-                    <TableRow key={index} className="first: last:">
-                      <TableCell className=" pl-6 pr-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                        {item?.categoryName}
-                      </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8rem]">
-                        {item?.type}
-                      </TableCell>
-                      <TableCell className=" pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-right min-w-[10rem]">
-                        <div className="flex justify-end gap-2">
-                          <GenericButton
-                            icon={<EditIcon />}
-                            handleClick={handleOpenEditCategoryModal}
-                          />
-                          <GenericButton icon={<TrashBinIcon />} />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </>
-              )}
+              {renderTableContent()}
             </TableBody>
           </Table>
         </div>
       </div>
+
+      {/* Modals */}
       <GenericModal
-        isOpen={addCategoryModal}
-        onClose={handleCloseAddCategoryModal}
+        isOpen={isAddModalOpen}
+        onClose={handleCloseAddModal}
+        aria-label="Add category modal"
       >
-        <AddCategoryModal onClose={handleCloseAddCategoryModal} />
+        <AddCategoryModal onClose={handleCloseAddModal} />
       </GenericModal>
+
       <GenericModal
-        isOpen={editCategoryModal}
-        onClose={handleCloseEditCategoryModal}
+        isOpen={isEditModalOpen}
+        onClose={handleCloseEditModal}
+        aria-label="Edit category modal"
       >
-        <EditCategoryModal onClose={handleCloseEditCategoryModal} />
+        {selectedCategory && (
+          <EditCategoryModal
+            onClose={handleCloseEditModal}
+            category={selectedCategory}
+          />
+        )}
       </GenericModal>
     </div>
   );
 };
 
-export default CategoriesManagement;
+export default React.memo(CategoriesManagement);

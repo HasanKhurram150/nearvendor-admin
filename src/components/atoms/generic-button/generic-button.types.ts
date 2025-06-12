@@ -7,5 +7,8 @@ export interface GenericButtonProps {
   borderRadius?: string;
   height?: string;
   width?: string;
+  type?: any;
+  disabled?: boolean;
+  disabledBgColor?: string;
   handleClick?: () => void;
 }

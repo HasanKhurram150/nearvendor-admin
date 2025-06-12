@@ -14,5 +14,9 @@ export const ENDPOINTS = {
   addCampaign: "/campaign", //POST
   addAdvertiser: "/advertiser", //POST
   addInventory: "/inventory", //POST
+  getCategories: "/categories", //GET
+  createCategory: '/categories', //POST
+  updateCategory: '/categories', //PATCH
+  deleteCategory: '/categories', //DELETE
 };
 //----------------------------------------------------------------
