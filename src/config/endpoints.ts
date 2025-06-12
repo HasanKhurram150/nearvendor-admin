@@ -13,5 +13,6 @@ export const ENDPOINTS = {
   getAllInventory: "/inventory/all", //GET
   addCampaign: "/campaign", //POST
   addAdvertiser: "/advertiser", //POST
+  addInventory: "/inventory", //POST
 };
 //----------------------------------------------------------------

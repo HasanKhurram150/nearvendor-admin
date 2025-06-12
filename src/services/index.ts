@@ -4,3 +4,4 @@ export * from "./advertiser-api";
 export * from "./campaign-api";
 export * from "./placement-api";
 export * from "./inventory-api";
+export * from "./common-api";

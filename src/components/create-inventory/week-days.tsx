@@ -1,43 +1,69 @@
-import React, { useState } from "react";
+import React from "react";
 
-type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
+type Day = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
 
 const days: Day[] = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
+  'SUNDAY',
 ];
 
-export const WeekdayCheckboxes: React.FC = () => {
-  const [selectedDays, setSelectedDays] = useState<Day[]>([]);
+interface WeekdayCheckboxesProps {
+  value?: Day[];
+  onChange: (selectedDays: Day[]) => void;
+  disabled?: boolean;
+}
 
+export const WeekdayCheckboxes: React.FC<WeekdayCheckboxesProps> = ({
+  value = [],
+  onChange,
+  disabled = false,
+}) => {
   const toggleDay = (day: Day) => {
-    setSelectedDays(prev =>
-      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
-    );
+    const newSelectedDays = value.includes(day)
+      ? value.filter(d => d !== day)
+      : [...value, day];
+    onChange(newSelectedDays);
+  };
+
+  const dayLabels: Record<Day, string> = {
+    MONDAY: 'M',
+    TUESDAY: 'T',
+    WEDNESDAY: 'W',
+    THURSDAY: 'Th',
+    FRIDAY: 'F',
+    SATURDAY: 'Sa',
+    SUNDAY: 'Su'
   };
 
   return (
-    <div className="flex gap-2 mt-2">
+    <div className="flex gap-2 mt-2 flex-wrap">
       {days.map((day) => {
-        const isSelected = selectedDays.includes(day);
+        const isSelected = value.includes(day);
         return (
           <button
             key={day}
+            type="button"
             onClick={() => toggleDay(day)}
-            className={`w-[2rem] h-[2rem] rounded-lg flex items-center justify-center border border-[#DADADA] font-semibold
+            disabled={disabled}
+            className={`
+              w-[2.5rem] h-[2.5rem] rounded-lg flex items-center justify-center border
+              font-medium text-sm
               transition duration-200 ease-in-out
-              ${isSelected
-                ? 'btn-bg text-white'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}
+              ${
+                isSelected
+                  ? 'btn-bg text-white border-transparent'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }
+              ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}
-            title={day}
+            title={day.charAt(0) + day.slice(1).toLowerCase()}
           >
-            {day[0]}
+            {dayLabels[day]}
           </button>
         );
       })}

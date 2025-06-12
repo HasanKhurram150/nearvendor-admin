@@ -151,3 +151,26 @@ export interface IInventoryResponse {
   meta: IInventoryMeta;
   data: IInventory[];
 }
+
+export interface IAddInventory {
+  placementId: string;
+  campaignId: string;
+  inventorySelection: string;
+  inventoryName: string;
+  inventoryDesc: string;
+  startDate: string;
+  endDate: string;
+  impressionDay: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
+  budgetTotal: number;
+  materialName: string;
+  materialDetails: string;
+  materialType: string;
+  materialSize: string;
+  landingType: string;
+  landingUrl: string;
+  trackingUsage: string;
+  trackingUrl: string;
+  creativeFile: File | null;
+}
