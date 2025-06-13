@@ -1,7 +1,8 @@
 import { ENDPOINTS } from "@/config";
 import { baseAPI } from "../base-api";
-import { TAGS } from "../tags";
+// import { TAGS } from "../tags";
 import {
+  IEvent,
   IGetEventsParams,
   IUploadEventCSV,
 } from "./events-management-api.types";
@@ -9,7 +10,7 @@ import {
 export const eventsManagementAPI = baseAPI.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getEvents: builder.query<Event[], IGetEventsParams>({
+    getEvents: builder.query<IEvent[], IGetEventsParams>({
       query: (params) => ({
         url: ENDPOINTS.getEvents,
         method: "GET",
@@ -26,7 +27,7 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
         },
       }),
       transformResponse: (response: any) => {
-        return response?.data as Event[];
+        return response?.data as IEvent[];
       },
       // providesTags: [TAGS.EVENTS],
     }),

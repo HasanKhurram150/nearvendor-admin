@@ -15,7 +15,6 @@ interface Users {
   phoneNumber: string; // User number
   totalEvents: string; // Totals Events
   image: string;
-
 }
 
 // Define the table data using the interface
@@ -67,7 +66,7 @@ export default function Users() {
     <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
         <Table>
-          {/* Table Header */}
+          {/* Always show Table Header */}
           <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
             <TableRow>
               <TableCell
@@ -97,40 +96,50 @@ export default function Users() {
             </TableRow>
           </TableHeader>
 
-          {/* Table Body */}
-
+          {/* Conditional Table Body */}
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {tableData.map((user) => (
-              <TableRow key={user.id} className="">
-                <TableCell className="px-3 py-5 min-w-[12rem]">
-                  <div className="flex items-center gap-3">
-                    <div className="h-[27px] w-[27px] overflow-hidden rounded-md">
-                      <Image
-                        width={27}
-                        height={27}
-                        src={user.image}
-                        className="h-[27px] w-[27px]"
-                        alt={user.name}
-                      />
+            {tableData.length === 0 ? (
+              tableData.map((user) => (
+                <TableRow key={user.id} className="">
+                  <TableCell className="px-3 py-5 min-w-[12rem]">
+                    <div className="flex items-center gap-3">
+                      <div className="h-[27px] w-[27px] overflow-hidden rounded-md">
+                        <Image
+                          width={27}
+                          height={27}
+                          src={user.image}
+                          className="h-[27px] w-[27px]"
+                          alt={user.name}
+                        />
+                      </div>
+                      <div>
+                        <p className="font-medium text-[#201D1D] text-base dark:text-white/90">
+                          {user.name}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-[#201D1D] text-base dark:text-white/90">
-                        {user.name}
-                      </p>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90  min-w-[15rem]">
-                  {user.email}
-                </TableCell>
-                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
-                  {user.phoneNumber}
-                </TableCell>
-                <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
-                {user.totalEvents}
+                  </TableCell>
+                  <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90  min-w-[15rem]">
+                    {user.email}
+                  </TableCell>
+                  <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
+                    {user.phoneNumber}
+                  </TableCell>
+                  <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
+                    {user.totalEvents}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  className="text-center py-10 text-gray-500 dark:text-gray-400"
+                >
+                  No users found
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

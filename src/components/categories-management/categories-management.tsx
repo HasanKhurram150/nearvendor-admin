@@ -36,7 +36,7 @@ const CategoriesManagement: React.FC = () => {
   );
 
   // API hooks
-  const { data: categories, isLoading, isError } = useGetCategoriesQuery();
+  const { data: categories, isLoading } = useGetCategoriesQuery();
   const [deleteCategory, { isLoading: isDeleting }] =
     useDeleteCategoryMutation();
 
@@ -95,21 +95,6 @@ const CategoriesManagement: React.FC = () => {
             <div className="flex justify-center">
               <Loading size="lg" />
             </div>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (isError) {
-      return (
-        <TableRow>
-          <TableCell
-            colSpan={categoryColumns.length}
-            className="text-center py-8"
-          >
-            <span className="text-red-500 dark:text-red-400 text-lg">
-              Failed to load categories. Please try again.
-            </span>
           </TableCell>
         </TableRow>
       );

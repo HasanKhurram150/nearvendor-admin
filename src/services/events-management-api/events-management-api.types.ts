@@ -1,4 +1,4 @@
-export type Event = {
+export type IEvent = {
   createdAt: string;
   updatedAt: string;
   id: string;
@@ -16,7 +16,7 @@ export type Event = {
   participationCount: number;
   hostCount: number;
   isFeatured: boolean;
-  location: Location;
+  location: ILocation;
   timeZone: ITimeZone;
   calendar: ICalendar;
   category: any;

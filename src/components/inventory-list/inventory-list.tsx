@@ -19,101 +19,11 @@ const InventoryList: React.FC = () => {
 
   console.log("inventory", inventory);
 
-  // Define the TypeScript interface for the table rows
-  interface Inventory {
-    id: number;
-    inventoryName: string;
-    inventoryCode: string;
-    status: string;
-    placement: string;
-    advertiser: string;
-    campaignName: string;
-    targetGroup: string;
-    adid: string;
-    creative: string;
-    exposure: string;
-    totalClicks: string;
-  }
-
-  // Define the table data using the interface
-  const tableData: Inventory[] = [
-    {
-      id: 1,
-      inventoryName: "홈중단배너",
-      inventoryCode: "H1",
-      status: "Active",
-      placement: "Placement",
-      advertiser: "CityBuzz Media",
-      campaignName: "CityBuzz Media",
-      targetGroup: "4343",
-      adid: "3434",
-      creative: "3243",
-      exposure: "3123",
-      totalClicks: "231",
-    },
-    {
-      id: 2,
-      inventoryName: "홈중단배너",
-      inventoryCode: "H1",
-      status: "Active",
-      placement: "Placement",
-      advertiser: "CityBuzz Media",
-      campaignName: "CityBuzz Media",
-      targetGroup: "4343",
-      adid: "3434",
-      creative: "3243",
-      exposure: "3123",
-      totalClicks: "231",
-    },
-    {
-      id: 3,
-      inventoryName: "홈중단배너",
-      inventoryCode: "H1",
-      status: "Active",
-      placement: "Placement",
-      advertiser: "CityBuzz Media",
-      campaignName: "CityBuzz Media",
-      targetGroup: "4343",
-      adid: "3434",
-      creative: "3243",
-      exposure: "3123",
-      totalClicks: "231",
-    },
-    {
-      id: 4,
-      inventoryName: "홈중단배너",
-      inventoryCode: "H1",
-      status: "Active",
-      placement: "Placement",
-      advertiser: "CityBuzz Media",
-      campaignName: "CityBuzz Media",
-      targetGroup: "4343",
-      adid: "3434",
-      creative: "3243",
-      exposure: "3123",
-      totalClicks: "231",
-    },
-    {
-      id: 5,
-      inventoryName: "홈중단배너",
-      inventoryCode: "H1",
-      status: "Active",
-      placement: "Placement",
-      advertiser: "CityBuzz Media",
-      campaignName: "CityBuzz Media",
-      targetGroup: "4343",
-      adid: "3434",
-      creative: "3243",
-      exposure: "3123",
-      totalClicks: "231",
-    },
-  ];
-
   return (
     <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
       <div className="max-w-full overflow-x-auto">
         <Table>
-          {/* Table Header */}
+          {/* Table Header - Always visible */}
           <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
             <TableRow>
               {inventoryColumns.map((col) => (
@@ -129,47 +39,50 @@ const InventoryList: React.FC = () => {
           </TableHeader>
 
           {/* Table Body */}
-
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {isLoading ? (
               <TableRow>
-                <TableCell className="text-center py-8">
+                <TableCell colSpan={inventoryColumns.length} className="text-center py-8">
                   <div className="flex justify-center">
                     <Loading size="lg" />
                   </div>
                 </TableCell>
               </TableRow>
+            ) : inventory?.data?.length ? (
+              inventory.data.map((item) => (
+                <TableRow key={item?.id} className="">
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                    {item?.inventoryName}
+                  </TableCell>
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                    {item?.uniqueId}
+                  </TableCell>
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
+                    {item?.status}
+                  </TableCell>
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                    {item?.placement?.placementName}
+                  </TableCell>
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                    {item?.campaign?.advertiser?.nickName}
+                  </TableCell>
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                    {item?.campaign?.name}
+                  </TableCell>
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                    {item?.exposureCounter}
+                  </TableCell>
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                    {item?.totalClicks}
+                  </TableCell>
+                </TableRow>
+              ))
             ) : (
-              <>
-                {inventory?.data.map((item) => (
-                  <TableRow key={item?.id} className="">
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                      {item?.inventoryName}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                      {item?.uniqueId}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
-                      {item?.status}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                      {item?.placement?.placementName}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                      {item?.campaign?.advertiser?.nickName}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                      {item?.campaign?.name}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                      {item?.exposureCounter}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                      {item?.totalClicks}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </>
+              <TableRow>
+                <TableCell colSpan={inventoryColumns.length} className="text-center py-10 text-gray-500 dark:text-gray-400">
+                  No inventory items found
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>
