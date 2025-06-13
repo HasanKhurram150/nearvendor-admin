@@ -44,7 +44,6 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
-COPY --from=builder /app/next-i18next.config.js ./
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/public ./public

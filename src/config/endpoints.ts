@@ -15,8 +15,10 @@ export const ENDPOINTS = {
   addAdvertiser: "/advertiser", //POST
   addInventory: "/inventory", //POST
   getCategories: "/categories", //GET
-  createCategory: '/categories', //POST
-  updateCategory: '/categories', //PATCH
-  deleteCategory: '/categories', //DELETE
+  createCategory: "/categories", //POST
+  updateCategory: "/categories", //PATCH
+  deleteCategory: "/categories", //DELETE
+  getEvents: "/events", //GET
+  uploadEventCSV: "/events/upload/csv", //POST
 };
 //----------------------------------------------------------------
