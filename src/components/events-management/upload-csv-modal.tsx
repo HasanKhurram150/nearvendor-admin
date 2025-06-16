@@ -51,7 +51,8 @@ const validationSchema = Yup.object().shape({
 
 export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
   const [uploadEventCSV, { isLoading }] = useProcessEventCSVMutation();
-  const { data: categories } = useGetCategoriesQuery();
+  const { data: categories, isLoading: isCategoryLoading } =
+    useGetCategoriesQuery();
 
   const technologyCategories =
     categories
@@ -77,6 +78,8 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
       file: null,
     },
     mode: "onChange",
+    // shouldFocusError: false, // Add this
+    // shouldUnregister: true, // Add this
   });
 
   const handleFileChange = (selectedFile: File) => {
@@ -118,85 +121,90 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-        <div className="space-y-6 py-2 w-full max-h-[40rem] overflow-y-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="eventName">Event Name</Label>
-              <Input
-                id="eventName"
-                placeholder="Enter event name"
-                registration={register("eventName")}
-                // error={errors.eventName?.message}
-                error={getError(errors?.eventName)}
-              />
+      {isCategoryLoading ? (
+        <div className="w-full flex justify-center items-center h-[300px]">
+          <Loading size="lg" />
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+          <div className="space-y-6 py-2 w-full max-h-[40rem] overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="eventName">Event Name</Label>
+                <Input
+                  id="eventName"
+                  placeholder="Enter event name"
+                  registration={register("eventName")}
+                  // error={errors.eventName?.message}
+                  error={getError(errors?.eventName)}
+                />
+              </div>
+              <div>
+                <Controller
+                  name="categoryId"
+                  control={control}
+                  render={({ field }) => (
+                    <GenericSelectDropdown
+                      label="Category"
+                      options={technologyCategories}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        setValue("categoryId", value, { shouldValidate: true });
+                      }}
+                    />
+                  )}
+                />
+                {errors.categoryId && (
+                  <p className="mt-1 text-sm text-error-500">
+                    {getError(errors.categoryId)}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div>
+              <Label>Side Events CSV File</Label>
               <Controller
-                name="categoryId"
+                name="file"
                 control={control}
                 render={({ field }) => (
-                  <GenericSelectDropdown
-                    label="Category"
-                    options={technologyCategories}
-                    onChange={(value) => {
-                      field.onChange(value);
-                      setValue("categoryId", value, { shouldValidate: true });
-                    }}
-                  />
+                  <CSVFileUpload onFileChange={handleFileChange} />
                 )}
               />
-              {errors.categoryId && (
+              {errors.file && (
                 <p className="mt-1 text-sm text-error-500">
-                  {getError(errors.categoryId)}
+                  {/* {errors.file.message} */}
+                  {getError(errors.file)}
                 </p>
               )}
             </div>
           </div>
 
-          <div>
-            <Label>Side Events CSV File</Label>
-            <Controller
-              name="file"
-              control={control}
-              render={({ field }) => (
-                <CSVFileUpload onFileChange={handleFileChange} />
-              )}
+          <div className="flex items-center gap-4 justify-end mt-6 w-full">
+            <GenericButton
+              btnText="Cancel"
+              bgColor="transparent"
+              borderRadius="5rem"
+              color="#000"
+              height="2.5rem"
+              width="5.813rem"
+              handleClick={onClose}
+              type="button"
             />
-            {errors.file && (
-              <p className="mt-1 text-sm text-error-500">
-                {/* {errors.file.message} */}
-                {getError(errors.file)}
-              </p>
-            )}
+            <GenericButton
+              btnText={isLoading ? "" : "Save"}
+              icon={isLoading && <Loading size="sm" />}
+              bgColor="#1862D4"
+              borderRadius="5rem"
+              color="#fff"
+              height="2.5rem"
+              width="6.75rem"
+              type="submit"
+              disabled={isLoading}
+            />
           </div>
-        </div>
-
-        <div className="flex items-center gap-4 justify-end mt-6 w-full">
-          <GenericButton
-            btnText="Cancel"
-            bgColor="transparent"
-            borderRadius="5rem"
-            color="#000"
-            height="2.5rem"
-            width="5.813rem"
-            handleClick={onClose}
-            type="button"
-          />
-          <GenericButton
-            btnText={isLoading ? "" : "Save"}
-            icon={isLoading && <Loading size="sm" />}
-            bgColor="#1862D4"
-            borderRadius="5rem"
-            color="#fff"
-            height="2.5rem"
-            width="6.75rem"
-            type="submit"
-            disabled={isLoading}
-          />
-        </div>
-      </form>
+        </form>
+      )}
     </div>
   );
 };
