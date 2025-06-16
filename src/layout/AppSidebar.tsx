@@ -33,6 +33,16 @@ const navItems: NavItem[] = [
     // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
+    icon: <CategoriesIcon />,
+    name: "Categories Management",
+    path: "/categories-management",
+  },
+  {
+    icon: <TicketIcon />,
+    name: "Events Management",
+    path: "/events-management",
+  },
+  {
     icon: <PeopleIcon />,
     name: "KOL Approval",
     path: "/kol-approval",
@@ -41,16 +51,6 @@ const navItems: NavItem[] = [
     icon: <EventsIcon />,
     name: "Events",
     path: "/events",
-  },
-  {
-    icon: <ListIcon />,
-    name: "Advertiser Management",
-    path: "/advertiser-management",
-  },
-  {
-    icon: <ListIcon />,
-    name: "Campaign Management",
-    path: "/campaign-management",
   },
 ];
 
@@ -65,20 +65,20 @@ const othersItems: NavItem[] = [
     name: "Inventory List",
     path: "/inventory-list",
   },
-  {
-    icon: <CategoriesIcon />,
-    name: "Categories Management",
-    path: "/categories-management",
-  },
   // {
   //   icon: <CalenderIcon />,
   //   name: "Calendars Management",
   //   path: "/calendars-management",
   // },
   {
-    icon: <TicketIcon />,
-    name: "Events Management",
-    path: "/events-management",
+    icon: <ListIcon />,
+    name: "Advertiser Management",
+    path: "/advertiser-management",
+  },
+  {
+    icon: <ListIcon />,
+    name: "Campaign Management",
+    path: "/campaign-management",
   },
 ];
 
@@ -319,7 +319,6 @@ const AppSidebar: React.FC = () => {
             </>
           ) : (
             <Image
-             
               src="/images/logo/logo-icon.svg"
               alt="Logo"
               width={32}

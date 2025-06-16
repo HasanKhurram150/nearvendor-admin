@@ -6,3 +6,5 @@ export * from "./placement-api";
 export * from "./inventory-api";
 export * from "./common-api";
 export * from "./categories-api";
+export * from "./events-management-api";
+export * from "./kols-api";

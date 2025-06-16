@@ -20,5 +20,8 @@ export const ENDPOINTS = {
   deleteCategory: "/categories", //DELETE
   getEvents: "/events", //GET
   uploadEventCSV: "/events/upload/csv", //POST
+  processEventCSV: '/events/process/csv', //PATCH
+  getKolRequests: '/kol/requests', //GET
+  approveKolRequest: '/kol/approve', //PATCH
 };
 //----------------------------------------------------------------

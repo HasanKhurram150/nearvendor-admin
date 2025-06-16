@@ -18,7 +18,8 @@ import GenericSelectDropdown from "../atoms/generic-select-dropdown/generic-sele
 import { CSVFileUpload } from "../atoms/csv-file-upload";
 import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import Loading from "../atoms/loading/loading";
-import { useUploadEventCSVMutation } from "@/services/events-management-api";
+import { useProcessEventCSVMutation } from "@/services/events-management-api";
+import { useGetCategoriesQuery } from "@/services/categories-api";
 
 // Type-safe error message extractor
 const getError = (
@@ -29,7 +30,7 @@ const getError = (
 
 interface UploadCSVFormValues {
   eventName: string;
-  category: string;
+  categoryId: string;
   file: File | null;
 }
 
@@ -37,7 +38,7 @@ const validationSchema = Yup.object().shape({
   eventName: Yup.string()
     .required("Event name is required")
     .max(100, "Event name must be at most 100 characters"),
-  category: Yup.string().required("Category is required"),
+  categoryId: Yup.string().required("Category is required"),
   file: Yup.mixed<File>()
     .required("CSV file is required")
     .test("fileType", "Only CSV files are allowed", (value) => {
@@ -48,26 +49,31 @@ const validationSchema = Yup.object().shape({
     }),
 });
 
-const typeOptions = [
-  { label: "Tech", value: "technology" },
-  { label: "General", value: "general" },
-];
-
 export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
-  const [uploadEventCSV, { isLoading }] = useUploadEventCSVMutation();
+  const [uploadEventCSV, { isLoading }] = useProcessEventCSVMutation();
+  const { data: categories } = useGetCategoriesQuery();
+
+  const technologyCategories =
+    categories
+      ?.filter((category) => category?.type === "technology")
+      ?.map((category) => ({
+        label: category?.name,
+        value: category?.id,
+      })) || [];
+
+  const defaultCategoryId = technologyCategories[0]?.value || "";
 
   const {
     control,
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<any>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       eventName: "",
-      category: "",
+      categoryId: defaultCategoryId,
       file: null,
     },
     mode: "onChange",
@@ -83,7 +89,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
       formData.append("file", data.file as File);
       // Add other fields if needed
       formData.append("eventName", data?.eventName);
-      formData.append("category", data?.category);
+      formData.append("categoryId", data?.categoryId);
 
       const response = await uploadEventCSV(formData).unwrap();
       toast.success("CSV file uploaded successfully!");
@@ -127,32 +133,30 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
             </div>
 
             <div>
-              {/* <Label htmlFor="category">Category</Label> */}
               <Controller
-                name="category"
+                name="categoryId"
                 control={control}
                 render={({ field }) => (
                   <GenericSelectDropdown
                     label="Category"
-                    options={typeOptions}
+                    options={technologyCategories}
                     onChange={(value) => {
                       field.onChange(value);
-                      setValue("category", value, { shouldValidate: true });
+                      setValue("categoryId", value, { shouldValidate: true });
                     }}
                   />
                 )}
               />
-              {errors.category && (
+              {errors.categoryId && (
                 <p className="mt-1 text-sm text-error-500">
-                  {/* {errors.category.message} */}
-                  {getError(errors.category)}
+                  {getError(errors.categoryId)}
                 </p>
               )}
             </div>
           </div>
 
           <div>
-            <Label>CSV File</Label>
+            <Label>Side Events CSV File</Label>
             <Controller
               name="file"
               control={control}

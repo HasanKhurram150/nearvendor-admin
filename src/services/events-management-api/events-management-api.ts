@@ -39,8 +39,19 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
       }),
       // invalidatesTags: [TAGS.EVENTS],
     }),
+    processEventCSV: builder.mutation<any, FormData>({
+      query: (formData) => ({
+        url: ENDPOINTS.processEventCSV,
+        method: "POST",
+        body: formData,
+      }),
+      // invalidatesTags: [TAGS.EVENTS],
+    }),
   }),
 });
 
-export const { useGetEventsQuery, useUploadEventCSVMutation } =
-  eventsManagementAPI;
+export const {
+  useGetEventsQuery,
+  useUploadEventCSVMutation,
+  useProcessEventCSVMutation,
+} = eventsManagementAPI;
