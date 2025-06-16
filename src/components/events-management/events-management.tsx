@@ -84,20 +84,20 @@ const EventsManagement: React.FC = () => {
     return [headers.join(","), ...rows].join("\r\n");
   }, []);
 
-  const handleDownloadCSV = useCallback(() => {
-    if (!events) return;
+  // const handleDownloadCSV = useCallback(() => {
+  //   if (!events) return;
 
-    const csv = convertToCSV(events);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
+  //   const csv = convertToCSV(events);
+  //   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  //   const url = URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "events.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }, [events, convertToCSV]);
+  //   const link = document.createElement("a");
+  //   link.href = url;
+  //   link.setAttribute("download", "events.csv");
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // }, [events, convertToCSV]);
 
   // Render helpers
   const renderTableContent = () => {
@@ -175,7 +175,7 @@ const EventsManagement: React.FC = () => {
             handleClick={handleOpenUploadModal}
             aria-label="Upload events CSV"
           />
-          <GenericButton
+          {/* <GenericButton
             icon={<DownloadIcon2 />}
             btnText="Download Sample CSV"
             bgColor="white"
@@ -185,7 +185,7 @@ const EventsManagement: React.FC = () => {
             width="13.688rem"
             handleClick={handleDownloadCSV}
             aria-label="Download events CSV sample"
-          />
+          /> */}
         </div>
       </div>
 

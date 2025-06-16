@@ -230,8 +230,6 @@
 
 // export default KOLApproval;
 
-
-
 "use client";
 import React, { useState } from "react";
 import {
@@ -253,7 +251,9 @@ import Button from "../ui/button/Button";
 import toast from "react-hot-toast";
 
 const KOLApproval: React.FC = () => {
-  const [selectedBadges, setSelectedBadges] = useState<Record<string, IKolBadge>>({});
+  const [selectedBadges, setSelectedBadges] = useState<
+    Record<string, IKolBadge>
+  >({});
 
   const { data: kolRequests, isLoading, refetch } = useGetKolRequestsQuery();
   const [updateKolStatus] = useUpdateKolRequestStatusMutation();
@@ -357,7 +357,9 @@ const KOLApproval: React.FC = () => {
                         <Image
                           width={27}
                           height={27}
-                          src={kol?.user?.image || "/images/user/userProfile.png"}
+                          src={
+                            kol?.user?.image || "/images/user/userProfile.png"
+                          }
                           className="h-[27px] w-[27px]"
                           alt={kol?.user?.name}
                         />
@@ -394,7 +396,9 @@ const KOLApproval: React.FC = () => {
                       kol?.badge
                     ) : (
                       <CustomDropdown
-                        onSelect={(badge: IKolBadge) => handleBadgeSelect(kol.id, badge)}
+                        onSelect={(badge: IKolBadge) =>
+                          handleBadgeSelect(kol.id, badge)
+                        }
                         disabled={kol.status !== "pending"}
                       />
                     )}
@@ -416,6 +420,7 @@ const KOLApproval: React.FC = () => {
                           variant="destructive"
                           onClick={() => handleUpdateStatus(kol.id, "rejected")}
                           className="h-6 text-xs"
+                          disabled={!selectedBadges[kol.id]}
                         >
                           Reject
                         </Button>
