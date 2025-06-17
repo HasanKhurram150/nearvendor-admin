@@ -438,7 +438,7 @@ const KOLApproval: React.FC = () => {
                       {kol?.aboutYou}
                     </TableCell>
                     <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                      {!kol?.badge ? (
+                      {kol?.badge ? (
                         <div className="flex gap-2 items-center justify-start capitalize">
                           {IconMapper[kol.badge]} {kol.badge}
                         </div>
@@ -447,10 +447,9 @@ const KOLApproval: React.FC = () => {
                           onSelect={(badge: IKolBadge) =>
                             handleBadgeSelect(kol.id, badge)
                           }
-                          // disabled={kol.status !== "pending"}
+                          disabled={kol.status !== "pending"}
                         />
                       )}
-               
                     </TableCell>
                     <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-center min-w-[3.75rem] flex items-center justify-center h-[6rem]">
                       {kol?.status === "pending" ? (
