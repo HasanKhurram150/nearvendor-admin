@@ -249,6 +249,7 @@ import {
 import { IKolBadge, IKolStatus } from "@/services/kols-api/kols-api.types";
 import Button from "../ui/button/Button";
 import toast from "react-hot-toast";
+import Loading from "../atoms/loading/loading";
 
 const KOLApproval: React.FC = () => {
   const [selectedBadges, setSelectedBadges] = useState<
@@ -336,7 +337,7 @@ const KOLApproval: React.FC = () => {
                   colSpan={6}
                   className="text-center py-10 text-gray-500 dark:text-gray-400"
                 >
-                  Loading...
+                  <Loading size="lg" />
                 </TableCell>
               </TableRow>
             ) : kolRequests?.length === 0 ? (

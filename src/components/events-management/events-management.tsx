@@ -40,11 +40,13 @@ const EventsManagement: React.FC = () => {
     pageSize: 10,
   });
 
+  console.log({events})
+
   // Memoized filtered events
   const filteredEvents = useMemo(() => {
     if (!events) return [];
-    return events.filter((event) =>
-      event.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    return events?.filter((event) =>
+      event?.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [events, searchQuery]);
 
