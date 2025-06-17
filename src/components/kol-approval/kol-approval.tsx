@@ -270,6 +270,8 @@ const KOLApproval: React.FC = () => {
     Record<string, IKolBadge>
   >({});
 
+  const [filterStatus, setFilterStatus] = useState<"all" | "approved" | "rejected">("all");
+
   const { data: kolRequests, isLoading, refetch } = useGetKolRequestsQuery();
 
   const [updateKolStatus] = useUpdateKolRequestStatusMutation();
@@ -299,6 +301,11 @@ const KOLApproval: React.FC = () => {
       console.error("Error updating KOL status:", error);
     }
   };
+
+  const filteredKolRequests =
+  filterStatus === "all"
+    ? kolRequests
+    : kolRequests?.filter((kol) => kol.status === filterStatus);
 
   return (
     <div className="rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
@@ -338,9 +345,20 @@ const KOLApproval: React.FC = () => {
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-center text-base dark:text-white  min-w-[3.75rem]"
+                className="flex items-center justify-center py-3 px-3 font-medium text-[#201D1D99] text-center text-base dark:text-white  min-w-[3.75rem]"
               >
                 Status
+                <div className="flex justify-end pl-4 py-0">
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value as any)}
+                    className="border border-gray-300  rounded-xl pl-1 pr-3 py-1 text-sm text-[#201D1D99] bg-white"
+                  >
+                    <option value="all">All</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
               </TableCell>
             </TableRow>
           </TableHeader>
@@ -365,7 +383,7 @@ const KOLApproval: React.FC = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              kolRequests?.map((kol) => (
+              filteredKolRequests?.map((kol) => (
                 <TableRow key={kol?.id} className="">
                   <TableCell className="px-3 py-[1.25rem] min-w-[10rem]">
                     <div className="flex items-center gap-3">

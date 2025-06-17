@@ -2,6 +2,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
 @font-face {
   font-family: AzoSansTest Light;
   src: url("/fonts/AzoSansTest-Light.otf");
@@ -23,12 +25,12 @@
 }
 
 body {
-  font-family: AzoSansTest Regular !important;
+  font-family: "DM Sans", sans-serif !important;
 }
 
 @theme {
   --font-*: initial;
-  --font-outfit: AzoSansTest Regular !important;
+  --font-outfit: "DM Sans", sans-serif !important;
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
