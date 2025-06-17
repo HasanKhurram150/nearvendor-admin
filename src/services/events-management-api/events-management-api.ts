@@ -27,7 +27,7 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
         },
       }),
       transformResponse: (response: any) => {
-        return response?.data as IEvent[];
+        return response?.data?.data as IEvent[];
       },
       // providesTags: [TAGS.EVENTS],
     }),
