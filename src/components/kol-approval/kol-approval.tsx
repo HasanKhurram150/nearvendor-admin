@@ -240,7 +240,15 @@ import {
   TableRow,
 } from "../ui/table";
 import Image from "next/image";
-import { InstagramIcon, TelegramIcon, TwitterIcon, YoutubeIcon } from "@/icons";
+import {
+  BlueIcon,
+  GoldenIcon,
+  InstagramIcon,
+  SilverIcon,
+  TelegramIcon,
+  TwitterIcon,
+  YoutubeIcon,
+} from "@/icons";
 import CustomDropdown from "./custom-select";
 import {
   useGetKolRequestsQuery,
@@ -250,12 +258,19 @@ import { IKolBadge, IKolStatus } from "@/services/kols-api/kols-api.types";
 import Button from "../ui/button/Button";
 import toast from "react-hot-toast";
 
+export const IconMapper: { [key: string]: any } = {
+  golden: <GoldenIcon />,
+  blue: <BlueIcon />,
+  silver: <SilverIcon />,
+};
+
 const KOLApproval: React.FC = () => {
   const [selectedBadges, setSelectedBadges] = useState<
     Record<string, IKolBadge>
   >({});
 
   const { data: kolRequests, isLoading, refetch } = useGetKolRequestsQuery();
+
   const [updateKolStatus] = useUpdateKolRequestStatusMutation();
 
   const handleBadgeSelect = (kolId: string, badge: IKolBadge) => {
@@ -316,7 +331,7 @@ const KOLApproval: React.FC = () => {
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-end text-base dark:text-white min-w-[12rem]"
+                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
               >
                 Badges
               </TableCell>
@@ -362,6 +377,7 @@ const KOLApproval: React.FC = () => {
                           }
                           className="h-[27px] w-[27px]"
                           alt={kol?.user?.name}
+                          style={{ borderRadius: "50%" }}
                         />
                       </div>
                       <div>
@@ -373,15 +389,19 @@ const KOLApproval: React.FC = () => {
                   </TableCell>
                   <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
                     <div className="flex gap-4 items-center justify-center">
-                      {kol?.instagram && (
-                        <a href="#">
+                      {kol?.instagram ? (
+                        <a href={kol?.instagram} target="_blank">
                           <InstagramIcon />
                         </a>
+                      ) : (
+                        "N/A"
                       )}
-                      {kol?.x && (
-                        <a href="#">
+                      {kol?.x ? (
+                        <a href={kol?.x} target="_blank">
                           <TwitterIcon />
                         </a>
+                      ) : (
+                        "N/A"
                       )}
                     </div>
                   </TableCell>
@@ -393,7 +413,9 @@ const KOLApproval: React.FC = () => {
                   </TableCell>
                   <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
                     {kol?.badge ? (
-                      kol?.badge
+                      <div className="flex gap-2 items-center justify-start capitalize">
+                        {IconMapper[kol.badge]} {kol.badge}
+                      </div>
                     ) : (
                       <CustomDropdown
                         onSelect={(badge: IKolBadge) =>
@@ -403,9 +425,9 @@ const KOLApproval: React.FC = () => {
                       />
                     )}
                   </TableCell>
-                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-center min-w-[3.75rem]">
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-center min-w-[3.75rem] flex items-center justify-center h-[6rem]">
                     {kol?.status === "pending" ? (
-                      <div className="flex gap-2 justify-center">
+                      <div className="flex gap-2 items-center justify-center">
                         <Button
                           size="sm"
                           variant="success"
@@ -426,7 +448,14 @@ const KOLApproval: React.FC = () => {
                         </Button>
                       </div>
                     ) : (
-                      <span className="capitalize">
+                      <span
+                        className="capitalize flex items-center justify-center text-xs h-[1.5rem] w-[5rem] rounded-md"
+                        style={{
+                          background:
+                            kol?.status === "approved" ? "#7BD481" : "#FF3737",
+                          color: kol?.status === "approved" ? "#fff" : "#fff",
+                        }}
+                      >
                         {kol?.status.toLowerCase()}
                       </span>
                     )}
