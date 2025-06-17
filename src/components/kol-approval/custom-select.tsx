@@ -94,8 +94,6 @@
 //   );
 // }
 
-
-
 "use client";
 import {
   BlueIcon,
@@ -136,7 +134,10 @@ interface CustomDropdownProps {
   disabled?: boolean;
 }
 
-export default function CustomDropdown({ onSelect, disabled = false }: CustomDropdownProps) {
+export default function CustomDropdown({
+  onSelect,
+  disabled = false,
+}: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<Option | null>(null);
 
