@@ -4,8 +4,10 @@ import { baseAPI } from "../base-api";
 import {
   IEvent,
   IGetEventsParams,
+  IUpdateEvent,
   IUploadEventCSV,
 } from "./events-management-api.types";
+import { TAGS } from "../tags";
 
 export const eventsManagementAPI = baseAPI.injectEndpoints({
   overrideExisting: true,
@@ -29,7 +31,25 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
       transformResponse: (response: any) => {
         return response?.data?.data as IEvent[];
       },
+      providesTags: ["Events"],
+    }),
+    getEventById: builder.query<IEvent, string>({
+      query: (id) => ({
+        url: `${ENDPOINTS.getEvents}/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response: any) => {
+        return response?.data as IEvent;
+      },
       // providesTags: [TAGS.EVENTS],
+    }),
+    updateEvent: builder.mutation<any, IUpdateEvent>({
+      query: ({ id, body }) => ({
+        url: `${ENDPOINTS.getEvents}/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Events"],
     }),
     uploadEventCSV: builder.mutation<IUploadEventCSV, FormData>({
       query: (formData) => ({
@@ -54,4 +74,5 @@ export const {
   useGetEventsQuery,
   useUploadEventCSVMutation,
   useProcessEventCSVMutation,
+  useUpdateEventMutation,
 } = eventsManagementAPI;
