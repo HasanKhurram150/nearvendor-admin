@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,8 +8,11 @@ import {
   TableRow,
 } from "../ui/table";
 import Image from "next/image";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const Events: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 5;
   // Define the TypeScript interface for the table rows
   interface Events {
     id: number; // Unique identifier for each user
@@ -228,6 +231,11 @@ const Events: React.FC = () => {
           </TableBody>
         </Table>
       </div>
+      <GenericPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 };

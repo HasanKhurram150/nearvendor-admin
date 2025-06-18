@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,12 +12,16 @@ import Loading from "../atoms/loading/loading";
 import { formatStartEndDate } from "@/utils/formatStartEndDate";
 import { campaignColumns } from "./columns";
 import PageBreadcrumb from "../common/PageBreadCrumb";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CampaignManagement: React.FC = () => {
   const { data: campaigns, isLoading } = useGetCampaignsQuery({
     page: 1,
     limit: 10,
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 5;
 
   console.log("campaigns", campaigns);
 
@@ -31,7 +35,7 @@ const CampaignManagement: React.FC = () => {
         btnCampaign={true}
       />
 
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
           <Table>
             {/* Table Header - Always visible */}
@@ -104,6 +108,11 @@ const CampaignManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
+        <GenericPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </>
   );

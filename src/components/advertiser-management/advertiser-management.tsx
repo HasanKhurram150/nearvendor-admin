@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,9 +11,13 @@ import { useGetAllAdvertiserQuery } from "@/services";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { advertiserColumns } from "./columns";
 import Loading from "../atoms/loading/loading";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const AdvertiserManagement: React.FC = () => {
   const { data: advertisers, isLoading } = useGetAllAdvertiserQuery();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 5;
 
   console.log("advertiser", advertisers);
 
@@ -26,7 +30,7 @@ const AdvertiserManagement: React.FC = () => {
         counterValue={advertisers?.length}
         btnAdvertiser={true}
       />
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
           <Table>
             {/* Table Header - Always visible */}
@@ -48,7 +52,10 @@ const AdvertiserManagement: React.FC = () => {
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={advertiserColumns.length} className="text-center py-8">
+                  <TableCell
+                    colSpan={advertiserColumns.length}
+                    className="text-center py-8"
+                  >
                     <div className="flex justify-center">
                       <Loading size="lg" />
                     </div>
@@ -82,7 +89,10 @@ const AdvertiserManagement: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={advertiserColumns.length} className="text-center py-10 text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    colSpan={advertiserColumns.length}
+                    className="text-center py-10 text-gray-500 dark:text-gray-400"
+                  >
                     No advertisers found
                   </TableCell>
                 </TableRow>
@@ -90,6 +100,11 @@ const AdvertiserManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
+        <GenericPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </>
   );

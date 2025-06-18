@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,9 +11,13 @@ import { useGetAllPlacementsQuery } from "@/services/placement-api";
 import Loading from "../atoms/loading/loading";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { placementColumns } from "./columns";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const PlacementList: React.FC = () => {
   const { data: placements, isLoading } = useGetAllPlacementsQuery();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 5;
 
   console.log("placements", placements);
 
@@ -25,7 +29,7 @@ const PlacementList: React.FC = () => {
         counterText="Total Placement"
         counterValue={placements?.length}
       />
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
           <Table>
             {/* Table Header - Always visible */}
@@ -47,7 +51,10 @@ const PlacementList: React.FC = () => {
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={placementColumns.length} className="text-center py-8">
+                  <TableCell
+                    colSpan={placementColumns.length}
+                    className="text-center py-8"
+                  >
                     <div className="flex justify-center">
                       <Loading size="lg" />
                     </div>
@@ -78,7 +85,10 @@ const PlacementList: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={placementColumns.length} className="text-center py-10 text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    colSpan={placementColumns.length}
+                    className="text-center py-10 text-gray-500 dark:text-gray-400"
+                  >
                     No placements found
                   </TableCell>
                 </TableRow>
@@ -86,6 +96,11 @@ const PlacementList: React.FC = () => {
             </TableBody>
           </Table>
         </div>
+        <GenericPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </>
   );
