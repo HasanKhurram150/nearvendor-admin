@@ -22,12 +22,16 @@ import {
 import GenericSearchField from "../atoms/generic-search-field/generic-search-field";
 import { GenericModal } from "../atoms/generic-modal";
 import { UploadCSVModal } from "./upload-csv-modal";
-import { useGetEventsQuery } from "@/services/events-management-api";
+import {
+  useGetEventsQuery,
+  useUpdateEventMutation,
+} from "@/services/events-management-api";
 import dayjs from "dayjs";
 import type { IEvent } from "@/services/events-management-api/events-management-api.types";
 import FeaturedToggle from "./featured-toggle";
 import { EditEventModal } from "./edit-event-modal";
 import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+import toast from "react-hot-toast";
 // import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 // import toast from "react-hot-toast";
 
@@ -38,9 +42,6 @@ const EventsManagement: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 5;
 
-  const handleToggle = (isFeatured: boolean) => {
-    console.log("Is Featured:", isFeatured);
-  };
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   // const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
   // const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
@@ -51,7 +52,21 @@ const EventsManagement: React.FC = () => {
     pageSize: 10,
   });
 
-  console.log({ events });
+  const [mutate] = useUpdateEventMutation();
+
+  const handleToggle = async (id: string, isFeatured: boolean) => {
+    try {
+      await mutate({
+        id: id,
+        body: {
+          isFeatured: !isFeatured,
+        },
+      });
+      
+    } catch (err) {
+      toast.error("Something went wrong!");
+    }
+  };
 
   // Memoized filtered events
   const filteredEvents = useMemo(() => {
@@ -181,7 +196,12 @@ const EventsManagement: React.FC = () => {
           </a>
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
-          <FeaturedToggle defaultValue={false} onToggle={handleToggle} />
+          <FeaturedToggle
+            isFeatured={event.isFeatured}
+            onToggle={() => {
+              handleToggle(event.id, event.isFeatured);
+            }}
+          />
         </TableCell>
         <TableCell className="pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           <div className="flex justify-end gap-2">

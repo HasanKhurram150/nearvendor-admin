@@ -84,3 +84,8 @@ export interface IFile {
   size: number;
   mimetype: string;
 }
+
+export interface IUpdateEvent {
+  id: string;
+  body: Partial<IEvent>;
+}
