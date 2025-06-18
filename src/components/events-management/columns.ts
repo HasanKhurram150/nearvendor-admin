@@ -1,14 +1,14 @@
 export const calendarColumns = [
-  { id: "1", header: "Name", className: "w-1/5" },
-  // { id: "2", header: "Phone Number", className: "w-1/5" },
-  // { id: "3", header: "Telegram", className: "w-1/5" },
-  { id: "2", header: "Date", className: "w-1/6" },
-  { id: "3", header: "Time", className: "w-1/4" },
-  { id: "4", header: "Type", className: "w-1/6" },
-  { id: "5", header: "Address", className: "w-1/5" },
-  // { id: "8", header: "Link", className: "min-w-[8rem]" },
-  // { id: "9", header: "Mark as Featured", className: "min-w-[9.5rem]" },
-  // { id: "8", header: "Actions", className: "min-w-[12rem]" },
+  { id: "1", header: "Name", className: "min-w-[10rem]" },
+  { id: "2", header: "Phone Number", className: "min-w-[10rem]" },
+  { id: "3", header: "Telegram", className: "min-w-[10rem]" },
+  { id: "4", header: "Date", className: "min-w-[10rem]" },
+  { id: "5", header: "Time", className: "min-w-[10rem]" },
+  { id: "6", header: "Type", className: "min-w-[10rem]" },
+  { id: "7", header: "Address", className: "min-w-[10rem]" },
+  { id: "8", header: "Link", className: "min-w-[8rem]" },
+  { id: "9", header: "Mark as Featured", className: "min-w-[9.5rem]" },
+  { id: "10", header: "Actions", className: "min-w-[12rem]" },
 ];
 
 export const calendarData = [

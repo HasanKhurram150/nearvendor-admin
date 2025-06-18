@@ -82,6 +82,8 @@ import CaretIcon from "./caret.svg";
 import UploadWhiteIcon from "./upload-white.svg";
 import ActiveCheckBoxIcon from "./active-checkbox.svg";
 import InactiveCheckBoxIcon from "./inactive-checkbox.svg";
+import StarIcon from "./star.svg";
+import ActiveStarIcon from "./active-star.svg";
 
 export {
   DownloadIcon,
@@ -168,4 +170,6 @@ export {
   UploadWhiteIcon,
   ActiveCheckBoxIcon,
   InactiveCheckBoxIcon,
+  StarIcon,
+  ActiveStarIcon,
 };

@@ -6,7 +6,7 @@ import Input from "../form/input/InputField";
 import GenericButton from "../atoms/generic-button/generic-button";
 import GenericSelectDropdown from "../atoms/generic-select-dropdown/generic-select-dropdown";
 
-export const EditCategoryModal = ({ onClose }: { onClose: () => void }) => {
+export const EditEventModal = ({ onClose }: { onClose: () => void }) => {
   const getTodayDate = (): string => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -27,8 +27,8 @@ export const EditCategoryModal = ({ onClose }: { onClose: () => void }) => {
   const [time, setTime] = useState<string>(getCurrentTime());
 
   const typeOptions = [
-    { label: "Tech", value: "tech" },
-    { label: "General", value: "general" },
+    { label: "Free", value: "free" },
+    { label: "Paid", value: "paid" },
   ];
 
   const handleTypeChange = (value: string) => {
@@ -39,55 +39,73 @@ export const EditCategoryModal = ({ onClose }: { onClose: () => void }) => {
       <div className="flex items-center justify-start gap-4">
         <AddCategoryIcon />{" "}
         <p className="font-semibold text-[1.25rem] text-[#102445]">
-          Edit Event
+          Edit Side Event
         </p>
       </div>
       <form className="w-full">
         <div className="space-y-6 w-full">
           <div>
-            <Label>Name</Label>
+            <Label>Event Name</Label>
             <Input
-              id="categoryName"
-              type="categoryName"
-              placeholder="Enter category name"
+              id="eventName"
+              type="eventName"
+              placeholder="Enter event name"
               // registration={register("email")}
               // error={errors.email?.message}
             />
           </div>
+          <div>
+            <Label>Location</Label>
+            <Input id="location" type="location" placeholder="Enter location" />
+          </div>
+          <div className="flex items-center gap-6 w-full">
+            <div className="w-[50%]">
+              <Label>Phone Number</Label>
+              <Input id="phoneNumber" placeholder="Enter number" />
+            </div>
 
+            <div className="w-[50%]">
+              <Label>Telegram</Label>
+              <Input id="telegram" placeholder="Enter telegram ID" />
+            </div>
+          </div>
           <div className="flex items-center gap-6">
             {/* Date */}
-            <div className="flex gap-2 items-center justify-start w-[50%]">
+            <div className="flex flex-col gap-2 items-start justify-start w-[50%]">
               <Label className="mb-0 w-[3rem]">Date</Label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="rounded-lg border border-gray-200 px-4 py-2 text-blue-950 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 w-[75%]"
+                className="rounded-lg border border-gray-200 px-4 py-2 text-blue-950 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
               />
             </div>
 
             {/* Time */}
-            <div className="flex gap-2 items-center justify-start w-[50%]">
+            <div className="flex flex-col gap-2 items-start justify-start w-[50%]">
               <Label className="mb-0 w-[3rem]">Time</Label>
               <input
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="rounded-lg border border-gray-200 px-4 py-2 text-blue-950 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 w-[75%]"
+                className="rounded-lg border border-gray-200 px-4 py-2 text-blue-950 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
               />
             </div>
           </div>
-          <GenericSelectDropdown
-            label="Category"
-            options={typeOptions}
-            defaultValue="tech"
-            onChange={handleTypeChange}
-          />
+          <div className="flex items-center gap-6 w-full">
+            <div className="w-[50%]">
+              <GenericSelectDropdown
+                label="Type"
+                options={typeOptions}
+                defaultValue="free"
+                onChange={handleTypeChange}
+              />
+            </div>
 
-          <div>
-            <Label>Location</Label>
-            <Input id="location" type="location" placeholder="Enter location" />
+            <div className="w-[50%]">
+              <Label>Link</Label>
+              <Input id="link" placeholder="Enter link" />
+            </div>
           </div>
 
           <div className="flex items-center gap-4 justify-end">
