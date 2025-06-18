@@ -11,6 +11,9 @@ import { calendarColumns } from "./columns";
 import Loading from "../atoms/loading/loading";
 import GenericButton from "../atoms/generic-button/generic-button";
 import {
+  CheckCircleIcon,
+  CloseIcon,
+  CloseLineIcon,
   DownloadIcon2,
   EditIcon,
   TelegramIcon,
@@ -19,12 +22,14 @@ import {
   // TrashBinIcon,
   UploadWhiteIcon,
 } from "@/icons";
+
 import GenericSearchField from "../atoms/generic-search-field/generic-search-field";
 import { GenericModal } from "../atoms/generic-modal";
 import { UploadCSVModal } from "./upload-csv-modal";
 import {
   useGetEventsQuery,
   useUpdateEventMutation,
+  useEventActionMutation,
 } from "@/services/events-management-api";
 import dayjs from "dayjs";
 import type { IEvent } from "@/services/events-management-api/events-management-api.types";
@@ -43,16 +48,16 @@ const EventsManagement: React.FC = () => {
   const totalPages = 5;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  // const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
-  // const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
 
   // API hooks
   const { data: events, isLoading } = useGetEventsQuery({
-    page: 1,
+    page: currentPage,
     pageSize: 10,
   });
 
   const [mutate] = useUpdateEventMutation();
+
+  const [eventAction] = useEventActionMutation();
 
   const handleToggle = async (id: string, isFeatured: boolean) => {
     try {
@@ -62,7 +67,17 @@ const EventsManagement: React.FC = () => {
           isFeatured: !isFeatured,
         },
       });
-      
+    } catch (err) {
+      toast.error("Something went wrong!");
+    }
+  };
+
+  const handleEventAction = async (id: string, action: string) => {
+    try {
+      await eventAction({
+        id: id,
+        action,
+      });
     } catch (err) {
       toast.error("Something went wrong!");
     }
@@ -166,11 +181,11 @@ const EventsManagement: React.FC = () => {
           </p>
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap min-w-[10rem]">
-          +92 321 1234567
+          {event.phoneNumber}
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
-          {event.name ? (
-            <a href="#" target="_blank">
+          {event?.telegram?.length ? (
+            <a href={event.telegram} target="_blank">
               <TelegramIcon />
             </a>
           ) : (
@@ -203,8 +218,30 @@ const EventsManagement: React.FC = () => {
             }}
           />
         </TableCell>
+        <TableCell className="px-3 py-[1.25rem] text-capitalize text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+          {event.approvalStatus}
+        </TableCell>
         <TableCell className="pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           <div className="flex justify-end gap-2">
+            {event.approvalStatus === "pending" ? (
+              <>
+                {" "}
+                <GenericButton
+                  icon={<CloseLineIcon />}
+                  // aria-label={`Edit ${category.name}`}
+                  handleClick={() => {
+                    handleEventAction(event.id, "rejected");
+                  }}
+                />
+                <GenericButton
+                  icon={<CheckCircleIcon />}
+                  // aria-label={`Edit ${category.name}`}
+                  handleClick={() => {
+                    handleEventAction(event.id, "approved");
+                  }}
+                />
+              </>
+            ) : null}
             <GenericButton
               icon={<EditIcon />}
               // aria-label={`Edit ${category.name}`}

@@ -3,6 +3,7 @@ import { baseAPI } from "../base-api";
 // import { TAGS } from "../tags";
 import {
   IEvent,
+  IEventActionPayload,
   IGetEventsParams,
   IUpdateEvent,
   IUploadEventCSV,
@@ -51,6 +52,17 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["Events"],
     }),
+    eventAction: builder.mutation<any, IEventActionPayload>({
+      query: ({ id, action }) => ({
+        url: `${ENDPOINTS.getEvents}/action`,
+        method: "POST",
+        body: {
+          eventId: id,
+          action: action,
+        },
+      }),
+      invalidatesTags: ["Events"],
+    }),
     uploadEventCSV: builder.mutation<IUploadEventCSV, FormData>({
       query: (formData) => ({
         url: ENDPOINTS.uploadEventCSV,
@@ -75,4 +87,5 @@ export const {
   useUploadEventCSVMutation,
   useProcessEventCSVMutation,
   useUpdateEventMutation,
+  useEventActionMutation
 } = eventsManagementAPI;

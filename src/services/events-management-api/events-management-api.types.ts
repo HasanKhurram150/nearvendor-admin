@@ -22,6 +22,9 @@ export type IEvent = {
   category: any;
   currencies: any[];
   campaign: any;
+  telegram: string;
+  approvalStatus: string;
+  phoneNumber: string;
 };
 
 export interface ILocation {
@@ -88,4 +91,9 @@ export interface IFile {
 export interface IUpdateEvent {
   id: string;
   body: Partial<IEvent>;
+}
+
+export interface IEventActionPayload {
+  id: string;
+  action: string;
 }
