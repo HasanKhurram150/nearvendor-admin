@@ -6,3 +6,4 @@ export * from "./helper-function";
 export * from "./getDayOfWeek";
 export * from "./getDateMonth";
 export * from "./isToday";
+export * from "./format-number"

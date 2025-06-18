@@ -9,6 +9,7 @@ export const TAGS = {
   ADVERTISER: "Advertiser",
   CATEGORIES: "Categories",
   KOLS: "Kols",
+  DashboardStats: 'DashboardStats'
 };
 
 export const generateTags = (result: any, TAG: string) => {
