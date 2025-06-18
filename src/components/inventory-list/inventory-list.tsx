@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,6 +10,7 @@ import {
 import { inventoryColumns } from "./columns";
 import { useGetAllInventoryQuery } from "@/services";
 import Loading from "../atoms/loading/loading";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const InventoryList: React.FC = () => {
   const { data: inventory, isLoading } = useGetAllInventoryQuery({
@@ -17,10 +18,14 @@ const InventoryList: React.FC = () => {
     limit: 10,
   });
 
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = 5;
+
   console.log("inventory", inventory);
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
+    <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
       <div className="max-w-full overflow-x-auto">
         <Table>
           {/* Table Header - Always visible */}
@@ -87,6 +92,11 @@ const InventoryList: React.FC = () => {
           </TableBody>
         </Table>
       </div>
+        <GenericPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
     </div>
   );
 };

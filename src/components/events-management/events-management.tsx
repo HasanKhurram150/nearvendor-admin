@@ -160,12 +160,12 @@ const EventsManagement: React.FC = () => {
 
     return filteredEvents.map((event) => (
       <TableRow key={event.id}>
-        <TableCell className="pl-6 pr-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="pl-6 pr-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap min-w-[10rem]">
           <p className="max-w-[10rem] break-all whitespace-pre-wrap">
             {event.name}
           </p>
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap min-w-[10rem]">
           +92 321 1234567
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
@@ -253,7 +253,7 @@ const EventsManagement: React.FC = () => {
       </div>
 
       {/* Events Table */}
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full  pb-[1.5rem]">
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
         <div className="overflow-x-auto">
           <Table aria-label="Events management table" className="w-full">
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b">

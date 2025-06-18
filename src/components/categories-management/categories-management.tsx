@@ -22,9 +22,11 @@ import {
 import type { ICategory } from "@/services/categories-api/categories-api.types";
 import toast from "react-hot-toast";
 import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CategoriesManagement: React.FC = () => {
   // State management
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -34,6 +36,9 @@ const CategoriesManagement: React.FC = () => {
   const [deletingCategoryId, setDeletingCategoryId] = useState<string | null>(
     null,
   );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 5;
 
   // API hooks
   const { data: categories, isLoading } = useGetCategoriesQuery();
@@ -173,7 +178,7 @@ const CategoriesManagement: React.FC = () => {
       </div>
 
       {/* Categories Table */}
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full">
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
           <Table aria-label="Categories management table">
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-4">
@@ -195,6 +200,11 @@ const CategoriesManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
+        <GenericPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
 
       {/* Modals */}
