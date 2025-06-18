@@ -9,6 +9,8 @@ import {
 import Image from "next/image";
 import { pages } from "next/dist/build/templates/app-page";
 import { useGetDashboardUsersQuery } from "@/services/dashboard-api";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+import GenericSearchField from "../atoms/generic-search-field/generic-search-field";
 
 // Define the TypeScript interface for the table rows
 interface Users {
@@ -73,87 +75,104 @@ export default function Users() {
     pageSize: pageSize,
     search: search,
   });
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = 5;
   console.log(data);
   return (
-    <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03]">
-      <div className="max-w-full overflow-x-auto">
-        <Table>
-          {/* Always show Table Header */}
-          <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
-            <TableRow>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
-              >
-                Users
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[15rem]"
-              >
-                Email
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
-              >
-                Phone Number
-              </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
-              >
-                Total Events
-              </TableCell>
-            </TableRow>
-          </TableHeader>
-
-          {/* Conditional Table Body */}
-          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {data?.data?.length ? (
-              data.data.map((user) => (
-                <TableRow key={user.id} className="">
-                  <TableCell className="px-3 py-5 min-w-[12rem]">
-                    <div className="flex items-center gap-3">
-                      <div className="h-[27px] w-[27px] overflow-hidden rounded-md">
-                        <Image
-                          width={27}
-                          height={27}
-                          src={"/images/logo/user.png"}
-                          className="h-[27px] w-[27px]"
-                          alt={user.name}
-                        />
-                      </div>
-                      <div>
-                        <p className="font-medium text-[#201D1D] text-base dark:text-white/90">
-                          {user.name}
-                        </p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90  min-w-[15rem]">
-                    {user.email}
-                  </TableCell>
-                  <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
-                    {"-"}
-                  </TableCell>
-                  <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
-                    {user.totalEvents}
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex justify-between flex-wrap  items-center w-full">
+        <GenericSearchField
+          value={search}
+          onChange={setSearch}
+          placeholder="Search user"
+          aria-label="Search user"
+        />
+      </div>
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] pb-[1.5rem]">
+        <div className="max-w-full overflow-x-auto">
+          <Table>
+            {/* Always show Table Header */}
+            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
                 <TableCell
-                  colSpan={4}
-                  className="text-center py-10 text-gray-500 dark:text-gray-400"
+                  isHeader
+                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
                 >
-                  No users found
+                  Users
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[15rem]"
+                >
+                  Email
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
+                >
+                  Phone Number
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
+                >
+                  Total Events
                 </TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            {/* Conditional Table Body */}
+            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              {data?.data?.length ? (
+                data.data.map((user) => (
+                  <TableRow key={user.id} className="">
+                    <TableCell className="px-3 py-5 min-w-[12rem]">
+                      <div className="flex items-center gap-3">
+                        <div className="h-[27px] w-[27px] overflow-hidden rounded-md">
+                          <Image
+                            width={27}
+                            height={27}
+                            src={"/images/logo/user.png"}
+                            className="h-[27px] w-[27px]"
+                            alt={user.name}
+                          />
+                        </div>
+                        <div>
+                          <p className="font-medium text-[#201D1D] text-base dark:text-white/90">
+                            {user.name}
+                          </p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90  min-w-[15rem]">
+                      {user.email}
+                    </TableCell>
+                    <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
+                      {"-"}
+                    </TableCell>
+                    <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
+                      {user.totalEvents}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="text-center py-10 text-gray-500 dark:text-gray-400"
+                  >
+                    No users found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <GenericPagination
+          currentPage={page}
+          totalPages={pageSize}
+          onPageChange={(page) => setPageSize(page)}
+        />
       </div>
     </div>
   );
