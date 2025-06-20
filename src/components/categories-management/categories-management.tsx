@@ -128,7 +128,7 @@ const CategoriesManagement: React.FC = () => {
           {category.name}
         </TableCell>
         <TableCell className="px-3 py-5 text-[#201D1D] text-base dark:text-white/90 min-w-[8rem]">
-          {category.type}
+          {category?.type ? category.type : "N/A"}
         </TableCell>
         <TableCell className="pl-3 pr-6 py-5 text-right min-w-[10rem]">
           <div className="flex justify-end gap-2">

@@ -5,7 +5,7 @@ export const calendarColumns = [
   { id: "4", header: "Date", className: "min-w-[10rem]" },
   { id: "5", header: "Time", className: "min-w-[10rem]" },
   { id: "6", header: "Type", className: "min-w-[10rem]" },
-  { id: "7", header: "Address", className: "min-w-[10rem]" },
+  // { id: "7", header: "Address", className: "min-w-[10rem]" },
   { id: "8", header: "Link", className: "min-w-[8rem]" },
   { id: "9", header: "Mark as Featured", className: "min-w-[9.5rem]" },
   { id: "19", header: "Approval Status", className: "min-w-[9.5rem]" },

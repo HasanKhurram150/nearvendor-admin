@@ -181,7 +181,7 @@ const EventsManagement: React.FC = () => {
           </p>
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap min-w-[10rem]">
-          {event.phoneNumber}
+          {event?.phoneNumber ? event.phoneNumber : "N/A"}
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           {event?.telegram?.length ? (
@@ -202,24 +202,34 @@ const EventsManagement: React.FC = () => {
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           {event.type}
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        {/* <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           {event.location?.location}
-        </TableCell>
+        </TableCell> */}
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
-          <a href="#" target="_blank">
-            Link
+          <a href={event?.link} target="_blank">
+            {event?.link ? "Link" : "N/A"}
           </a>
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        {/* <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           <FeaturedToggle
             isFeatured={event.isFeatured}
             onToggle={() => {
               handleToggle(event.id, event.isFeatured);
             }}
           />
+        </TableCell> */}
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+          <div className="flex justify-center items-center">
+            <FeaturedToggle
+              isFeatured={event.isFeatured}
+              onToggle={() => {
+                handleToggle(event.id, event.isFeatured);
+              }}
+            />
+          </div>
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-capitalize text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
-          {event.approvalStatus}
+          {event?.approvalStatus ? event.approvalStatus : "N/A"}
         </TableCell>
         <TableCell className="pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           <div className="flex justify-end gap-2">
