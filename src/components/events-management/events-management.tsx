@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -35,25 +35,39 @@ import dayjs from "dayjs";
 import type { IEvent } from "@/services/events-management-api/events-management-api.types";
 import FeaturedToggle from "./featured-toggle";
 import { EditEventModal } from "./edit-event-modal";
-// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 import toast from "react-hot-toast";
+import { useDebounce } from "@/hooks/useDebounce";
 // import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 // import toast from "react-hot-toast";
+
+const DEFAULT_PAGE_SIZE = 10;
+const DEBOUNCE_DELAY = 400;
 
 const EventsManagement: React.FC = () => {
   // State management
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const totalPages = 5;
+  const debouncedSearchTerm = useDebounce(searchQuery, DEBOUNCE_DELAY);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // API hooks
-  const { data: events, isLoading } = useGetEventsQuery({
-    // page: currentPage,
-    pageSize: 20,
+  const { data, isLoading } = useGetEventsQuery({
+    page,
+    pageSize: DEFAULT_PAGE_SIZE,
+    name: debouncedSearchTerm,
   });
+
+  const events = data?.data; // Array of events
+  const meta = data?.meta; // Pagination meta data
+
+  const totalPages = meta?.totalPages || 1;
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchTerm]);
 
   const [mutate] = useUpdateEventMutation();
 
@@ -84,12 +98,12 @@ const EventsManagement: React.FC = () => {
   };
 
   // Memoized filtered events
-  const filteredEvents = useMemo(() => {
-    if (!events) return [];
-    return events?.filter((event) =>
-      event?.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [events, searchQuery]);
+  // const filteredEvents = useMemo(() => {
+  //   if (!events) return [];
+  //   return events?.filter((event) =>
+  //     event?.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  //   );
+  // }, [events, searchQuery]);
 
   // Event handlers
   const handleOpenUploadModal = useCallback(
@@ -158,7 +172,7 @@ const EventsManagement: React.FC = () => {
       );
     }
 
-    if (!filteredEvents || filteredEvents.length === 0) {
+    if (!events || events?.length === 0) {
       return (
         <TableRow>
           <TableCell
@@ -173,7 +187,7 @@ const EventsManagement: React.FC = () => {
       );
     }
 
-    return filteredEvents.map((event) => (
+    return events?.map((event) => (
       <TableRow key={event.id}>
         <TableCell className="pl-6 pr-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap min-w-[10rem]">
           <p className="max-w-[10rem] break-all whitespace-pre-wrap">
@@ -324,11 +338,13 @@ const EventsManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        {/* <GenericPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={(page) => setCurrentPage(page)}
-        /> */}
+        {!isLoading && totalPages > 1 && (
+          <GenericPagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        )}
       </div>
 
       {/* Modals */}

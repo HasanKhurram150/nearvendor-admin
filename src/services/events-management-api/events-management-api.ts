@@ -5,6 +5,7 @@ import {
   IEvent,
   IEventActionPayload,
   IGetEventsParams,
+  IMeta,
   IOurEvent,
   IUpdateEvent,
   IUploadEventCSV,
@@ -14,27 +15,32 @@ import { TAGS } from "../tags";
 export const eventsManagementAPI = baseAPI.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getEvents: builder.query<IEvent[], IGetEventsParams>({
-      query: (params) => ({
-        url: ENDPOINTS.getEvents,
-        method: "GET",
-        params: {
-          page: params?.page || 1,
-          pageSize: params?.pageSize || 10,
-          sortBy: params?.sortBy || "createdAt",
-          sort: params?.sort,
-          name: params?.name,
-          type: params?.type,
-          categoryId: params?.categoryId,
-          locationId: params?.locationId,
-          calendarId: params?.calendarId,
+    getEvents: builder.query<{ data: IEvent[]; meta: IMeta }, IGetEventsParams>(
+      {
+        query: (params) => ({
+          url: ENDPOINTS.getEvents,
+          method: "GET",
+          params: {
+            page: params?.page,
+            pageSize: params?.pageSize,
+            sortBy: params?.sortBy,
+            sort: params?.sort,
+            name: params?.name,
+            type: params?.type,
+            categoryId: params?.categoryId,
+            locationId: params?.locationId,
+            calendarId: params?.calendarId,
+          },
+        }),
+        transformResponse: (response: any) => {
+          return {
+            data: response?.data?.data as IEvent[],
+            meta: response?.data?.meta as IMeta,
+          };
         },
-      }),
-      transformResponse: (response: any) => {
-        return response?.data?.data as IEvent[];
+        providesTags: ["Events"],
       },
-      providesTags: ["Events"],
-    }),
+    ),
     getEventById: builder.query<IEvent, string>({
       query: (id) => ({
         url: `${ENDPOINTS.getEvents}/${id}`,
@@ -80,21 +86,27 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
       }),
       // invalidatesTags: [TAGS.EVENTS],
     }),
-    getOurEvents: builder.query<IOurEvent[], IGetEventsParams>({
+    getOurEvents: builder.query<
+      { data: IOurEvent[]; meta: IMeta },
+      IGetEventsParams
+    >({
       query: (params) => ({
         url: ENDPOINTS.getOurEvents,
         method: "GET",
         params: {
-          page: params?.page || 1,
-          pageSize: params?.pageSize || 10,
+          page: params?.page,
+          pageSize: params?.pageSize,
           sortBy: params?.sortBy || "createdAt",
-          sort: params?.sort,
+          sort: params?.sort || "desc", 
           name: params?.name,
           type: params?.type,
         },
       }),
       transformResponse: (response: any) => {
-        return response?.data?.data as IOurEvent[];
+        return {
+          data: response?.data?.data as IOurEvent[],
+          meta: response?.data?.meta as IMeta,
+        };
       },
       // providesTags: ["Events"],
     }),

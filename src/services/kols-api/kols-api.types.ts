@@ -49,3 +49,21 @@ export interface IUser {
   bio: any;
   blurb: any;
 }
+
+export interface IGetKolParams {
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sort?: string;
+  status?: string;
+  badge?: string;
+}
+
+
+export interface IMeta {
+  currentPage: number;
+  itemCount: number;
+  itemsPerPage: number;
+  totalPages: number;
+  totalItems: number;
+}

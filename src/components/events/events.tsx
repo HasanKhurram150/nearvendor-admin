@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,15 +10,21 @@ import {
 // import Image from "next/image";
 import { useGetOurEventsQuery } from "@/services/events-management-api";
 import Loading from "../atoms/loading/loading";
-// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+
+const DEFAULT_PAGE_SIZE = 10;
 
 const Events: React.FC = () => {
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const totalPages = 5;
-  const { data: OurEvents = [], isLoading } = useGetOurEventsQuery({
-    page: 1,
-    pageSize: 200,
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useGetOurEventsQuery({
+    page,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
+
+  const ourEvents = data?.data || []; // Array of events
+  const meta = data?.meta; // Pagination meta data
+
+  const totalPages = meta?.totalPages || 1;
 
   return (
     <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]">
@@ -66,8 +72,8 @@ const Events: React.FC = () => {
                   <Loading size="lg" />
                 </TableCell>
               </TableRow>
-            ) : OurEvents?.length > 0 ? (
-              OurEvents?.map((user) => (
+            ) : ourEvents?.length > 0 ? (
+              ourEvents?.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
                     <div className="flex items-center gap-3">
@@ -105,11 +111,13 @@ const Events: React.FC = () => {
           </TableBody>
         </Table>
       </div>
-      {/* <GenericPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page) => setCurrentPage(page)}
-      /> */}
+      {!isLoading && totalPages > 1 && (
+        <GenericPagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 };

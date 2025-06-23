@@ -23,11 +23,11 @@ export const dashboardAPI = baseAPI.injectEndpoints({
     getDashboardUsers: builder.query<IPaginatedUserData, IDashboardUsersParams>(
       {
         query: ({
-          page = 1,
-          pageSize = 10,
-          sortBy = "createdAt",
-          sort = "desc",
-          search = "",
+          page,
+          pageSize,
+          sortBy="createdAt",
+          sort="desc",
+          search
         }) => ({
           url: `${ENDPOINTS.getDashboardUsers}?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sort=${sort}&search=${search}`,
           method: "GET",

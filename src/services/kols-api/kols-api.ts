@@ -1,18 +1,38 @@
 import { ENDPOINTS } from "@/config";
 import { baseAPI } from "../base-api";
-import { IGetKols, IKolBadge, IKolStatus } from "./kols-api.types";
+import {
+  IGetKolParams,
+  IGetKols,
+  IKolBadge,
+  IKolStatus,
+  IMeta,
+} from "./kols-api.types";
 import { TAGS } from "../tags";
 
 export const kolsAPI = baseAPI.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getKolRequests: builder.query<IGetKols[], void>({
-      query: () => ({
+    getKolRequests: builder.query<
+      { data: IGetKols[]; meta: IMeta },
+      IGetKolParams
+    >({
+      query: (params) => ({
         url: ENDPOINTS.getKolRequests,
         method: "GET",
+        params: {
+          page: params?.page,
+          pageSize: params?.pageSize,
+          sortBy: params?.sortBy,
+          sort: params?.sort,
+          status: params?.status,
+          badge: params?.badge,
+        },
       }),
       transformResponse: (response: any) => {
-        return response?.data as IGetKols[];
+        return {
+          data: response?.data as IGetKols[],
+          meta: response?.meta as IMeta,
+        };
       },
       providesTags: [TAGS.KOLS],
     }),

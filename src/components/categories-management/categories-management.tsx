@@ -37,9 +37,6 @@ const CategoriesManagement: React.FC = () => {
     null,
   );
 
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const totalPages = 5;
-
   // API hooks
   const { data: categories, isLoading } = useGetCategoriesQuery();
   const [deleteCategory, { isLoading: isDeleting }] =
