@@ -5,6 +5,7 @@ import {
   IEvent,
   IEventActionPayload,
   IGetEventsParams,
+  IOurEvent,
   IUpdateEvent,
   IUploadEventCSV,
 } from "./events-management-api.types";
@@ -79,6 +80,24 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
       }),
       // invalidatesTags: [TAGS.EVENTS],
     }),
+    getOurEvents: builder.query<IOurEvent[], IGetEventsParams>({
+      query: (params) => ({
+        url: ENDPOINTS.getOurEvents,
+        method: "GET",
+        params: {
+          page: params?.page || 1,
+          pageSize: params?.pageSize || 10,
+          sortBy: params?.sortBy || "createdAt",
+          sort: params?.sort,
+          name: params?.name,
+          type: params?.type,
+        },
+      }),
+      transformResponse: (response: any) => {
+        return response?.data?.data as IOurEvent[];
+      },
+      // providesTags: ["Events"],
+    }),
   }),
 });
 
@@ -87,5 +106,6 @@ export const {
   useUploadEventCSVMutation,
   useProcessEventCSVMutation,
   useUpdateEventMutation,
-  useEventActionMutation
+  useEventActionMutation,
+  useGetOurEventsQuery,
 } = eventsManagementAPI;

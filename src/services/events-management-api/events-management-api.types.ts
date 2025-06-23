@@ -97,3 +97,25 @@ export interface IEventActionPayload {
   id: string;
   action: string;
 }
+
+export interface IMeta {
+  currentPage: number;
+  itemCount: number;
+  itemsPerPage: number;
+  totalPages: number;
+  totalItems: number;
+}
+
+export interface IOurEvent {
+  id: string;
+  name: string;
+  date: string;
+  time: string;
+  type: string;
+  address: string;
+}
+
+export interface IOurEventsResponse {
+  meta: IMeta;
+  data: IOurEvent[];
+}

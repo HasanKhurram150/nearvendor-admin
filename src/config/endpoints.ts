@@ -19,6 +19,7 @@ export const ENDPOINTS = {
   updateCategory: "/categories", //PATCH
   deleteCategory: "/categories", //DELETE
   getEvents: "/events", //GET
+  getOurEvents: "/events/our-events-list", //GET
   uploadEventCSV: "/events/upload/csv", //POST
   processEventCSV: "/events/process/csv", //PATCH
   getKolRequests: "/kol/requests", //GET
