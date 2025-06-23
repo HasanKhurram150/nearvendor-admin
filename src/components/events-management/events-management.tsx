@@ -50,6 +50,7 @@ const EventsManagement: React.FC = () => {
   const [page, setPage] = useState(1);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const debouncedSearchTerm = useDebounce(searchQuery, DEBOUNCE_DELAY);
+  const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -115,8 +116,12 @@ const EventsManagement: React.FC = () => {
     [],
   );
 
-  const toggleEditModal = () => {
+  // const toggleEditModal = () => {
+  //   setIsEditModalOpen((prevVal) => !prevVal);
+  // };
+  const toggleEditModal = (event?: IEvent) => {
     setIsEditModalOpen((prevVal) => !prevVal);
+    setSelectedEvent(event || null);
   };
 
   // const handleCloseEditModal = useCallback(() => {
@@ -269,7 +274,8 @@ const EventsManagement: React.FC = () => {
             <GenericButton
               icon={<EditIcon />}
               // aria-label={`Edit ${category.name}`}
-              handleClick={toggleEditModal}
+              // handleClick={toggleEditModal}
+              handleClick={() => toggleEditModal(event)}
             />
           </div>
         </TableCell>
@@ -362,7 +368,11 @@ const EventsManagement: React.FC = () => {
         maxWidth="31.25rem"
         aria-label="Upload CSV modal"
       >
-        <EditEventModal onClose={toggleEditModal} />
+        {/* <EditEventModal onClose={toggleEditModal} /> */}
+        <EditEventModal
+          onClose={() => toggleEditModal()}
+          event={selectedEvent}
+        />
       </GenericModal>
     </div>
   );

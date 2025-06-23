@@ -1,12 +1,19 @@
 "use client";
 import { AddCategoryIcon } from "@/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import GenericButton from "../atoms/generic-button/generic-button";
 import GenericSelectDropdown from "../atoms/generic-select-dropdown/generic-select-dropdown";
+import { IEvent } from "@/services/events-management-api/events-management-api.types";
+import dayjs from "dayjs";
 
-export const EditEventModal = ({ onClose }: { onClose: () => void }) => {
+interface EditEventModalProps {
+  onClose: () => void;
+  event?: IEvent | null;
+}
+
+export const EditEventModal = ({ onClose, event }: EditEventModalProps) => {
   const getTodayDate = (): string => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -15,6 +22,39 @@ export const EditEventModal = ({ onClose }: { onClose: () => void }) => {
     return `${yyyy}-${mm}-${dd}`;
   };
 
+  const [formData, setFormData] = useState({
+    name: event?.name || "",
+    location: event?.location?.location || "",
+    phoneNumber: event?.phoneNumber || "",
+    telegram: event?.telegram || "",
+    date: event?.startDateTime
+      ? dayjs(event.startDateTime).format("YYYY-MM-DD")
+      : "",
+    time: event?.startDateTime
+      ? dayjs(event.startDateTime).format("HH:mm")
+      : "",
+    type: event?.type || "free",
+    link: event?.link || "",
+  });
+
+  useEffect(() => {
+    if (event) {
+      setFormData({
+        name: event.name || "",
+        location: event?.location?.location || "",
+        phoneNumber: event.phoneNumber || "",
+        telegram: event.telegram || "",
+        date: event.startDateTime
+          ? dayjs(event.startDateTime).format("YYYY-MM-DD")
+          : "",
+        time: event.startDateTime
+          ? dayjs(event.startDateTime).format("HH:mm")
+          : "",
+        type: event.type || "free",
+        link: event.link || "",
+      });
+    }
+  }, [event]);
   const getCurrentTime = (): string => {
     const now = new Date();
     const hh = String(now.getHours()).padStart(2, "0");
@@ -47,7 +87,8 @@ export const EditEventModal = ({ onClose }: { onClose: () => void }) => {
           <div>
             <Label>Event Name</Label>
             <Input
-              id="eventName"
+              id="name"
+              defaultValue={formData?.name}
               type="eventName"
               placeholder="Enter event name"
               // registration={register("email")}
@@ -61,7 +102,11 @@ export const EditEventModal = ({ onClose }: { onClose: () => void }) => {
           <div className="flex items-center gap-6 w-full">
             <div className="w-[50%]">
               <Label>Phone Number</Label>
-              <Input id="phoneNumber" placeholder="Enter number" />
+              <Input
+                id="phoneNumber"
+                placeholder="Enter number"
+                defaultValue={formData?.phoneNumber}
+              />
             </div>
 
             <div className="w-[50%]">
