@@ -22,7 +22,7 @@ import {
 import type { ICategory } from "@/services/categories-api/categories-api.types";
 import toast from "react-hot-toast";
 import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CategoriesManagement: React.FC = () => {
   // State management
@@ -37,8 +37,8 @@ const CategoriesManagement: React.FC = () => {
     null,
   );
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = 5;
 
   // API hooks
   const { data: categories, isLoading } = useGetCategoriesQuery();
@@ -200,11 +200,11 @@ const CategoriesManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        <GenericPagination
+        {/* <GenericPagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
-        />
+        /> */}
       </div>
 
       {/* Modals */}

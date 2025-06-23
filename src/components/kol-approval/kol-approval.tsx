@@ -258,7 +258,7 @@ import { IKolBadge, IKolStatus } from "@/services/kols-api/kols-api.types";
 import Button from "../ui/button/Button";
 import toast from "react-hot-toast";
 import Loading from "../atoms/loading/loading";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 export const IconMapper: { [key: string]: any } = {
   golden: <GoldenIcon />,
@@ -267,14 +267,18 @@ export const IconMapper: { [key: string]: any } = {
 };
 
 const KOLApproval: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = 5;
   const [selectedBadges, setSelectedBadges] = useState<
     Record<string, IKolBadge>
   >({});
 
+  // const [filterStatus, setFilterStatus] = useState<
+  //   "all" | "approved" | "rejected"
+  // >("all");
+
   const [filterStatus, setFilterStatus] = useState<
-    "all" | "approved" | "rejected"
+    "all" | "approved" | "rejected" | "pending"
   >("all");
 
   const { data: kolRequests, isLoading, refetch } = useGetKolRequestsQuery();
@@ -354,7 +358,7 @@ const KOLApproval: React.FC = () => {
               >
                 Status
                 <div className="flex justify-end pl-4 py-0">
-                  <select
+                  {/* <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value as any)}
                     className="border border-gray-300  rounded-xl pl-1 pr-3 py-1 text-sm text-[#201D1D99] bg-white"
@@ -362,6 +366,16 @@ const KOLApproval: React.FC = () => {
                     <option value="all">All</option>
                     <option value="approved">Approved</option>
                     <option value="rejected">Rejected</option>
+                  </select> */}
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value as any)}
+                    className="border border-gray-300 rounded-xl pl-1 pr-3 py-1 text-sm text-[#201D1D99] bg-white"
+                  >
+                    <option value="all">All</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="pending">Pending</option>
                   </select>
                 </div>
               </TableCell>
@@ -388,7 +402,8 @@ const KOLApproval: React.FC = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredKolRequests?.slice(0, 5).map((kol) => (
+              // filteredKolRequests?.slice(0, 5).map((kol) => (
+              filteredKolRequests?.map((kol) => (
                 <TableRow key={kol?.id} className="">
                   <TableCell className="px-3 py-[1.25rem] min-w-[10rem]">
                     <div className="flex items-center gap-3">
@@ -503,11 +518,11 @@ const KOLApproval: React.FC = () => {
           </TableBody>
         </Table>
       </div>
-      <GenericPagination
+      {/* <GenericPagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={(page) => setCurrentPage(page)}
-      />
+      /> */}
     </div>
   );
 };

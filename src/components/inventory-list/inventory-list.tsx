@@ -10,17 +10,16 @@ import {
 import { inventoryColumns } from "./columns";
 import { useGetAllInventoryQuery } from "@/services";
 import Loading from "../atoms/loading/loading";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const InventoryList: React.FC = () => {
   const { data: inventory, isLoading } = useGetAllInventoryQuery({
     page: 1,
-    limit: 10,
+    limit: 200,
   });
 
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 5;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = 5;
 
   console.log("inventory", inventory);
 
@@ -47,7 +46,10 @@ const InventoryList: React.FC = () => {
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={inventoryColumns.length} className="text-center py-8">
+                <TableCell
+                  colSpan={inventoryColumns.length}
+                  className="text-center py-8"
+                >
                   <div className="flex justify-center">
                     <Loading size="lg" />
                   </div>
@@ -84,7 +86,10 @@ const InventoryList: React.FC = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={inventoryColumns.length} className="text-center py-10 text-gray-500 dark:text-gray-400">
+                <TableCell
+                  colSpan={inventoryColumns.length}
+                  className="text-center py-10 text-gray-500 dark:text-gray-400"
+                >
                   No inventory items found
                 </TableCell>
               </TableRow>
@@ -92,11 +97,11 @@ const InventoryList: React.FC = () => {
           </TableBody>
         </Table>
       </div>
-        <GenericPagination
+      {/* <GenericPagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={(page) => setCurrentPage(page)}
-              />
+              /> */}
     </div>
   );
 };

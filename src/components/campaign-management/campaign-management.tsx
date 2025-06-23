@@ -12,16 +12,16 @@ import Loading from "../atoms/loading/loading";
 import { formatStartEndDate } from "@/utils/formatStartEndDate";
 import { campaignColumns } from "./columns";
 import PageBreadcrumb from "../common/PageBreadCrumb";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CampaignManagement: React.FC = () => {
   const { data: campaigns, isLoading } = useGetCampaignsQuery({
     page: 1,
-    limit: 10,
+    limit: 200,
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = 5;
 
   console.log("campaigns", campaigns);
 
@@ -108,11 +108,11 @@ const CampaignManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        <GenericPagination
+        {/* <GenericPagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
-        />
+        /> */}
       </div>
     </>
   );

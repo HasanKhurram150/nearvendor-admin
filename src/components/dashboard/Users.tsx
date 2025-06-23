@@ -9,7 +9,7 @@ import {
 import Image from "next/image";
 import { pages } from "next/dist/build/templates/app-page";
 import { useGetDashboardUsersQuery } from "@/services/dashboard-api";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 import GenericSearchField from "../atoms/generic-search-field/generic-search-field";
 
 // Define the TypeScript interface for the table rows
@@ -67,12 +67,12 @@ const tableData: Users[] = [
 ];
 
 export default function Users() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  // const [page, setPage] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
   const { data, isLoading: usersLoading } = useGetDashboardUsersQuery({
-    page: page,
-    pageSize: pageSize,
+    page: 1,
+    pageSize: 500,
     search: search,
   });
   // const [currentPage, setCurrentPage] = useState(1);
@@ -168,11 +168,11 @@ export default function Users() {
             </TableBody>
           </Table>
         </div>
-        <GenericPagination
+        {/* <GenericPagination
           currentPage={page}
           totalPages={pageSize}
           onPageChange={(page) => setPageSize(page)}
-        />
+        /> */}
       </div>
     </div>
   );

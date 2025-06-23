@@ -35,7 +35,7 @@ import dayjs from "dayjs";
 import type { IEvent } from "@/services/events-management-api/events-management-api.types";
 import FeaturedToggle from "./featured-toggle";
 import { EditEventModal } from "./edit-event-modal";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 import toast from "react-hot-toast";
 // import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 // import toast from "react-hot-toast";
@@ -44,15 +44,15 @@ const EventsManagement: React.FC = () => {
   // State management
   const [searchQuery, setSearchQuery] = useState("");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = 5;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // API hooks
   const { data: events, isLoading } = useGetEventsQuery({
-    page: currentPage,
-    pageSize: 10,
+    // page: currentPage,
+    pageSize: 20,
   });
 
   const [mutate] = useUpdateEventMutation();
@@ -324,11 +324,11 @@ const EventsManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        <GenericPagination
+        {/* <GenericPagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
-        />
+        /> */}
       </div>
 
       {/* Modals */}

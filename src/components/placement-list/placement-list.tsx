@@ -11,13 +11,13 @@ import { useGetAllPlacementsQuery } from "@/services/placement-api";
 import Loading from "../atoms/loading/loading";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { placementColumns } from "./columns";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const PlacementList: React.FC = () => {
   const { data: placements, isLoading } = useGetAllPlacementsQuery();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = 5;
 
   console.log("placements", placements);
 
@@ -96,11 +96,11 @@ const PlacementList: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        <GenericPagination
+        {/* <GenericPagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
-        />
+        /> */}
       </div>
     </>
   );

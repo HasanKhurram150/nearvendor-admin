@@ -11,13 +11,13 @@ import { useGetAllAdvertiserQuery } from "@/services";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { advertiserColumns } from "./columns";
 import Loading from "../atoms/loading/loading";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const AdvertiserManagement: React.FC = () => {
   const { data: advertisers, isLoading } = useGetAllAdvertiserQuery();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = 5;
 
   console.log("advertiser", advertisers);
 
@@ -100,11 +100,11 @@ const AdvertiserManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        <GenericPagination
+        {/* <GenericPagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
-        />
+        /> */}
       </div>
     </>
   );
