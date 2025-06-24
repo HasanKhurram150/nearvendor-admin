@@ -52,7 +52,7 @@ const validationSchema = Yup.object().shape({
 export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
   const [uploadEventCSV, { isLoading }] = useProcessEventCSVMutation();
   const { data: categories, isLoading: isCategoryLoading } =
-    useGetCategoriesQuery();
+    useGetCategoriesQuery({});
 
   const technologyCategories =
     categories
@@ -179,6 +179,9 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
               )}
             </div>
           </div>
+          <span>
+            Note: Upload CSV as per the sample file (Click to Download)
+          </span>
 
           <div className="flex items-center gap-4 justify-end mt-6 w-full">
             <GenericButton

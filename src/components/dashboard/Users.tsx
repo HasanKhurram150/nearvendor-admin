@@ -64,10 +64,11 @@ const UsersTable = ({ users, isLoading }: UsersTableProps) => {
                 <Image
                   width={27}
                   height={27}
-                  src="/images/logo/user.png"
+                  src={user?.image || "/images/user/userProfile.png"}
                   className="h-[27px] w-[27px]"
                   alt={user?.name}
                   loading="lazy"
+                  style={{ borderRadius: "50%" }}
                 />
               </div>
               <p className="font-medium text-[#201D1D] text-base dark:text-white/90">
@@ -101,7 +102,7 @@ export default function Users() {
     search: debouncedSearchTerm,
   });
 
-const totalPages = data?.meta?.totalPages || 1;
+  const totalPages = data?.meta?.totalPages || 1;
   const users = data?.data || [];
 
   useEffect(() => {

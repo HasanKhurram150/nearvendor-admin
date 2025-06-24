@@ -22,6 +22,7 @@ import {
 import type { ICategory } from "@/services/categories-api/categories-api.types";
 import toast from "react-hot-toast";
 import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import Select from "../form/Select";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CategoriesManagement: React.FC = () => {
@@ -30,6 +31,9 @@ const CategoriesManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState<string | undefined>(
+    undefined,
+  );
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
     null,
   );
@@ -38,17 +42,29 @@ const CategoriesManagement: React.FC = () => {
   );
 
   // API hooks
-  const { data: categories, isLoading } = useGetCategoriesQuery();
+  const { data: categories, isLoading } = useGetCategoriesQuery({
+    type: selectedType,
+  });
   const [deleteCategory, { isLoading: isDeleting }] =
     useDeleteCategoryMutation();
 
-  // Memoized filtered categories
   const filteredCategories = useMemo(() => {
     if (!categories) return [];
     return categories.filter((category) =>
       category.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [categories, searchQuery]);
+
+  // Add the type options (same as in EditCategoryModal)
+  const typeOptions = [
+    { label: "All Types", value: "" },
+    { label: "Tech", value: "technology" },
+    { label: "General", value: "general" },
+  ];
+
+  const handleTypeChange = (value: string) => {
+    setSelectedType(value || undefined);
+  };
 
   // Event handlers
   const handleOpenAddModal = useCallback(() => setIsAddModalOpen(true), []);
@@ -162,6 +178,15 @@ const CategoriesManagement: React.FC = () => {
           placeholder="Search by name"
           aria-label="Search categories"
         />
+        <div className="w-48">
+          <Select
+            options={typeOptions}
+            placeholder="Filter by type"
+            onChange={handleTypeChange}
+            defaultValue={selectedType || ""}
+            className="dark:bg-dark-900"
+          />
+        </div>
         <GenericButton
           icon={<PlusIcon />}
           btnText="Add New"

@@ -6,10 +6,11 @@ import { ICategory, ICreateCategory } from "./categories-api.types";
 export const categoriesAPI = baseAPI.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getCategories: builder.query<ICategory[], void>({
-      query: () => ({
+    getCategories: builder.query<ICategory[], { type?: string }>({
+      query: (params) => ({
         url: ENDPOINTS.getCategories,
         method: "GET",
+        ...(params && { params }),
       }),
       transformResponse: (response: any) => {
         return response as ICategory[];

@@ -38,6 +38,7 @@ import { EditEventModal } from "./edit-event-modal";
 import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 import toast from "react-hot-toast";
 import { useDebounce } from "@/hooks/useDebounce";
+import Link from "next/link";
 // import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 // import toast from "react-hot-toast";
 
@@ -212,11 +213,10 @@ const EventsManagement: React.FC = () => {
           )}
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
-          {dayjs(event.createdAt).format("ddd, DD MMM")}
+          {event?.date}
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
-          {dayjs(event.startDateTime).format("hh:mm A")} -{" "}
-          {dayjs(event.endDateTime).format("hh:mm A")}
+          {event?.time}
         </TableCell>
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           {event.type}
@@ -225,18 +225,20 @@ const EventsManagement: React.FC = () => {
           {event.location?.location}
         </TableCell> */}
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
-          <a href={event?.link} target="_blank">
-            {event?.link ? "Link" : "N/A"}
-          </a>
+          {event?.identifier ? (
+            <Link
+              href={`https://noobit.pro/event/${event.identifier}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline dark:text-blue-400"
+              aria-label="Open event"
+            >
+              Link
+            </Link>
+          ) : (
+            "N/A"
+          )}
         </TableCell>
-        {/* <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
-          <FeaturedToggle
-            isFeatured={event.isFeatured}
-            onToggle={() => {
-              handleToggle(event.id, event.isFeatured);
-            }}
-          />
-        </TableCell> */}
         <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
           <div className="flex justify-center items-center">
             <FeaturedToggle
