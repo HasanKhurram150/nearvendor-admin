@@ -25,8 +25,9 @@ export type IEvent = {
   telegram: string;
   approvalStatus: string;
   phoneNumber: string;
-  date:string;
-  time:string;
+  date: string;
+  time: string;
+  address: string;
 };
 
 export interface ILocation {

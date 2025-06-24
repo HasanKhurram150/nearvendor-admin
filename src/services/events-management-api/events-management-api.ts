@@ -57,7 +57,7 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["Events"],
+      invalidatesTags: [TAGS.EVENTS],
     }),
     eventAction: builder.mutation<any, IEventActionPayload>({
       query: ({ id, action }) => ({
@@ -68,7 +68,7 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
           action: action,
         },
       }),
-      invalidatesTags: ["Events"],
+      invalidatesTags: [TAGS.EVENTS],
     }),
     uploadEventCSV: builder.mutation<IUploadEventCSV, FormData>({
       query: (formData) => ({
@@ -76,7 +76,7 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: formData,
       }),
-      // invalidatesTags: [TAGS.EVENTS],
+      invalidatesTags: [TAGS.EVENTS],
     }),
     processEventCSV: builder.mutation<any, FormData>({
       query: (formData) => ({
@@ -84,7 +84,7 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: formData,
       }),
-      // invalidatesTags: [TAGS.EVENTS],
+      invalidatesTags: [TAGS.EVENTS],
     }),
     getOurEvents: builder.query<
       { data: IOurEvent[]; meta: IMeta },
@@ -97,7 +97,7 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
           page: params?.page,
           pageSize: params?.pageSize,
           sortBy: params?.sortBy || "createdAt",
-          sort: params?.sort || "desc", 
+          sort: params?.sort || "desc",
           name: params?.name,
           type: params?.type,
         },
@@ -108,7 +108,7 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
           meta: response?.data?.meta as IMeta,
         };
       },
-      // providesTags: ["Events"],
+      providesTags: [TAGS.EVENTS],
     }),
   }),
 });
