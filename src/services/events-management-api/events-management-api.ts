@@ -110,6 +110,13 @@ export const eventsManagementAPI = baseAPI.injectEndpoints({
       },
       providesTags: [TAGS.EVENTS],
     }),
+    deleteEvent: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `${ENDPOINTS.getEvents}/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [TAGS.EVENTS],
+    }),
   }),
 });
 
@@ -120,4 +127,6 @@ export const {
   useUpdateEventMutation,
   useEventActionMutation,
   useGetOurEventsQuery,
+  useGetEventByIdQuery,
+  useDeleteEventMutation,
 } = eventsManagementAPI;

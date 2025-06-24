@@ -17,9 +17,9 @@ import {
   DownloadIcon2,
   EditIcon,
   TelegramIcon,
+  TrashBinIcon,
   // EditIcon,
   // PlusIcon,
-  // TrashBinIcon,
   UploadWhiteIcon,
 } from "@/icons";
 
@@ -30,6 +30,7 @@ import {
   useGetEventsQuery,
   useUpdateEventMutation,
   useEventActionMutation,
+  useDeleteEventMutation,
 } from "@/services/events-management-api";
 import dayjs from "dayjs";
 import type { IEvent } from "@/services/events-management-api/events-management-api.types";
@@ -52,6 +53,7 @@ const EventsManagement: React.FC = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const debouncedSearchTerm = useDebounce(searchQuery, DEBOUNCE_DELAY);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
+  const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -61,6 +63,8 @@ const EventsManagement: React.FC = () => {
     pageSize: DEFAULT_PAGE_SIZE,
     name: debouncedSearchTerm,
   });
+  const [deleteEvent, { isLoading: isDeleteLaoding }] =
+    useDeleteEventMutation();
 
   const events = data?.data; // Array of events
   const meta = data?.meta; // Pagination meta data
@@ -96,6 +100,19 @@ const EventsManagement: React.FC = () => {
       });
     } catch (err) {
       toast.error("Something went wrong!");
+    }
+  };
+
+  const handleDeleteEvent = async (id: string) => {
+    if (!id) return;
+    setDeletingEventId(id);
+    try {
+      await deleteEvent(id);
+      toast.success("Event deleted successfully");
+    } catch (err) {
+      toast.error("Failed to delete event");
+    } finally {
+      setDeletingEventId(null);
     }
   };
 
@@ -276,8 +293,19 @@ const EventsManagement: React.FC = () => {
             <GenericButton
               icon={<EditIcon />}
               // aria-label={`Edit ${category.name}`}
-              // handleClick={toggleEditModal}
               handleClick={() => toggleEditModal(event)}
+            />
+            <GenericButton
+              icon={
+                deletingEventId === event?.id ? (
+                  <Loading size="sm" />
+                ) : (
+                  <TrashBinIcon />
+                )
+              }
+              handleClick={() => handleDeleteEvent(event?.id)}
+              aria-label={`Delete ${event?.name}`}
+              disabled={deletingEventId === event?.id && isDeleteLaoding}
             />
           </div>
         </TableCell>
@@ -373,7 +401,7 @@ const EventsManagement: React.FC = () => {
         {/* <EditEventModal onClose={toggleEditModal} /> */}
         <EditEventModal
           onClose={() => toggleEditModal()}
-          event={selectedEvent}
+          eventId={selectedEvent?.id as string}
         />
       </GenericModal>
     </div>
