@@ -9,6 +9,7 @@ interface BreadcrumbProps {
   categoryInfo?: boolean;
   calendarInfo?: boolean;
   eventsInfo?: boolean;
+  pricingInfo?: boolean;
   counter?: boolean;
   counterText?: string;
   counterValue?: number;
@@ -22,6 +23,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
   categoryInfo,
   calendarInfo,
   eventsInfo,
+  pricingInfo,
   counter,
   counterText,
   counterValue,
@@ -56,14 +58,19 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
             Manage your Categories and their settings
           </span>
         )}
-         {calendarInfo && (
+        {calendarInfo && (
           <span className="text-base font-normal mt-[1rem]">
             Manage your Calendars and their settings
           </span>
         )}
-                 {eventsInfo && (
+        {eventsInfo && (
           <span className="text-base font-normal mt-[1rem]">
             Manage your Events and their settings
+          </span>
+        )}
+        {pricingInfo && (
+          <span className="text-base font-normal mt-[1rem]">
+            Manage pricing and their settings
           </span>
         )}
         {counter && (

@@ -9,6 +9,7 @@ import {
   CategoriesIcon,
   ChevronDownIcon,
   DashboardIcon,
+  DollarLineIcon,
   EventsIcon,
   HorizontaLDots,
   InventoryListIcon,
@@ -56,6 +57,11 @@ const navItems: NavItem[] = [
     icon: <EventsIcon />,
     name: "Events",
     path: "/events",
+  },
+  {
+    icon: <DollarLineIcon />,
+    name: "Pricing",
+    path: "/pricing",
   },
 ];
 
