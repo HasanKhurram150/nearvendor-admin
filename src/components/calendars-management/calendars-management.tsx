@@ -11,18 +11,17 @@ import { calendarColumns, calendarData } from "./columns";
 import { useGetAllInventoryQuery } from "@/services";
 import Loading from "../atoms/loading/loading";
 import GenericButton from "../atoms/generic-button/generic-button";
-import { EditIcon, PlusIcon, TrashBinIcon } from "@/icons";
+import { EditIcon, TrashBinIcon } from "@/icons";
 import GenericSearchField from "../atoms/generic-search-field/generic-search-field";
 import { GenericModal } from "../atoms/generic-modal";
-
-import { EditCategoryModal } from "./edit-category-modal";
 import Image from "next/image";
-import { AddCalendarModal } from "./add-calendar-modal";
+import { EditCalendarModal } from "./edit-calendar-modal";
+import FeaturedToggle from "../events-management/featured-toggle";
+import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CalendarsManagement: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [addCalendarModal, setAddCalendarModal] = useState(false);
-  const [editCategoryModal, setEditCategoryModal] = useState(false);
+  const [editCalendarModal, setEditCalendarModal] = useState(false);
 
   const { data: inventory, isLoading } = useGetAllInventoryQuery({
     page: 1,
@@ -47,29 +46,22 @@ const CalendarsManagement: React.FC = () => {
     totalClicks: string;
   }
 
-  const handleOpenAddCalendarModal = () => {
-    setAddCalendarModal(true);
+  const handleOpenEditCalendarModal = () => {
+    setEditCalendarModal(true);
   };
-  const handleCloseAddCalendarModal = () => {
-    setAddCalendarModal(false);
-  };
-
-  const handleOpenEditCategoryModal = () => {
-    setEditCategoryModal(true);
-  };
-  const handleCloseEditCategoryModal = () => {
-    setEditCategoryModal(false);
+  const handleCloseEditCalendarModal = () => {
+    setEditCalendarModal(false);
   };
 
   return (
-    <div className="flex flex-col gap-[2.5rem] items-start w-full">
+    <div className="flex flex-col gap-10 items-start w-full">
       <div className="flex justify-start flex-wrap gap-4 items-center w-full">
         <GenericSearchField
           value={query}
           onChange={setQuery}
           placeholder="Search by name or identifier"
         />
-        <GenericButton
+        {/* <GenericButton
           icon={<PlusIcon />}
           btnText="Add Calendar"
           bgColor="#1862D4"
@@ -77,11 +69,11 @@ const CalendarsManagement: React.FC = () => {
           height="2.5rem"
           width="8.063rem"
           handleClick={handleOpenAddCalendarModal}
-        />
+        /> */}
       </div>
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full">
-        <div className="max-w-full overflow-x-auto">
-          <Table>
+      <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
+        <div className="overflow-x-auto">
+          <Table aria-label="Calendars management table" className="w-full">
             {/* Table Header */}
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
@@ -113,9 +105,30 @@ const CalendarsManagement: React.FC = () => {
                   {calendarData.map((item, index) => (
                     <TableRow key={index} className="first: last:">
                       <TableCell className=" pl-6 pr-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                        {item?.calendarName}
+                        <div className="flex items-center gap-3">
+                          <div className="h-[27px] w-[27px] overflow-hidden rounded-md">
+                            <Image
+                              width={27}
+                              height={27}
+                              src={
+                                item?.profileImage ||
+                                "/images/user/userProfile.png"
+                              }
+                              className="h-[27px] w-[27px]"
+                              alt={item?.calendarName}
+                              loading="lazy"
+                              style={{ borderRadius: "50%" }}
+                            />
+                          </div>
+                          <p className="font-medium text-[#201D1D] text-base dark:text-white/90">
+                            {item?.calendarName}
+                          </p>
+                        </div>
                       </TableCell>
                       <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
+                        {item?.description}
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
                         {item?.identifier}
                       </TableCell>
                       <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
@@ -126,7 +139,7 @@ const CalendarsManagement: React.FC = () => {
                           height={23}
                         />
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[10rem]">
                         <div
                           className="flex justify-center gap-2 items-center h-[1.5rem] w-[6.563rem] rounded-3xl px-1"
                           style={{ background: item?.colorBg }}
@@ -143,14 +156,22 @@ const CalendarsManagement: React.FC = () => {
                           </p>
                         </div>
                       </TableCell>
-                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap min-w-[12rem]">
+                        <div className="flex justify-center items-center">
+                          <FeaturedToggle
+                            isFeatured={true}
+                            onToggle={() => {}}
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
                         {item?.location}
                       </TableCell>
-                      <TableCell className=" pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-right min-w-[12rem]">
+                      <TableCell className=" pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 text-right min-w-[10rem]">
                         <div className="flex justify-end gap-2">
                           <GenericButton
                             icon={<EditIcon />}
-                            handleClick={handleOpenEditCategoryModal}
+                            handleClick={handleOpenEditCalendarModal}
                           />
                           <GenericButton icon={<TrashBinIcon />} />
                         </div>
@@ -162,20 +183,22 @@ const CalendarsManagement: React.FC = () => {
             </TableBody>
           </Table>
         </div>
+        {/* Uncomment when functionality will apply */}
+        {/* {!isLoading && totalPages > 1 && (
+          <GenericPagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        )} */}
       </div>
       <GenericModal
-        isOpen={addCalendarModal}
+        isOpen={editCalendarModal}
         // isOpen={true}
-        onClose={handleCloseAddCalendarModal}
+        onClose={handleCloseEditCalendarModal}
         maxWidth="47.563rem"
       >
-        <AddCalendarModal onClose={handleCloseAddCalendarModal} />
-      </GenericModal>
-      <GenericModal
-        isOpen={editCategoryModal}
-        onClose={handleCloseEditCategoryModal}
-      >
-        <EditCategoryModal onClose={handleCloseEditCategoryModal} />
+        <EditCalendarModal onClose={handleCloseEditCalendarModal} />
       </GenericModal>
     </div>
   );

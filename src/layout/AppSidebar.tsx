@@ -42,6 +42,11 @@ const navItems: NavItem[] = [
     name: "Events Management",
     path: "/events-management",
   },
+    {
+    icon: <CalenderIcon />,
+    name: "Calendars Management",
+    path: "/calendars-management",
+  },
   {
     icon: <PeopleIcon />,
     name: "KOL Approval",
@@ -65,11 +70,7 @@ const othersItems: NavItem[] = [
     name: "Inventory List",
     path: "/inventory-list",
   },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendars Management",
-  //   path: "/calendars-management",
-  // },
+
   {
     icon: <ListIcon />,
     name: "Advertiser Management",

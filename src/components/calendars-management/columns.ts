@@ -1,15 +1,19 @@
 export const calendarColumns = [
   { id: "1", header: "Name", className: "min-w-[15rem]" },
-  { id: "2", header: "Identifier", className: "min-w-[12rem]" },
-  { id: "3", header: "Cover", className: "min-w-[8.125rem]" },
-  { id: "4", header: "Color", className: "min-w-[15rem]" },
-  { id: "5", header: "Location", className: "min-w-[12rem]" },
-  { id: "6", header: "Actions", className: "min-w-[12rem]" },
+  { id: "2", header: "Description", className: "min-w-[15rem]" },
+  { id: "3", header: "Identifier", className: "min-w-[10rem]" },
+  { id: "4", header: "Cover", className: "min-w-[8.125rem]" },
+  { id: "5", header: "Color", className: "min-w-[10rem]" },
+  { id: "6", header: "Mark as Featured", className: "min-w-[12rem]" },
+  { id: "7", header: "Location", className: "min-w-[12rem]" },
+  { id: "8", header: "Actions", className: "min-w-[10rem]" },
 ];
 
 export const calendarData = [
   {
+    profileImage:"/images/logo/cover-1.png",
     calendarName: "Tech Conference 2024",
+    description: "A calendar featuring upcoming global tech conferences and meetups.",
     identifier: "tech-001",
     cover: "/images/logo/cover-1.png",
     colorCode: "#000000",
@@ -17,7 +21,9 @@ export const calendarData = [
     location: "San Francisco, CA",
   },
   {
+    profileImage:"/images/logo/cover-1.png",
     calendarName: "Product Launch",
+    description: "A calendar featuring upcoming global tech conferences and meetups.",
     identifier: "mkt-002",
     cover: "/images/logo/cover-1.png",
     colorCode: "#1862D4",
@@ -25,7 +31,9 @@ export const calendarData = [
     location: "New York, NY",
   },
   {
+    profileImage:"/images/logo/cover-1.png",
     calendarName: "Team Building Workshop",
+    description: "A calendar featuring upcoming global tech conferences and meetups.",
     identifier: "fin-003",
     cover: "/images/logo/cover-1.png",
     colorCode: "#D418A2",
@@ -33,7 +41,9 @@ export const calendarData = [
     location: "Austin, TX",
   },
   {
+    profileImage:"/images/logo/cover-1.png",
     calendarName: "Human Resources",
+    description: "A calendar featuring upcoming global tech conferences and meetups.",
     identifier: "hr-004",
     cover: "/images/logo/cover-1.png",
     colorCode: "#5D18D4",
@@ -41,7 +51,9 @@ export const calendarData = [
     location: "Austin, TX",
   },
   {
+    profileImage:"/images/logo/cover-1.png",
     calendarName: "Operations",
+    description: "A calendar featuring upcoming global tech conferences and meetups.",
     identifier: "ops-005",
     cover: "/images/logo/cover-1.png",
     colorCode: "#D47018",
