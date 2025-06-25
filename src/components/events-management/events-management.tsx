@@ -350,7 +350,7 @@ const EventsManagement: React.FC = () => {
       </div>
 
       {/* Events Table */}
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
+      <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
         <div className="overflow-x-auto">
           <Table aria-label="Events management table" className="w-full">
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b">
