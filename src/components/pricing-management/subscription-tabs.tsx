@@ -24,8 +24,6 @@ const SubscriptionTabs = ({
   const [activeTab, setActiveTab] = useState(0);
   const activePackage = packages[activeTab];
 
-  console.log("asdfasfsa", activePackage);
-
   return (
     <div className="w-full">
       {/* Tab Switcher */}
@@ -75,7 +73,7 @@ const SubscriptionTabs = ({
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="md" />
+                      <Loading size="lg" />
                     </div>
                   </TableCell>
                 </TableRow>
