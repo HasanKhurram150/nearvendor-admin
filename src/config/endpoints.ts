@@ -26,5 +26,8 @@ export const ENDPOINTS = {
   approveKolRequest: "/kol/approve", //PATCH
   getDashboardStats: "/dashboard/stats", //GET
   getDashboardUsers: "/dashboard/users", //GET
+  updatePackagePrice: "/packages", //GET
+  getAllPackages: "/packages", //GET
+  getPackageById: "/packages",
 };
 //----------------------------------------------------------------

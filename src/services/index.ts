@@ -8,3 +8,4 @@ export * from "./common-api";
 export * from "./categories-api";
 export * from "./events-management-api";
 export * from "./kols-api";
+export * from "./packages-api";

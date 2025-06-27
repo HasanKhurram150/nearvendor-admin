@@ -11,6 +11,7 @@ export const TAGS = {
   KOLS: "Kols",
   DashboardStats: "DashboardStats",
   EVENTS: "Events",
+  PACKAGES: "Packages",
 };
 
 export const generateTags = (result: any, TAG: string) => {

@@ -3,21 +3,36 @@ import React, { useState } from "react";
 import { GenericModal } from "../atoms/generic-modal";
 import { EditPricingModal } from "./edit-pricing-modal";
 import SubscriptionTabs from "./subscription-tabs";
+import { IPrice } from "@/services/packages-api/packages-api.types";
+import { useGetAllPackagesQuery } from "@/services/packages-api";
 
 const PricingManagement: React.FC = () => {
   const [editPricingModal, setEditPricingModal] = useState(false);
+  const [selectedPrice, setSelectedPrice] = useState<IPrice | null>(null);
+  const [selectedPackageId, setSelectedPackageId] = useState<string | null>(
+    null,
+  );
 
-  const handleOpenEditPricingModal = () => {
+  const { data: packages = [], isLoading } = useGetAllPackagesQuery();
+
+  const handleOpenEditPricingModal = (price: IPrice, packageId: string) => {
+    setSelectedPrice(price);
+    setSelectedPackageId(packageId);
     setEditPricingModal(true);
   };
+
   const handleCloseEditPricingModal = () => {
     setEditPricingModal(false);
+    setSelectedPrice(null);
+    setSelectedPackageId(null);
   };
 
   return (
     <div className="flex flex-col gap-10 items-start w-full">
       <SubscriptionTabs
+        packages={packages}
         handleOpenEditPricingModal={handleOpenEditPricingModal}
+        isLoading={isLoading}
       />
 
       <GenericModal
@@ -26,7 +41,14 @@ const PricingManagement: React.FC = () => {
         onClose={handleCloseEditPricingModal}
         maxWidth="30rem"
       >
-        <EditPricingModal onClose={handleCloseEditPricingModal} />
+        {/* <EditPricingModal onClose={handleCloseEditPricingModal} /> */}
+        {selectedPrice && selectedPackageId && (
+          <EditPricingModal
+            price={selectedPrice}
+            packageId={selectedPackageId}
+            onClose={handleCloseEditPricingModal}
+          />
+        )}
       </GenericModal>
     </div>
   );
