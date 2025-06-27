@@ -10,6 +10,7 @@ interface BreadcrumbProps {
   calendarInfo?: boolean;
   eventsInfo?: boolean;
   pricingInfo?: boolean;
+  settingsInfo?: boolean;
   counter?: boolean;
   counterText?: string;
   counterValue?: number;
@@ -24,6 +25,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
   calendarInfo,
   eventsInfo,
   pricingInfo,
+  settingsInfo,
   counter,
   counterText,
   counterValue,
@@ -73,6 +75,12 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
             Manage pricing and their settings
           </span>
         )}
+                {settingsInfo && (
+          <span className="text-base font-normal mt-[1rem]">
+            Admin manage receivable email
+          </span>
+        )}
+          
         {counter && (
           <span className="text-base font-normal mt-[1rem]">
             {counterText}: {counterValue}
