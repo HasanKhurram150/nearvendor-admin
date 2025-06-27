@@ -1,6 +1,8 @@
 import { ENDPOINTS } from "@/config";
 import { baseAPI } from "../base-api";
 import {
+  IAddAdminEmail,
+  IEmailSetting,
   IGet2Fa,
   ILogin,
   ILoginRes,
@@ -10,6 +12,7 @@ import {
   IVerify2FaRes,
   IVerifyInviteToken,
 } from "./auth-api.types";
+import { TAGS } from "../tags";
 
 export const authAPI = baseAPI.injectEndpoints({
   overrideExisting: true,
@@ -77,6 +80,27 @@ export const authAPI = baseAPI.injectEndpoints({
         return response?.data as ILoginRes;
       },
     }),
+    getAdminEmail: builder.query<IEmailSetting, void>({
+      query: () => ({
+        url: ENDPOINTS.getAdminEmailSettings,
+        method: "GET",
+      }),
+      transformResponse: (response: any) => {
+        return response?.data as IEmailSetting;
+      },
+      providesTags: [TAGS.EMAILSETTINGS],
+    }),
+    addAdminEmail: builder.mutation<IEmailSetting, IAddAdminEmail>({
+      query: (body) => ({
+        url: ENDPOINTS.getAdminEmailSettings,
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: any) => {
+        return response?.data as IEmailSetting;
+      },
+      invalidatesTags: [TAGS.EMAILSETTINGS],
+    }),
   }),
 });
 
@@ -86,4 +110,6 @@ export const {
   useGet2FaQuery,
   useVerify2FaMutation,
   useLoginMutation,
+  useGetAdminEmailQuery,
+  useAddAdminEmailMutation,
 } = authAPI;

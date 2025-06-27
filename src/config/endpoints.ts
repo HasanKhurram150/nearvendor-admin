@@ -29,5 +29,6 @@ export const ENDPOINTS = {
   updatePackagePrice: "/packages", //GET
   getAllPackages: "/packages", //GET
   getPackageById: "/packages",
+  getAdminEmailSettings: "/settings/admin/email",
 };
 //----------------------------------------------------------------

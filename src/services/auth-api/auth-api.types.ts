@@ -69,6 +69,21 @@ export interface ILoginRes {
   token: string;
 }
 
+export interface IEmailSetting {
+  id: string;
+  key: string;
+  value: string;
+  description: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}
+
+export interface IAddAdminEmail {
+  email: string;
+}
+
 export interface ApiErrorResponse {
   data: {
     statusCode: number;

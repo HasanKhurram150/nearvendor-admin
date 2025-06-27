@@ -1,5 +1,9 @@
 // RTK Query
-import { BaseQueryApi, createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryApi,
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 
 // Store + configuration
 import { TAGS } from "./tags";
@@ -66,6 +70,14 @@ const baseQueryWithReauth = async (
 export const baseAPI = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: [TAGS.ADVERTISER, TAGS.CAMPAIGN, TAGS.CATEGORIES, TAGS.KOLS, TAGS.EVENTS, TAGS.PACKAGES],
+  tagTypes: [
+    TAGS.ADVERTISER,
+    TAGS.CAMPAIGN,
+    TAGS.CATEGORIES,
+    TAGS.KOLS,
+    TAGS.EVENTS,
+    TAGS.PACKAGES,
+    TAGS.EMAILSETTINGS,
+  ],
   endpoints: () => ({}),
 });

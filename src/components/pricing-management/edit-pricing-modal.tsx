@@ -40,12 +40,12 @@ export const EditPricingModal = ({
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      amount: price.amount,
+      amount: price?.amount,
     },
+    mode: "onChange",
   });
 
   const onSubmit = async (data: { amount: number }) => {
