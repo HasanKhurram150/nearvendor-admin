@@ -59,12 +59,11 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
   const onSubmit = async (formData: { name: string; type: string }) => {
     try {
       await updateCategory({
-        id: category.id,
-        //@ts-ignore
+        id: category?.id,
         payload: {
-          name: formData.name,
-          // type: formData.type,
-          ...(formData?.type !== "none" && { type: formData?.type }),
+          name: formData?.name,
+          //@ts-ignore
+          type: formData?.type === "none" ? null : formData?.type,
         },
       }).unwrap();
 
