@@ -25,12 +25,14 @@ type CategoryFormValues = {
 const typeOptions = [
   { label: "Tech", value: "technology" },
   { label: "General", value: "general" },
+  { label: "None", value: "none" },
 ];
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
     .required("Category name is required")
     .max(50, "Category name must be at most 50 characters"),
+  // type: Yup.string(),
   type: Yup.string().required("Type is required"),
 });
 
@@ -50,7 +52,7 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
-      type: "",
+      type: "none",
     },
     mode: "onChange",
   });
@@ -61,7 +63,13 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
 
   const onSubmit = async (formData: CategoryFormValues) => {
     try {
-      await createCategory(formData).unwrap();
+      const typeValue = formData?.type === "none" ? undefined : formData?.type;
+      const requestData = {
+        name: formData?.name,
+        type: typeValue,
+      };
+      // @ts-ignore
+      await createCategory(requestData).unwrap();
       toast.success("Category created successfully!");
       reset();
       onClose();
@@ -102,16 +110,17 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
                 <Select
                   options={typeOptions}
                   placeholder="Select type"
-                  onChange={handleSelectType}
+                  // onChange={handleSelectType}
+                  onChange={(value) => handleSelectType(value as string)}
                   className="dark:bg-dark-900"
                 />
               )}
             />
-            {errors.type && (
+            {/* {errors.type && (
               <p className="mt-1 text-sm text-error-500">
                 {errors.type.message}
               </p>
-            )}
+            )} */}
           </div>
 
           <div className="flex items-center gap-4 justify-end">

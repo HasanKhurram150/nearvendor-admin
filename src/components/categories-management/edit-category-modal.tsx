@@ -27,6 +27,7 @@ const validationSchema = Yup.object().shape({
 const typeOptions = [
   { label: "Tech", value: "technology" },
   { label: "General", value: "general" },
+  { label: "None", value: "none" },
 ];
 
 export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
@@ -59,9 +60,11 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
     try {
       await updateCategory({
         id: category.id,
+        //@ts-ignore
         payload: {
           name: formData.name,
-          type: formData.type,
+          // type: formData.type,
+          ...(formData?.type !== "none" && { type: formData?.type }),
         },
       }).unwrap();
 
