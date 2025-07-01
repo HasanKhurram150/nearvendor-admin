@@ -62,8 +62,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
         id: category?.id,
         payload: {
           name: formData?.name,
-          //@ts-ignore
-          type: formData?.type === "none" ? null : formData?.type,
+          type: formData?.type,
         },
       }).unwrap();
 
