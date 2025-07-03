@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { categoryColumns } from "./columns";
+import { useCategoryColumns } from "./columns";
 import Loading from "../atoms/loading/loading";
 import GenericButton from "../atoms/generic-button/generic-button";
 import { EditIcon, PlusIcon, TrashBinIcon } from "@/icons";
@@ -23,11 +23,14 @@ import type { ICategory } from "@/services/categories-api/categories-api.types";
 import toast from "react-hot-toast";
 import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import Select from "../form/Select";
+import { useLanguage } from "../common/LanguageContext";
+import PageBreadcrumb from "../common/PageBreadCrumb";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CategoriesManagement: React.FC = () => {
   // State management
-
+  const { t } = useLanguage();
+  const columns = useCategoryColumns();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -57,9 +60,9 @@ const CategoriesManagement: React.FC = () => {
 
   // Add the type options (same as in EditCategoryModal)
   const typeOptions = [
-    { label: "All Types", value: "" },
-    { label: "Tech", value: "technology" },
-    { label: "General", value: "general" },
+    { label: t("allTypes"), value: "" },
+    { label: t("tech"), value: "technology" },
+    { label: t("general"), value: "general" },
   ];
 
   const handleTypeChange = (value: string) => {
@@ -106,10 +109,7 @@ const CategoriesManagement: React.FC = () => {
     if (isLoading) {
       return (
         <TableRow>
-          <TableCell
-            colSpan={categoryColumns.length}
-            className="text-center py-8"
-          >
+          <TableCell colSpan={columns.length} className="text-center py-8">
             <div className="flex justify-center">
               <Loading size="lg" />
             </div>
@@ -121,10 +121,7 @@ const CategoriesManagement: React.FC = () => {
     if (filteredCategories.length === 0) {
       return (
         <TableRow>
-          <TableCell
-            colSpan={categoryColumns.length}
-            className="text-center py-8"
-          >
+          <TableCell colSpan={columns.length} className="text-center py-8">
             <span className="text-gray-500 dark:text-gray-400 text-lg">
               {searchQuery
                 ? "No matching categories found"
@@ -169,88 +166,94 @@ const CategoriesManagement: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-10 items-start w-full">
-      {/* Search and Add Button Section */}
-      <div className="flex flex-wrap gap-4 items-center w-full">
-        <GenericSearchField
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder="Search by name"
-          aria-label="Search categories"
-        />
-        <div className="w-48">
-          <Select
-            options={typeOptions}
-            placeholder="Filter by type"
-            onChange={handleTypeChange}
-            defaultValue={selectedType || ""}
-            className="dark:bg-dark-900"
+    <>
+      <PageBreadcrumb
+        pageTitle={t("categoriesManagement")}
+        info={t("manageCategories")}
+      />
+      <div className="flex flex-col gap-10 items-start w-full">
+        {/* Search and Add Button Section */}
+        <div className="flex flex-wrap gap-4 items-center w-full">
+          <GenericSearchField
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder={t("searchByName")}
+            aria-label="Search categories"
+          />
+          <div className="w-48">
+            <Select
+              options={typeOptions}
+              placeholder={t("filterByType")}
+              onChange={handleTypeChange}
+              defaultValue={selectedType || ""}
+              className="dark:bg-dark-900"
+            />
+          </div>
+          <GenericButton
+            icon={<PlusIcon />}
+            btnText={t("addNew")}
+            bgColor="#1862D4"
+            color="#fff"
+            height="2.5rem"
+            width="7.188rem"
+            handleClick={handleOpenAddModal}
+            aria-label="Add new category"
           />
         </div>
-        <GenericButton
-          icon={<PlusIcon />}
-          btnText="Add New"
-          bgColor="#1862D4"
-          color="#fff"
-          height="2.5rem"
-          width="7.188rem"
-          handleClick={handleOpenAddModal}
-          aria-label="Add new category"
-        />
-      </div>
 
-      {/* Categories Table */}
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
-        <div className="max-w-full overflow-x-auto">
-          <Table aria-label="Categories management table">
-            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-4">
-              <TableRow>
-                {categoryColumns.map((col) => (
-                  <TableCell
-                    key={col.id}
-                    isHeader
-                    className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white ${col.className} last:text-right first:pl-6 last:pr-6`}
-                  >
-                    {col.header}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHeader>
+        {/* Categories Table */}
+        <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
+          <div className="max-w-full overflow-x-auto">
+            <Table aria-label="Categories management table">
+              <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-4">
+                <TableRow>
+                  {columns.map((col) => (
+                    <TableCell
+                      key={col.id}
+                      isHeader
+                      className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white ${col.className} last:text-right first:pl-6 last:pr-6`}
+                    >
+                      {col.header}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHeader>
 
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {renderTableContent()}
-            </TableBody>
-          </Table>
-        </div>
-        {/* <GenericPagination
+              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+                {renderTableContent()}
+              </TableBody>
+            </Table>
+          </div>
+          {/* <GenericPagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
         /> */}
+        </div>
+
+        {/* Modals */}
+        <GenericModal
+          isOpen={isAddModalOpen}
+          onClose={handleCloseAddModal}
+          aria-label={t("addCategoryModal")}
+        >
+          <AddCategoryModal onClose={handleCloseAddModal} />
+        </GenericModal>
+
+        <GenericModal
+          isOpen={isEditModalOpen}
+          onClose={handleCloseEditModal}
+          aria-label="Edit category modal"
+        >
+          {selectedCategory && (
+            <EditCategoryModal
+              onClose={handleCloseEditModal}
+              category={selectedCategory}
+            />
+          )}
+        </GenericModal>
       </div>
-
-      {/* Modals */}
-      <GenericModal
-        isOpen={isAddModalOpen}
-        onClose={handleCloseAddModal}
-        aria-label="Add category modal"
-      >
-        <AddCategoryModal onClose={handleCloseAddModal} />
-      </GenericModal>
-
-      <GenericModal
-        isOpen={isEditModalOpen}
-        onClose={handleCloseEditModal}
-        aria-label="Edit category modal"
-      >
-        {selectedCategory && (
-          <EditCategoryModal
-            onClose={handleCloseEditModal}
-            category={selectedCategory}
-          />
-        )}
-      </GenericModal>
-    </div>
+    </>
   );
 };
 

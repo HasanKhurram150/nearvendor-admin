@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Loading from "../atoms/loading/loading";
 import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import { useLanguage } from "../common/LanguageContext";
 
 const validationSchema = Yup.object().shape({
   amount: Yup.number()
@@ -32,6 +33,7 @@ export const EditPricingModal = ({
   packageId: string;
   onClose: () => void;
 }) => {
+  const { t } = useLanguage();
   const { data: packageData, isLoading: isPackageLoading } =
     useGetPackageByIdQuery(packageId);
   const [updatePrice, { isLoading }] = useUpdatePackagePriceMutation();
@@ -74,7 +76,7 @@ export const EditPricingModal = ({
       <div className="flex items-center justify-start gap-4">
         <DollarLineIcon />{" "}
         <p className="font-semibold text-[1.25rem] text-[#102445]">
-          Edit Price
+          {t("editPrice")}
         </p>
       </div>
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -82,11 +84,11 @@ export const EditPricingModal = ({
           <div className="grid grid-cols-1 gap-4">
             {" "}
             <div>
-              <Label>Amount</Label>
+              <Label>{t("amount")}</Label>
               <Input
                 id="amount"
                 type="text"
-                placeholder="Enter your amount"
+                placeholder={t("enterAmount")}
                 registration={register("amount")}
                 error={errors.amount?.message}
               />
@@ -95,7 +97,7 @@ export const EditPricingModal = ({
 
           <div className="flex items-center gap-4 justify-end">
             <GenericButton
-              btnText="Cancel"
+              btnText={t("cancel")}
               bgColor="transparent"
               borderRadius="5rem"
               color="#000"
@@ -104,7 +106,7 @@ export const EditPricingModal = ({
               handleClick={onClose}
             />
             <GenericButton
-              btnText={isLoading ? "" : "Update"}
+              btnText={isLoading ? "" : t("update")}
               bgColor="#1862D4"
               borderRadius="5rem"
               color="#fff"

@@ -11,9 +11,11 @@ import { useGetAllPlacementsQuery } from "@/services/placement-api";
 import Loading from "../atoms/loading/loading";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { placementColumns } from "./columns";
+import { useLanguage } from "../common/LanguageContext";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const PlacementList: React.FC = () => {
+  const { t } = useLanguage();
   const { data: placements, isLoading } = useGetAllPlacementsQuery();
 
   // const [currentPage, setCurrentPage] = useState(1);
@@ -24,9 +26,9 @@ const PlacementList: React.FC = () => {
   return (
     <>
       <PageBreadcrumb
-        pageTitle="Placement List"
+        pageTitle={t("placementList")}
         counter={true}
-        counterText="Total Placement"
+        counterText={t("totalPlacement")}
         counterValue={placements?.length}
       />
       <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">

@@ -7,14 +7,16 @@ import GenericButton from "../atoms/generic-button/generic-button";
 import TextArea from "../form/input/TextArea";
 import { ProfilePhotoUpload } from "../atoms";
 import ColorPicker from "./color-picker";
+import { useLanguage } from "../common/LanguageContext";
 
 export const EditCalendarModal = ({ onClose }: { onClose: () => void }) => {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col gap-[2.5rem] items-start w-full">
       <div className="flex items-center justify-start gap-4">
         <AddCalendarIcon />{" "}
         <p className="font-semibold text-[1.25rem] text-[#102445]">
-          Edit Calendar
+          {t("editCalendar")}
         </p>
       </div>
       <form className="w-full">
@@ -22,99 +24,95 @@ export const EditCalendarModal = ({ onClose }: { onClose: () => void }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {" "}
             <div>
-              <Label>Name</Label>
+              <Label>{t("name")}</Label>
               <Input
                 id="calendarName"
                 type="text"
-                placeholder="Enter calendar name"
+                placeholder={t("enterCalendarName")}
                 // registration={register("email")}
                 // error={errors.email?.message}
               />
             </div>{" "}
             <div>
-              <Label>Theme Color</Label>
+              <Label>{t("themeColor")}</Label>
 
               <ColorPicker />
             </div>{" "}
             <div className="col-span-1 md:col-span-2">
               {" "}
               <div>
-                <Label>Description</Label>
+                <Label>{t("description")}</Label>
                 <TextArea
                   rows={3}
                   // value={messageTwo}
                   error
-                  placeholder="Brief description of the calendar"
+                  placeholder={t("briefDescription")}
                   // onChange={(value) => setMessageTwo(value)}
                   // hint="Brief description of the calendar"
                 />
               </div>
             </div>
-            <ProfilePhotoUpload label="Cover Image" />
-            <ProfilePhotoUpload label="Profile Image" />
+            <ProfilePhotoUpload label={t("coverImage")} />
+            <ProfilePhotoUpload label={t("profileImage")} />
             <div>
-              <Label>Location</Label>
+              <Label>{t("location")}</Label>
               <Input
                 id="location"
                 type="text"
-                placeholder="Enter your location"
+                placeholder={t("enterLocation")}
                 // registration={register("email")}
                 // error={errors.email?.message}
               />
             </div>{" "}
             <div>
-              <Label>Website Link</Label>
+              <Label>{t("websiteLink")}</Label>
               <Input
                 id="website"
                 type="text"
-                placeholder="Enter your web link"
+                placeholder="enterWebsiteLink"
                 // registration={register("email")}
                 // error={errors.email?.message}
               />
             </div>{" "}
             <div>
-              <Label>Twitter</Label>
-              <Input
-                id="twitter"
-                type="text"
-                placeholder="Enter your twitter"
-              />
+              <Label>{t("twitter")}</Label>
+              <Input id="twitter" type="text" placeholder={t("enterTwitter")} />
             </div>
             <div>
-              <Label>Instagram</Label>
+              <Label>{t("instagram")}</Label>
               <Input
                 id="instagram"
                 type="text"
-                placeholder="Enter your instagram"
+                placeholder={t("enterInstagram")}
               />
             </div>
             <div>
-              <Label>Youtube</Label>
+              <Label>{t("youtube")}</Label>
               <Input
                 id="youtube"
                 type="text"
-                placeholder="Enter your youtube"
+                placeholder={t("enterYoutube")}
                 // registration={register("email")}
                 // error={errors.email?.message}
               />
             </div>{" "}
             <div>
-              <Label>Tiktok</Label>
-              <Input id="tiktok" type="text" placeholder="Enter your tiktok" />
+              <Label>{t("tiktok")}</Label>
+              <Input id="tiktok" type="text" placeholder={t("enterTiktok")} />
             </div>
             <div>
-              <Label>LinkedIn</Label>
+              <Label>{t("linkedin")}</Label>
               <Input
                 id="linkedin"
                 type="text"
-                placeholder="Enter your linkedin"
+                placeholder={t("enterLinkedin")}
               />
             </div>
           </div>
 
           <div className="flex items-center gap-4 justify-end">
             <GenericButton
-              btnText="Cancel"
+              btnText={t("cancel")}
               bgColor="transparent"
               borderRadius="5rem"
               color="#000"
@@ -123,7 +121,7 @@ export const EditCalendarModal = ({ onClose }: { onClose: () => void }) => {
               handleClick={onClose}
             />
             <GenericButton
-              btnText="Update Calendar"
+              btnText={t("updateCalendar")}
               bgColor="#1862D4"
               borderRadius="5rem"
               color="#fff"

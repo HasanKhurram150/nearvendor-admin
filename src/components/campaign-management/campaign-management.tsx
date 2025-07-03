@@ -10,11 +10,14 @@ import {
 import { useGetCampaignsQuery } from "@/services/campaign-api";
 import Loading from "../atoms/loading/loading";
 import { formatStartEndDate } from "@/utils/formatStartEndDate";
-import { campaignColumns } from "./columns";
+import { useCampaignColumns } from "./columns";
 import PageBreadcrumb from "../common/PageBreadCrumb";
+import { useLanguage } from "../common/LanguageContext";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CampaignManagement: React.FC = () => {
+  const { t } = useLanguage();
+  const columns = useCampaignColumns();
   const { data: campaigns, isLoading } = useGetCampaignsQuery({
     page: 1,
     limit: 200,
@@ -28,9 +31,9 @@ const CampaignManagement: React.FC = () => {
   return (
     <>
       <PageBreadcrumb
-        pageTitle="Campaign Management"
+        pageTitle={t("campaignManagement")}
         counter={true}
-        counterText="Total Campaign"
+        counterText={t("totalCampaign")}
         counterValue={campaigns?.data.length}
         btnCampaign={true}
       />
@@ -41,7 +44,7 @@ const CampaignManagement: React.FC = () => {
             {/* Table Header - Always visible */}
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
-                {campaignColumns.map((col) => (
+                {columns.map((col) => (
                   <TableCell
                     key={col.id}
                     isHeader
@@ -58,7 +61,7 @@ const CampaignManagement: React.FC = () => {
               {isLoading ? (
                 <TableRow>
                   <TableCell
-                    colSpan={campaignColumns.length}
+                    colSpan={columns.length}
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
@@ -98,10 +101,10 @@ const CampaignManagement: React.FC = () => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={campaignColumns.length}
+                    colSpan={columns.length}
                     className="text-center py-10 text-gray-500 dark:text-gray-400"
                   >
-                    No campaigns found
+                    {t("noCampaignsFound")}
                   </TableCell>
                 </TableRow>
               )}

@@ -4,8 +4,10 @@ import Image from "next/image";
 import { IDashboardStats } from "@/services/dashboard-api/dashboard-api.types";
 import { formatNumber } from "@/utils";
 import { dashboardAPI } from "@/services/dashboard-api";
+import { useLanguage } from "../common/LanguageContext";
 
 export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
+  const { t } = useLanguage();
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
       {/* <!-- State Item Start --> */}
@@ -13,7 +15,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-base text-black dark:text-whihte">
-              Total Events
+              {t("totalEvents")}
             </span>
             <h4 className="mt-2 font-bold text-[#202224] text-[2.25rem] dark:text-white/90">
               {!!stats && formatNumber(stats.totalEvents)}
@@ -36,7 +38,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-base text-black dark:text-whihte">
-              Total Users
+              {t("totalUsers")}
             </span>
             <h4 className="mt-2 font-bold text-[#202224] text-[2.25rem] dark:text-white/90">
               {!!stats && formatNumber(stats.totalUsers)}
@@ -58,7 +60,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-base text-black dark:text-whihte">
-              Daily Events
+              {t("dailyEvents")}
             </span>
             <h4 className="mt-2 font-bold text-[#202224] text-[2.25rem] dark:text-white/90">
               {!!stats && formatNumber(stats.dailyEvents)}

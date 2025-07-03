@@ -4,8 +4,10 @@ import React from "react";
 import RecentOrders from "@/components/dashboard/Users";
 import { useGetDashboardStatsQuery } from "@/services/dashboard-api";
 import Loading from "@/components/atoms/loading/loading";
+import { useLanguage } from "../common/LanguageContext";
 
 export default function DashboardPage() {
+  const { t } = useLanguage();
   const { data: stats, isLoading } = useGetDashboardStatsQuery();
 
   if (isLoading || !stats) return;
@@ -17,7 +19,7 @@ export default function DashboardPage() {
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12">
         <h2 className="mb-4 text-xl text-[#201D1D] font-AzoSansTest-medium">
-          Dashboard
+          {t("dashboard")}
         </h2>
       </div>
       <div className="col-span-12">

@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { calendarColumns } from "./columns";
+import { useEventColumns } from "./columns";
 import Loading from "../atoms/loading/loading";
 import GenericButton from "../atoms/generic-button/generic-button";
 import {
@@ -40,6 +40,8 @@ import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 import toast from "react-hot-toast";
 import { useDebounce } from "@/hooks/useDebounce";
 import Link from "next/link";
+import { useLanguage } from "../common/LanguageContext";
+import PageBreadcrumb from "../common/PageBreadCrumb";
 // import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 // import toast from "react-hot-toast";
 
@@ -48,6 +50,8 @@ const DEBOUNCE_DELAY = 400;
 
 const EventsManagement: React.FC = () => {
   // State management
+  const { t } = useLanguage();
+  const columns = useEventColumns();
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -183,10 +187,7 @@ const EventsManagement: React.FC = () => {
     if (isLoading) {
       return (
         <TableRow>
-          <TableCell
-            colSpan={calendarColumns.length}
-            className="text-center py-8"
-          >
+          <TableCell colSpan={columns.length} className="text-center py-8">
             <div className="flex justify-center">
               <Loading size="lg" />
             </div>
@@ -198,12 +199,11 @@ const EventsManagement: React.FC = () => {
     if (!events || events?.length === 0) {
       return (
         <TableRow>
-          <TableCell
-            colSpan={calendarColumns.length}
-            className="text-center py-8"
-          >
+          <TableCell colSpan={columns.length} className="text-center py-8">
             <span className="text-gray-500 dark:text-gray-400 text-lg">
-              {searchQuery ? "No matching events found" : "No events available"}
+              {searchQuery
+                ? t("noMatchingEventsFound")
+                : t("noEventsAvailable")}
             </span>
           </TableCell>
         </TableRow>
@@ -314,28 +314,33 @@ const EventsManagement: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-10 items-start w-full">
-      {/* Search and Action Buttons Section */}
-      <div className="flex justify-between flex-wrap gap-4 items-center w-full">
-        <GenericSearchField
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder="Search events"
-          aria-label="Search events"
-        />
-        <div className="flex flex-wrap sm:flex-nowrap gap-4 justify-start md:justify-end">
-          <GenericButton
-            icon={<UploadWhiteIcon />}
-            btnText="Upload CSV"
-            bgColor="#1862D4"
-            color="#fff"
-            borderColor="#1862D4"
-            height="2.5rem"
-            width="8.688rem"
-            handleClick={handleOpenUploadModal}
-            aria-label="Upload events CSV"
+    <>
+      <PageBreadcrumb
+        pageTitle={t("eventManagement")}
+        info={t("manageEvents")}
+      />
+      <div className="flex flex-col gap-10 items-start w-full">
+        {/* Search and Action Buttons Section */}
+        <div className="flex justify-between flex-wrap gap-4 items-center w-full">
+          <GenericSearchField
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder={t("searchEvents")}
+            aria-label="Search events"
           />
-          {/* <GenericButton
+          <div className="flex flex-wrap sm:flex-nowrap gap-4 justify-start md:justify-end">
+            <GenericButton
+              icon={<UploadWhiteIcon />}
+              btnText={t("uploadCSV")}
+              bgColor="#1862D4"
+              color="#fff"
+              borderColor="#1862D4"
+              height="2.5rem"
+              width="8.688rem"
+              handleClick={handleOpenUploadModal}
+              aria-label="Upload events CSV"
+            />
+            {/* <GenericButton
             icon={<DownloadIcon2 />}
             btnText="Download Sample CSV"
             bgColor="white"
@@ -346,65 +351,66 @@ const EventsManagement: React.FC = () => {
             handleClick={handleDownloadCSV}
             aria-label="Download events CSV sample"
           /> */}
+          </div>
         </div>
-      </div>
 
-      {/* Events Table */}
-      <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
-        <div className="overflow-x-auto">
-          <Table aria-label="Events management table" className="w-full">
-            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b">
-              <TableRow>
-                {calendarColumns.map((col, index) => (
-                  <TableCell
-                    key={col.id}
-                    isHeader
-                    className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white whitespace-nowrap last:text-right ${
-                      index === 0 ? "pl-6" : ""
-                    } ${index === calendarColumns.length - 1 ? "pr-6" : ""}`}
-                  >
-                    {col.header}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHeader>
+        {/* Events Table */}
+        <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
+          <div className="overflow-x-auto">
+            <Table aria-label="Events management table" className="w-full">
+              <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b">
+                <TableRow>
+                  {columns.map((col, index) => (
+                    <TableCell
+                      key={col.id}
+                      isHeader
+                      className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white whitespace-nowrap last:text-right ${
+                        index === 0 ? "pl-6" : ""
+                      } ${index === columns.length - 1 ? "pr-6" : ""}`}
+                    >
+                      {col.header}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHeader>
 
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {renderTableContent()}
-            </TableBody>
-          </Table>
+              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+                {renderTableContent()}
+              </TableBody>
+            </Table>
+          </div>
+          {!isLoading && totalPages > 1 && (
+            <GenericPagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          )}
         </div>
-        {!isLoading && totalPages > 1 && (
-          <GenericPagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
+
+        {/* Modals */}
+        <GenericModal
+          isOpen={isUploadModalOpen}
+          onClose={handleCloseUploadModal}
+          maxWidth="47.563rem"
+          aria-label="Upload CSV modal"
+        >
+          <UploadCSVModal onClose={handleCloseUploadModal} />
+        </GenericModal>
+        <GenericModal
+          isOpen={isEditModalOpen}
+          onClose={toggleEditModal}
+          maxWidth="31.25rem"
+          aria-label="Upload CSV modal"
+        >
+          {/* <EditEventModal onClose={toggleEditModal} /> */}
+          <EditEventModal
+            onClose={() => toggleEditModal()}
+            eventId={selectedEvent?.id as string}
           />
-        )}
+        </GenericModal>
       </div>
-
-      {/* Modals */}
-      <GenericModal
-        isOpen={isUploadModalOpen}
-        onClose={handleCloseUploadModal}
-        maxWidth="47.563rem"
-        aria-label="Upload CSV modal"
-      >
-        <UploadCSVModal onClose={handleCloseUploadModal} />
-      </GenericModal>
-      <GenericModal
-        isOpen={isEditModalOpen}
-        onClose={toggleEditModal}
-        maxWidth="31.25rem"
-        aria-label="Upload CSV modal"
-      >
-        {/* <EditEventModal onClose={toggleEditModal} /> */}
-        <EditEventModal
-          onClose={() => toggleEditModal()}
-          eventId={selectedEvent?.id as string}
-        />
-      </GenericModal>
-    </div>
+    </>
   );
 };
 

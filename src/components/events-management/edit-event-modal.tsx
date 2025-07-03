@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Loading from "../atoms/loading/loading";
+import { useLanguage } from "../common/LanguageContext";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -45,6 +46,7 @@ interface EditEventModalProps {
 }
 
 export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
+  const { t } = useLanguage();
   const {
     data: event,
     isLoading: isEventLoading,
@@ -102,8 +104,8 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
   }, [event, reset]);
 
   const typeOptions = [
-    { label: "Free", value: "free" },
-    { label: "Paid", value: "paid" },
+    { label: t("free"), value: "free" },
+    { label: t("paid"), value: "paid" },
   ];
 
   const onSubmit = async (data: any) => {
@@ -145,44 +147,44 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
       <div className="flex items-center justify-start gap-4">
         <AddCategoryIcon />{" "}
         <p className="font-semibold text-[1.25rem] text-[#102445]">
-          Edit Side Event
+          {t("editSideEvent")}
         </p>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
         <div className="space-y-6 w-full">
           <div>
-            <Label>Event Name</Label>
+            <Label>{t("eventName")}</Label>
             <Input
               id="name"
               type="text"
-              placeholder="Enter event name"
+              placeholder={t("enterEventName")}
               registration={register("name")}
               error={errors.name?.message}
             />
           </div>
           <div>
-            <Label>Location</Label>
+            <Label>{t("location")}</Label>
             <Input
               id="address"
               type="text"
-              placeholder="Enter location"
+              placeholder={t("enterLocation")}
               registration={register("address")}
               error={errors.address?.message}
             />
           </div>
           <div className="flex items-center gap-6 w-full">
             <div className="w-[50%]">
-              <Label>Phone Number</Label>
+              <Label>{t("phoneNumber")}</Label>
               <Input
                 id="phoneNumber"
-                placeholder="Enter number"
+                placeholder={t("enterNumber")}
                 registration={register("phoneNumber")}
                 error={errors.phoneNumber?.message}
               />
             </div>
 
             <div className="w-[50%]">
-              <Label>Telegram</Label>
+              <Label>{t("telegram")}</Label>
               <Input
                 id="telegram"
                 placeholder="Enter telegram ID"
@@ -193,7 +195,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
           </div>
           <div className="flex items-center gap-6">
             <div className="w-[50%]">
-              <Label>Start Date</Label>
+              <Label>{t("startDate")}</Label>
               <Input
                 id="startDate"
                 type="date"
@@ -202,7 +204,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
               />
             </div>
             <div className="w-[50%]">
-              <Label>Start Time</Label>
+              <Label>{t("startTime")}</Label>
               <Input
                 id="startTime"
                 type="time"
@@ -213,7 +215,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
           </div>
           <div className="flex items-center gap-6">
             <div className="w-[50%]">
-              <Label>End Date</Label>
+              <Label>{t("endDate")}</Label>
               <Input
                 id="endDate"
                 type="date"
@@ -222,7 +224,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
               />
             </div>
             <div className="w-[50%]">
-              <Label>End Time</Label>
+              <Label>{t("endTime")}</Label>
               <Input
                 id="endTime"
                 type="time"
@@ -234,7 +236,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
           <div className="flex items-center gap-6 w-full">
             <div className="w-[50%]">
               <GenericSelectDropdown
-                label="Type"
+                label={t("type")}
                 options={typeOptions}
                 defaultValue={event?.type || "free"}
                 onChange={(value) => setValue("type", value)}
@@ -247,11 +249,11 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
             </div>
 
             <div className="w-[50%]">
-              <Label>Link</Label>
+              <Label>{t("link")}</Label>
               <Input
                 id="link"
                 type="text"
-                placeholder="Enter link"
+                placeholder={t("enterLink")}
                 registration={register("link")}
                 error={errors.link?.message}
               />
@@ -260,7 +262,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
 
           <div className="flex items-center gap-4 justify-end">
             <GenericButton
-              btnText="Cancel"
+              btnText={t("cancel")}
               bgColor="transparent"
               borderRadius="5rem"
               color="#000"
@@ -270,7 +272,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
               type="button"
             />
             <GenericButton
-              btnText={isUpdateLoading ? "" : "Update"}
+              btnText={isUpdateLoading ? "" : t("update")}
               bgColor="#1862D4"
               borderRadius="5rem"
               color="#fff"

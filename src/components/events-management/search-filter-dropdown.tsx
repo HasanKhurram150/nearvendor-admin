@@ -1,35 +1,14 @@
 import { ChevronDownIcon, FiltersIcon, TickMarkIcon } from "@/icons";
 import { useState } from "react";
+import { useLanguage } from "../common/LanguageContext";
 
 interface Option {
   label: string;
   value: string;
 }
 
-const options: Option[] = [
-  {
-    label: "Name",
-    value: "name",
-  },
-  {
-    label: "Type",
-    value: "type",
-  },
-  {
-    label: "Calendar",
-    value: "calendar",
-  },
-  {
-    label: "Category",
-    value: "category",
-  },
-  {
-    label: "Location",
-    value: "location",
-  },
-];
-
 export default function SearchFilterDropdown() {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<Option | null>(null);
 
@@ -39,6 +18,29 @@ export default function SearchFilterDropdown() {
     setIsOpen(false);
   };
 
+  const options: Option[] = [
+    {
+      label: t("name"),
+      value: "name",
+    },
+    {
+      label: t("type"),
+      value: "type",
+    },
+    {
+      label: t("calendar"),
+      value: "calendar",
+    },
+    {
+      label: t("category"),
+      value: "category",
+    },
+    {
+      label: t("location"),
+      value: "location",
+    },
+  ];
+
   return (
     <div className="relative inline-block text-left min-w-[7.5rem]">
       <button
@@ -46,11 +48,11 @@ export default function SearchFilterDropdown() {
         className="w-full flex items-center justify-between rounded-[0.75rem] border px-3 py-1 h-[2.5rem] bg-transparent transition-all"
       >
         <FiltersIcon />
-        <span className="flex items-center gap-2"> 
+        <span className="flex items-center gap-2">
           {selected ? (
             <span>{selected.label}</span>
           ) : (
-            <span className="text-[#102445] text-sm">Filters</span>
+            <span className="text-[#102445] text-sm">{t("filters")}</span>
           )}
         </span>
         <ChevronDownIcon
