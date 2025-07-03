@@ -46,7 +46,7 @@ export interface IInventory {
   adsName: string;
   platformType: number;
   adTypeCd: number;
-  landingType: number;
+  landingType: string;
   landingUrl: string;
   optimizationUseYn: string;
   optimizationDay: number;
@@ -161,16 +161,15 @@ export interface IAddInventory {
   startDate: string;
   endDate: string;
   impressionDay: string;
-  dailyStartTime: string;
-  dailyEndTime: string;
+  startTime: string;
+  endTime: string;
   budgetTotal: number;
-  materialName: string;
-  materialDetails: string;
+  adsName: string;
   materialType: string;
   materialSize: string;
   landingType: string;
   landingUrl: string;
-  trackingUsage: string;
-  trackingUrl: string;
-  creativeFile: File | null;
+  unitCost: string;
+  costType: string;
+  file1: string| null;
 }

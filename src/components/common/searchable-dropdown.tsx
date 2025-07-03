@@ -12,6 +12,7 @@ interface SearchableDropdownProps {
   placeholder?: string;
   isLoading?: boolean;
   disabled?: boolean;
+  value: string
 }
 
 const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
@@ -20,6 +21,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   placeholder = "Select...",
   isLoading = false,
   disabled = false,
+  value
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -72,7 +74,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
       <div className="relative">
         <input
           type="text"
-          value={searchTerm}
+          value={value}
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setIsOpen(true);

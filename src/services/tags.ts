@@ -13,6 +13,7 @@ export const TAGS = {
   EVENTS: "Events",
   PACKAGES: "Packages",
   EMAILSETTINGS: "EmailSettings",
+  INVENTORY: 'Inventory'
 };
 
 export const generateTags = (result: any, TAG: string) => {

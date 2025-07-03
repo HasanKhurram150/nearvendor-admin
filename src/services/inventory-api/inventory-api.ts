@@ -5,6 +5,7 @@ import {
   IInventoryQueryParams,
   IInventoryResponse,
 } from "./inventory-api.types";
+import { TAGS } from "../tags";
 
 export const inventoryAPI = baseAPI.injectEndpoints({
   overrideExisting: true,
@@ -18,6 +19,7 @@ export const inventoryAPI = baseAPI.injectEndpoints({
       transformResponse: (response: any) => {
         return response?.data as IInventoryResponse;
       },
+      providesTags: [TAGS.INVENTORY],
     }),
     addInventory: builder.mutation<void, IAddInventory>({
       query: (payload) => ({
@@ -25,7 +27,7 @@ export const inventoryAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: payload,
       }),
-      // invalidatesTags: [TAGS.INVENTORY],
+      invalidatesTags: [TAGS.INVENTORY],
     }),
   }),
 });

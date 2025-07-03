@@ -7,85 +7,150 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Loading from "../atoms/loading/loading";
-
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import { WeekdayCheckboxes } from "./week-days";
-import RadioButtonGroup from "./radio-button-group";
-import CustomSelect from "./custom-select";
 import FileUpload from "./file-upload";
 import SearchableDropdown from "../common/searchable-dropdown";
-import { useGetAllAdvertiserQuery } from "@/services/advertiser-api";
-import { useAddInventoryMutation } from "@/services/inventory-api";
+import {
+  useAddInventoryMutation,
+  useGetAllInventoryQuery,
+} from "@/services/inventory-api";
 import { useGetCampaignsQuery } from "@/services/campaign-api";
 import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import { useGetAllPlacementsQuery } from "@/services";
+import DatePicker from "../date-picker/date-picker";
+import TimePicker from "../time-picker/time-picker";
+import dayjs, { Dayjs } from "dayjs";
 
 type Option = {
   label: string;
   value: string;
 };
 
-const validationSchema = Yup.object().shape({
-  placementId: Yup.object()
-    .shape({
-      label: Yup.string().required(),
-      value: Yup.string().required(),
-    })
-    .nullable()
-    .required("Placement is required"),
-  campaign: Yup.object()
-    .shape({
-      label: Yup.string().required(),
-      value: Yup.string().required(),
-    })
-    .nullable()
-    .required("Campaign is required"),
-  inventorySelection: Yup.string().required("Inventory selection is required"),
-  inventoryName: Yup.string().required("Inventory name is required"),
-  inventoryDesc: Yup.string().required("Inventory description is required"),
-  exposureStartDate: Yup.date()
-    .required("Start date is required")
-    .typeError("Invalid start date"),
-  exposureEndDate: Yup.date()
-    .required("End date is required")
-    .min(Yup.ref("exposureStartDate"), "End date must be after start date")
-    .typeError("Invalid end date"),
-  impressionDay: Yup.array()
-    .of(Yup.string())
-    .min(1, "At least one exposure day is required"),
-  dailyStartTime: Yup.string().required("Start time is required"),
-  dailyEndTime: Yup.string().required("End time is required"),
-  budgetTotal: Yup.string()
-    .required("Allocated budget is required")
-    .matches(/^\d+$/, "Budget must be a number"),
-  materialName: Yup.string().required("Material name is required"),
-  materialDetails: Yup.string().required("Material details are required"),
-  materialType: Yup.string().required("Material type is required"),
-  materialSize: Yup.string().required("Material size is required"),
-  landingType: Yup.string().required("Landing type is required"),
-  landingUrl: Yup.string()
-    .url("Invalid URL")
-    .required("Landing URL is required"),
-  trackingUsage: Yup.string().required("Tracking usage is required"),
-  trackingUrl: Yup.string()
-    .url("Invalid URL")
-    .required("Tracking URL is required"),
-  // creativeFile: Yup.mixed().required("Creative file is required"),
-});
+type DayNumber = "1" | "2" | "3" | "4" | "5" | "6" | "7";
+
+const daysMap: { [key in DayNumber]: string } = {
+  "1": "MONDAY",
+  "2": "TUESDAY",
+  "3": "WEDNESDAY",
+  "4": "THURSDAY",
+  "5": "FRIDAY",
+  "6": "SATURDAY",
+  "7": "SUNDAY",
+};
+
+type Days =
+  | "MONDAY"
+  | "TUESDAY"
+  | "WEDNESDAY"
+  | "THURSDAY"
+  | "FRIDAY"
+  | "SATURDAY"
+  | "SUNDAY";
+
+const reverseDaysMap: { [key in Days]: string } = {
+  MONDAY: "1",
+  TUESDAY: "2",
+  WEDNESDAY: "3",
+  THURSDAY: "4",
+  FRIDAY: "5",
+  SATURDAY: "6",
+  SUNDAY: "7",
+};
 
 const CreateInventory: React.FC = () => {
-  const [selected, setSelected] = useState<Option | null>(null);
+  const [budgetCap, setSetBudget] = useState(0);
   const router = useRouter();
   const { data: placements, isLoading: isFetchingPlacements } =
     useGetAllPlacementsQuery();
+  const { data: inventory, isLoading: inventoryLoading } =
+    useGetAllInventoryQuery({
+      page: 1,
+      limit: 200,
+    });
   const { data: campaigns, isLoading: isFetchingCampaigns } =
     useGetCampaignsQuery({
       page: 1,
       limit: 10,
     });
   const [mutate, { isLoading }] = useAddInventoryMutation();
+  const validationSchema = Yup.object().shape({
+    placementId: Yup.object()
+      .shape({
+        label: Yup.string().required(),
+        value: Yup.string().required(),
+      })
+      .nullable()
+      .required("Placement is required"),
+    campaign: Yup.object()
+      .shape({
+        label: Yup.string().required(),
+        value: Yup.string().required(),
+      })
+      .nullable()
+      .required("Campaign is required"),
+    inventorySelection: Yup.object()
+      .shape({
+        label: Yup.string().required(),
+        value: Yup.string().required(),
+      })
+      .nullable()
+      .required("Inventory Selection is required"),
+    inventoryName: Yup.string().required("Inventory name is required"),
+    inventoryDesc: Yup.string().required("Inventory description is required"),
+    exposureStartDate: Yup.date()
+      .required("Start date is required")
+      .typeError("Invalid start date"),
+    exposureEndDate: Yup.date()
+      .required("End date is required")
+      .min(Yup.ref("exposureStartDate"), "End date must be after start date")
+      .typeError("Invalid end date"),
+    impressionDay: Yup.array()
+      .of(Yup.string())
+      .min(1, "At least one exposure day is required"),
+    dailyStartTime: Yup.string().required("Start time is required"),
+    dailyEndTime: Yup.string().required("End time is required"),
+    budgetTotal: Yup.number()
+      // Handles cases where the input is not a number (e.g., "abc")
+      .typeError("Budget must be a number")
 
+      // Ensures the budget is a positive value
+      .positive("Budget must be a positive number")
+
+      // The field is still required
+      .required("Allocated budget is required")
+
+      // The dynamic validation rule
+      .max(
+        Yup.ref("budgetCap"),
+        "Allocated budget cannot be more than the budget cap of ${max}",
+      ),
+    materialName: Yup.string(),
+
+    materialType: Yup.string().required("Material type is required"),
+    materialSize: Yup.string().required("Material size is required"),
+    landingType: Yup.object()
+      .shape({
+        label: Yup.string().required(),
+        value: Yup.string().required(),
+      })
+      .nullable()
+      .required("Landing Type is Required"),
+    landingUrl: Yup.string()
+      .url("Invalid URL")
+      .required("Landing URL is required"),
+    unitCost: Yup.string().required("Unit cost is required"),
+
+    unitCostType: Yup.object()
+      .shape({
+        label: Yup.string().required(),
+        value: Yup.string().required(),
+      })
+      .nullable()
+      .required("Unit Cost Type is required"),
+    creativeFile: Yup.string().required("Creative file is required"),
+  });
   const {
     register,
     handleSubmit,
@@ -97,16 +162,17 @@ const CreateInventory: React.FC = () => {
   } = useForm<any>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
+      budgetCap: budgetCap,
       placementId: null,
       campaign: null,
       inventorySelection: "",
       inventoryName: "",
       inventoryDesc: "",
-      exposureStartDate: "",
-      exposureEndDate: "",
+      exposureStartDate: dayjs(),
+      exposureEndDate: dayjs(),
       impressionDay: [],
-      dailyStartTime: "",
-      dailyEndTime: "",
+      dailyStartTime: dayjs(),
+      dailyEndTime: dayjs().add(1, "hours"),
       budgetTotal: "",
       materialName: "",
       materialDetails: "",
@@ -114,18 +180,22 @@ const CreateInventory: React.FC = () => {
       materialSize: "",
       landingType: "",
       landingUrl: "",
-      trackingUsage: "",
-      trackingUrl: "",
+      unitCost: "",
+      unitCostType: "",
       creativeFile: null,
     },
   });
-
-  // const selectedAdvertiser = watch("advertiser");
 
   const placementsOptions =
     placements?.map((placements) => ({
       label: placements?.placementName,
       value: placements?.id,
+    })) || [];
+
+  const inventoryOptions =
+    inventory?.data?.map((inventory) => ({
+      label: inventory?.inventoryName,
+      value: inventory?.id,
     })) || [];
 
   const campaignOptions =
@@ -134,54 +204,209 @@ const CreateInventory: React.FC = () => {
       value: campaign?.id,
     })) || [];
 
+  const landingTypeOptions = [
+    { label: "In App", value: "in_app" },
+    { label: "OUT LINK", value: "out_link" },
+  ];
+
+  const unitCostTypeOptions = [
+    { label: "CPC", value: "CPC" },
+    { label: "CPM", value: "CPM" },
+  ];
+
+  const handleSelectLandingType = (option: Option | null) => {
+    setValue("landingType", option, { shouldValidate: true });
+  };
+
+  const handleSelectUnitCostType = (option: Option | null) => {
+    setValue("unitCostType", option, { shouldValidate: true });
+  };
+
   const handleSelectPlacement = (option: Option | null) => {
     setValue("placementId", option, { shouldValidate: true });
-    // setValue("campaign", null); // Reset campaign when advertiser changes
+    const selectedPlacement = placements?.find(
+      (placement) => placement.id === option?.value,
+    );
+    if (selectedPlacement) {
+      setValue("materialName", selectedPlacement.placementName, {
+        shouldValidate: true,
+      });
+      setValue("materialType", selectedPlacement.support, {
+        shouldValidate: true,
+      });
+      setValue(
+        "materialSize",
+        `${selectedPlacement.width}x${selectedPlacement.height}`,
+        {
+          shouldValidate: true,
+        },
+      );
+    }
   };
 
   const handleSelectCampaign = (option: Option | null) => {
     setValue("campaign", option, { shouldValidate: true });
+    const selectedCampaign = campaigns?.data?.find(
+      (campaign) => campaign.id === option?.value,
+    );
+    if (selectedCampaign) {
+      setSetBudget(Number(selectedCampaign.budgetRemaining));
+      setValue("budgetCap", Number(selectedCampaign.budgetRemaining), {
+        shouldValidate: true,
+      });
+    }
   };
 
-  // const handleExposureDaysChange = (selectedDays: string[]) => {
-  //   setValue("exposureDays", selectedDays, { shouldValidate: true });
-  // };
+  const handleSelectInventrory = (option: Option | null) => {
+    setValue("inventorySelection", option, { shouldValidate: true });
+    const selectedInventory = inventory?.data?.find(
+      (inventory) => inventory.id === option?.value,
+    );
+    if (selectedInventory) {
+      setValue(
+        "placementId",
+        {
+          label: selectedInventory.placement.placementName,
+          value: selectedInventory.placement.id,
+        },
+        { shouldValidate: true },
+      );
+      setValue("materialType", selectedInventory.placement.support, {
+        shouldValidate: true,
+      });
+      setValue(
+        "materialSize",
+        `${selectedInventory.placement.width}x${selectedInventory.placement.height}`,
+        {
+          shouldValidate: true,
+        },
+      );
+      setValue("materialName", selectedInventory.adsName, {
+        shouldValidate: true,
+      });
+      setValue(
+        "campaign",
+        {
+          label: selectedInventory.campaign.name,
+          value: selectedInventory.campaign.id,
+        },
+        { shouldValidate: true },
+      );
+      setValue(
+        "budgetCap",
 
-  // const handleFileUpload = (file: File) => {
-  //   setValue("creativeFile", file, { shouldValidate: true });
-  // };
+        selectedInventory.campaign.budgetRemaining,
+        { shouldValidate: true },
+      );
+      setValue("inventoryName", selectedInventory.inventoryName, {
+        shouldValidate: true,
+      });
+      setValue("inventoryDesc", selectedInventory.inventoryDesc, {
+        shouldValidate: true,
+      });
+      setValue("exposureStartDate", selectedInventory.startDate, {
+        shouldValidate: true,
+      });
+      setValue("exposureEndDate", selectedInventory.endDate, {
+        shouldValidate: true,
+      });
+      setValue(
+        "impressionDay",
+        selectedInventory.impressionDay.split(",").map((dayNumber: string) => {
+          return daysMap[dayNumber as DayNumber];
+        }),
+        {
+          shouldValidate: true,
+        },
+      );
+      setValue(
+        "dailyStartTime",
+        `${selectedInventory.startTime.split(".")[0]}`,
+        {
+          shouldValidate: true,
+        },
+      );
+      setValue("dailyEndTime", `${selectedInventory.endTime.split(".")[0]}`, {
+        shouldValidate: true,
+      });
+      setValue(
+        "landingType",
+        landingTypeOptions[
+          selectedInventory.landingType === "out_link" ? 1 : 0
+        ],
+        {
+          shouldValidate: true,
+        },
+      );
+      setValue("landingUrl", selectedInventory.landingUrl, {
+        shouldValidate: true,
+      });
+      setValue("unitCost", selectedInventory.unitCost, {
+        shouldValidate: true,
+      });
+      setValue(
+        "unitCostType",
+        {
+          label: selectedInventory.costType,
+          value: selectedInventory.costType,
+        },
+        {
+          shouldValidate: true,
+        },
+      );
+      setValue("creativeFile", selectedInventory.file1, {
+        shouldValidate: true,
+      });
+    }
+  };
+
+  const handleSetEndDate = (val: Dayjs | null) => {
+    setValue("exposureEndDate", val?.toISOString());
+  };
+
+  const handleSetStartDate = (val: Dayjs | null) => {
+    setValue("exposureStartDate", val?.toISOString());
+  };
+  const handleSetEndTime = (val: Dayjs | null) => {
+    setValue("dailyEndTime", val?.toISOString());
+  };
+  const handleSetStartTime = (val: Dayjs | null) => {
+    setValue("dailyStartTime", val?.toISOString());
+  };
 
   const onSubmit = async (formData: any) => {
+    const impressionDays = formData.impressionDay
+      .map((day: Days) => reverseDaysMap[day])
+      .join(",");
+
     try {
       const payload = {
         placementId: formData.placementId.value,
         campaignId: formData.campaign.value,
-        inventorySelection: formData.inventorySelection,
+        inventorySelection: formData.inventorySelection.value,
         inventoryName: formData.inventoryName,
         inventoryDesc: formData.inventoryDesc,
         startDate: formData.exposureStartDate,
         endDate: formData.exposureEndDate,
-        impressionDay: formData.impressionDay.join(","),
-        dailyStartTime: formData.dailyStartTime,
-        dailyEndTime: formData.dailyEndTime,
+        impressionDay: impressionDays,
+        startTime: `${formData.dailyStartTime}.000Z`,
+        endTime: `${formData.dailyEndTime}.000Z`,
         budgetTotal: Number(formData.budgetTotal),
-        materialName: formData.materialName,
-        materialDetails: formData.materialDetails,
+        adsName: formData.materialName,
         materialType: formData.materialType,
         materialSize: formData.materialSize,
-        landingType: formData.landingType,
+        landingType: formData.landingType.value,
         landingUrl: formData.landingUrl,
-        trackingUsage: formData.trackingUsage,
-        trackingUrl: formData.trackingUrl,
-        creativeFile: formData.creativeFile,
+        unitCost: formData.unitCost,
+        costType: formData.unitCostType.value,
+        file1: formData.creativeFile,
+        status: 1
       };
 
       await mutate(payload).unwrap();
 
-      console.log({ payload });
-
       toast.success("Inventory created successfully!");
-      // router.push("/inventory-management");
+       router.push("/inventory-list");
 
       // reset();
     } catch (error) {
@@ -204,6 +429,7 @@ const CreateInventory: React.FC = () => {
               control={control}
               render={() => (
                 <SearchableDropdown
+                  value={watch("placementId")?.label ?? ""}
                   isLoading={isFetchingPlacements}
                   options={placementsOptions}
                   onSelect={handleSelectPlacement}
@@ -225,6 +451,7 @@ const CreateInventory: React.FC = () => {
               control={control}
               render={() => (
                 <SearchableDropdown
+                  value={watch("campaign")?.label ?? ""}
                   isLoading={isFetchingCampaigns}
                   options={campaignOptions}
                   onSelect={handleSelectCampaign}
@@ -273,12 +500,25 @@ const CreateInventory: React.FC = () => {
         </div> */}
           <div className="pb-4">
             <Label>Inventory Selection</Label>
-            <Input
-              placeholder="Search and select inventory"
-              type="text"
-              registration={register("inventorySelection")}
-              error={errors.inventorySelection?.message as string}
+            <Controller
+              name="inventorySelection"
+              control={control}
+              render={() => (
+                <SearchableDropdown
+                  value={watch("inventorySelection")?.label ?? ""}
+                  isLoading={inventoryLoading}
+                  options={inventoryOptions}
+                  onSelect={handleSelectInventrory}
+                  placeholder="Search and select inventory"
+                  // disabled={!selectedAdvertiser}
+                />
+              )}
             />
+            {errors.inventorySelection && (
+              <p className="mt-1 text-sm text-error-500">
+                {errors.inventorySelection.message as string}
+              </p>
+            )}
           </div>
           <div className="pb-4">
             <Label>Inventory Name</Label>
@@ -300,21 +540,27 @@ const CreateInventory: React.FC = () => {
           </div>
           <div className="pb-4">
             <Label>Exposure Period (Start)</Label>
-            <Input
-              placeholder="MM/DD/YYYY"
-              type="date"
-              registration={register("exposureStartDate")}
-              error={errors.exposureStartDate?.message as string}
+            <DatePicker
+              value={watch("exposureStartDate")}
+              handleChange={handleSetStartDate}
             />
+            {errors.exposureStartDate && (
+              <p className="mt-1 text-sm text-error-500">
+                {errors.exposureStartDate?.message as string}
+              </p>
+            )}
           </div>
           <div className="pb-4">
             <Label>Exposure Period (End)</Label>
-            <Input
-              placeholder="MM/DD/YYYY"
-              type="date"
-              registration={register("exposureEndDate")}
-              error={errors.exposureEndDate?.message as string}
+            <DatePicker
+              value={watch("exposureEndDate")}
+              handleChange={handleSetEndDate}
             />
+            {errors.exposureEndDate && (
+              <p className="mt-1 text-sm text-error-500">
+                {errors.exposureEndDate?.message as string}
+              </p>
+            )}
           </div>
           <div className="pb-4">
             <Label>Exposure Days</Label>
@@ -338,21 +584,27 @@ const CreateInventory: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Start</Label>
-                <Input
-                  placeholder="HH:MM"
-                  type="time"
-                  registration={register("dailyStartTime")}
-                  error={errors.dailyStartTime?.message as string}
+                <TimePicker
+                  value={watch("dailyStartTime")}
+                  handleChange={handleSetStartTime}
                 />
+                {errors.dailyStartTime && (
+                  <p className="mt-1 text-sm text-error-500">
+                    {errors.dailyStartTime?.message as string}
+                  </p>
+                )}
               </div>
               <div>
                 <Label>End</Label>
-                <Input
-                  placeholder="HH:MM"
-                  type="time"
-                  registration={register("dailyEndTime")}
-                  error={errors.dailyEndTime?.message as string}
+                <TimePicker
+                  value={watch("dailyEndTime")}
+                  handleChange={handleSetEndTime}
                 />
+                {errors.dailyEndTime && (
+                  <p className="mt-1 text-sm text-error-500">
+                    {errors.dailyEndTime?.message as string}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -405,17 +657,10 @@ const CreateInventory: React.FC = () => {
               type="text"
               registration={register("materialName")}
               error={errors.materialName?.message as string}
+              disabled={true}
             />
           </div>
-          <div className="pb-4">
-            <Label>Material Operation Details</Label>
-            <Input
-              placeholder="Enter material details"
-              type="text"
-              registration={register("materialDetails")}
-              error={errors.materialDetails?.message as string}
-            />
-          </div>
+
           <div className="pb-4">
             <Label>Material Type</Label>
             <Input
@@ -423,6 +668,7 @@ const CreateInventory: React.FC = () => {
               type="text"
               registration={register("materialType")}
               error={errors.materialType?.message as string}
+              disabled={true}
             />
           </div>
           <div className="pb-4">
@@ -432,16 +678,31 @@ const CreateInventory: React.FC = () => {
               type="text"
               registration={register("materialSize")}
               error={errors.materialSize?.message as string}
+              disabled={true}
             />
           </div>
           <div className="pb-4">
-            <Label>Landing Type</Label>
-            <Input
-              placeholder="Enter landing type"
-              type="text"
-              registration={register("landingType")}
-              error={errors.landingType?.message as string}
-            />
+            <div className="pb-4">
+              <Label>Landing Type</Label>
+              <Controller
+                name="landingType"
+                control={control}
+                render={() => (
+                  <SearchableDropdown
+                    value={watch("landingType")?.label ?? ""}
+                    options={landingTypeOptions}
+                    onSelect={handleSelectLandingType}
+                    placeholder="Select Landing Type"
+                    // disabled={!selectedAdvertiser}
+                  />
+                )}
+              />
+              {errors.landingType && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.landingType?.message as string}
+                </p>
+              )}
+            </div>
           </div>
           <div className="pb-4">
             <Label>Landing URL</Label>
@@ -453,22 +714,34 @@ const CreateInventory: React.FC = () => {
             />
           </div>
           <div className="pb-4">
-            <Label>Tracking Usage</Label>
+            <Label>Unit Cost</Label>
             <Input
-              placeholder="Enter tracking usage"
+              placeholder="Enter Unit Cost"
               type="text"
-              registration={register("trackingUsage")}
-              error={errors.trackingUsage?.message as string}
+              registration={register("unitCost")}
+              error={errors.unitCost?.message as string}
             />
           </div>
           <div className="pb-4">
-            <Label>Tracking URL</Label>
-            <Input
-              placeholder="Enter tracking URL"
-              type="text"
-              registration={register("trackingUrl")}
-              error={errors.trackingUrl?.message as string}
+            <Label>Unit Cost Type</Label>
+            <Controller
+              name="unitCostType"
+              control={control}
+              render={() => (
+                <SearchableDropdown
+                  value={watch("unitCostType").label ?? ""}
+                  options={unitCostTypeOptions}
+                  onSelect={handleSelectUnitCostType}
+                  placeholder="Select Unit Cost type"
+                  // disabled={!selectedAdvertiser}
+                />
+              )}
             />
+            {errors.landingType && (
+              <p className="mt-1 text-sm text-error-500">
+                {errors.landingType?.message as string}
+              </p>
+            )}
           </div>
           <div className="pb-4">
             <Label>Creative File</Label>
@@ -478,8 +751,10 @@ const CreateInventory: React.FC = () => {
               render={({ field }) => (
                 <FileUpload
                   value={field.value}
-                  onChange={field.onChange}
-                  accept="image/*,.pdf,.doc,.docx"
+                  onChange={(url) => {
+                    setValue("creativeFile", url);
+                  }}
+                  accept="image/*,video/mp4"
                   maxSize={10 * 1024 * 1024} // 10MB
                 />
               )}
