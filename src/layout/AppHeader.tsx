@@ -1,4 +1,5 @@
 "use client";
+import { LanguageToggleButton } from "@/components/common/LanguageToggleButton";
 // import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 // import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
@@ -169,6 +170,7 @@ const AppHeader: React.FC = () => {
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
+          <LanguageToggleButton />
           <UserDropdown />
         </div>
       </div>

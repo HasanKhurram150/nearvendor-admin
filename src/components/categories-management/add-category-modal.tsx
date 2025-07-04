@@ -12,6 +12,7 @@ import { useCreateCategoryMutation } from "@/services/categories-api";
 import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import Select from "../form/Select";
 import Loading from "../atoms/loading/loading";
+import { useLanguage } from "../common/LanguageContext";
 
 interface AddCategoryModalProps {
   onClose: () => void;
@@ -21,12 +22,6 @@ type CategoryFormValues = {
   name: string;
   type: string;
 };
-
-const typeOptions = [
-  { label: "Tech", value: "technology" },
-  { label: "General", value: "general" },
-  { label: "None", value: "none" },
-];
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -39,6 +34,7 @@ const validationSchema = Yup.object().shape({
 export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   onClose,
 }) => {
+  const { t } = useLanguage();
   const [createCategory, { isLoading }] = useCreateCategoryMutation();
 
   const {
@@ -60,6 +56,12 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   const handleSelectType = (value: string) => {
     setValue("type", value, { shouldValidate: true });
   };
+
+  const typeOptions = [
+    { label: t("tech"), value: "technology" },
+    { label: t("general"), value: "general" },
+    { label: t("none"), value: "none" },
+  ];
 
   const onSubmit = async (formData: CategoryFormValues) => {
     try {
@@ -86,30 +88,32 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
     <div className="flex flex-col gap-10 items-start w-full">
       <div className="flex items-center gap-4">
         <AddCategoryIcon />
-        <h2 className="font-semibold text-xl text-primary">Add New Category</h2>
+        <h2 className="font-semibold text-xl text-primary">
+          {t("addNewCategory")}
+        </h2>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <div className="space-y-6 w-full">
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t("name")}</Label>
             <Input
               id="name"
-              placeholder="Enter category name"
+              placeholder={t("enterCategoryName")}
               registration={register("name")}
               error={errors.name?.message}
             />
           </div>
 
           <div>
-            <Label htmlFor="type">Type</Label>
+            <Label htmlFor="type">{t("type")}</Label>
             <Controller
               name="type"
               control={control}
               render={() => (
                 <Select
                   options={typeOptions}
-                  placeholder="Select type"
+                  placeholder={t("selectType")}
                   // onChange={handleSelectType}
                   onChange={(value) => handleSelectType(value as string)}
                   className="dark:bg-dark-900"
@@ -125,7 +129,7 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
 
           <div className="flex items-center gap-4 justify-end">
             <GenericButton
-              btnText="Cancel"
+              btnText={t("cancel")}
               bgColor="transparent"
               borderRadius="5rem"
               color="#000"
@@ -135,7 +139,7 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
               type="button"
             />
             <GenericButton
-              btnText={isLoading ? "" : "Save"}
+              btnText={isLoading ? "" : t("save")}
               icon={isLoading && <Loading size="sm" />}
               bgColor="#1862D4"
               borderRadius="5rem"

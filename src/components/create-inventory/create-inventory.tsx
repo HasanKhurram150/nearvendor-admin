@@ -22,6 +22,8 @@ import { useGetAllPlacementsQuery } from "@/services";
 import DatePicker from "../date-picker/date-picker";
 import TimePicker from "../time-picker/time-picker";
 import dayjs, { Dayjs } from "dayjs";
+import PageBreadcrumb from "../common/PageBreadCrumb";
+import { useLanguage } from "../common/LanguageContext";
 
 type Option = {
   label: string;
@@ -60,6 +62,7 @@ const reverseDaysMap: { [key in Days]: string } = {
 };
 
 const CreateInventory: React.FC = () => {
+  const { t } = useLanguage();
   const [budgetCap, setSetBudget] = useState(0);
   const router = useRouter();
   const { data: placements, isLoading: isFetchingPlacements } =
@@ -400,13 +403,13 @@ const CreateInventory: React.FC = () => {
         unitCost: formData.unitCost,
         costType: formData.unitCostType.value,
         file1: formData.creativeFile,
-        status: 1
+        status: 1,
       };
 
       await mutate(payload).unwrap();
 
       toast.success("Inventory created successfully!");
-       router.push("/inventory-list");
+      router.push("/inventory-list");
 
       // reset();
     } catch (error) {
@@ -419,54 +422,56 @@ const CreateInventory: React.FC = () => {
     }
   };
   return (
-    <div className="rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] p-[1.875rem]">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="pb-4">
-            <Label>Placements</Label>
-            <Controller
-              name="placementId"
-              control={control}
-              render={() => (
-                <SearchableDropdown
-                  value={watch("placementId")?.label ?? ""}
-                  isLoading={isFetchingPlacements}
-                  options={placementsOptions}
-                  onSelect={handleSelectPlacement}
-                  placeholder="Search and select placement"
-                />
+    <>
+      <PageBreadcrumb pageTitle={t("createInventory")} />
+      <div className="rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] p-[1.875rem]">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="pb-4">
+              <Label>Placements</Label>
+              <Controller
+                name="placementId"
+                control={control}
+                render={() => (
+                  <SearchableDropdown
+                    value={watch("placementId")?.label ?? ""}
+                    isLoading={isFetchingPlacements}
+                    options={placementsOptions}
+                    onSelect={handleSelectPlacement}
+                    placeholder="Search and select placement"
+                  />
+                )}
+              />
+              {errors.advertiser && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.advertiser.message as string}
+                </p>
               )}
-            />
-            {errors.advertiser && (
-              <p className="mt-1 text-sm text-error-500">
-                {errors.advertiser.message as string}
-              </p>
-            )}
-            {/* <Input placeholder="Search and select the advertiser" type="text" /> */}
-          </div>
-          <div className="pb-4">
-            <Label>Campaign</Label>
-            <Controller
-              name="campaign"
-              control={control}
-              render={() => (
-                <SearchableDropdown
-                  value={watch("campaign")?.label ?? ""}
-                  isLoading={isFetchingCampaigns}
-                  options={campaignOptions}
-                  onSelect={handleSelectCampaign}
-                  placeholder="Search and select campaign"
-                  // disabled={!selectedAdvertiser}
-                />
+              {/* <Input placeholder="Search and select the advertiser" type="text" /> */}
+            </div>
+            <div className="pb-4">
+              <Label>Campaign</Label>
+              <Controller
+                name="campaign"
+                control={control}
+                render={() => (
+                  <SearchableDropdown
+                    value={watch("campaign")?.label ?? ""}
+                    isLoading={isFetchingCampaigns}
+                    options={campaignOptions}
+                    onSelect={handleSelectCampaign}
+                    placeholder="Search and select campaign"
+                    // disabled={!selectedAdvertiser}
+                  />
+                )}
+              />
+              {errors.campaign && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.campaign.message as string}
+                </p>
               )}
-            />
-            {errors.campaign && (
-              <p className="mt-1 text-sm text-error-500">
-                {errors.campaign.message as string}
-              </p>
-            )}
-          </div>
-          {/* <div className="pb-4"> 
+            </div>
+            {/* <div className="pb-4"> 
           <Label>Advertiser Code</Label>
           <Input placeholder="Enter your code" type="text" />
         </div>
@@ -490,138 +495,138 @@ const CreateInventory: React.FC = () => {
           <Label>Target Group Code</Label>
           <Input placeholder="Enter your code" type="text" />
         </div> */}
-          <p className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90">
-            Basic Inventory Information
-          </p>
-          <div />
-          {/* <div className="pb-4"> 
+            <p className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90">
+              Basic Inventory Information
+            </p>
+            <div />
+            {/* <div className="pb-4"> 
           <Label>Inventory Code</Label>
           <Input placeholder="Enter your code" type="text" />
         </div> */}
-          <div className="pb-4">
-            <Label>Inventory Selection</Label>
-            <Controller
-              name="inventorySelection"
-              control={control}
-              render={() => (
-                <SearchableDropdown
-                  value={watch("inventorySelection")?.label ?? ""}
-                  isLoading={inventoryLoading}
-                  options={inventoryOptions}
-                  onSelect={handleSelectInventrory}
-                  placeholder="Search and select inventory"
-                  // disabled={!selectedAdvertiser}
-                />
-              )}
-            />
-            {errors.inventorySelection && (
-              <p className="mt-1 text-sm text-error-500">
-                {errors.inventorySelection.message as string}
-              </p>
-            )}
-          </div>
-          <div className="pb-4">
-            <Label>Inventory Name</Label>
-            <Input
-              placeholder="Enter your inventory name"
-              type="text"
-              registration={register("inventoryName")}
-              error={errors.inventoryName?.message as string}
-            />
-          </div>
-          <div className="pb-4">
-            <Label>Inventory Description</Label>
-            <Input
-              placeholder="Enter your description"
-              type="text"
-              registration={register("inventoryDesc")}
-              error={errors.inventoryDesc?.message as string}
-            />
-          </div>
-          <div className="pb-4">
-            <Label>Exposure Period (Start)</Label>
-            <DatePicker
-              value={watch("exposureStartDate")}
-              handleChange={handleSetStartDate}
-            />
-            {errors.exposureStartDate && (
-              <p className="mt-1 text-sm text-error-500">
-                {errors.exposureStartDate?.message as string}
-              </p>
-            )}
-          </div>
-          <div className="pb-4">
-            <Label>Exposure Period (End)</Label>
-            <DatePicker
-              value={watch("exposureEndDate")}
-              handleChange={handleSetEndDate}
-            />
-            {errors.exposureEndDate && (
-              <p className="mt-1 text-sm text-error-500">
-                {errors.exposureEndDate?.message as string}
-              </p>
-            )}
-          </div>
-          <div className="pb-4">
-            <Label>Exposure Days</Label>
-            <Controller
-              name="impressionDay"
-              control={control}
-              render={({ field }) => (
-                <WeekdayCheckboxes
-                  value={field.value || []}
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors.exposureDays && (
-              <p className="mt-1 text-sm text-error-500">
-                {errors.impressionDay?.message as string}
-              </p>
-            )}
-          </div>
-          <div className="pb-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Start</Label>
-                <TimePicker
-                  value={watch("dailyStartTime")}
-                  handleChange={handleSetStartTime}
-                />
-                {errors.dailyStartTime && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.dailyStartTime?.message as string}
-                  </p>
+            <div className="pb-4">
+              <Label>Inventory Selection</Label>
+              <Controller
+                name="inventorySelection"
+                control={control}
+                render={() => (
+                  <SearchableDropdown
+                    value={watch("inventorySelection")?.label ?? ""}
+                    isLoading={inventoryLoading}
+                    options={inventoryOptions}
+                    onSelect={handleSelectInventrory}
+                    placeholder="Search and select inventory"
+                    // disabled={!selectedAdvertiser}
+                  />
                 )}
-              </div>
-              <div>
-                <Label>End</Label>
-                <TimePicker
-                  value={watch("dailyEndTime")}
-                  handleChange={handleSetEndTime}
-                />
-                {errors.dailyEndTime && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.dailyEndTime?.message as string}
-                  </p>
+              />
+              {errors.inventorySelection && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.inventorySelection.message as string}
+                </p>
+              )}
+            </div>
+            <div className="pb-4">
+              <Label>Inventory Name</Label>
+              <Input
+                placeholder="Enter your inventory name"
+                type="text"
+                registration={register("inventoryName")}
+                error={errors.inventoryName?.message as string}
+              />
+            </div>
+            <div className="pb-4">
+              <Label>Inventory Description</Label>
+              <Input
+                placeholder="Enter your description"
+                type="text"
+                registration={register("inventoryDesc")}
+                error={errors.inventoryDesc?.message as string}
+              />
+            </div>
+            <div className="pb-4">
+              <Label>Exposure Period (Start)</Label>
+              <DatePicker
+                value={watch("exposureStartDate")}
+                handleChange={handleSetStartDate}
+              />
+              {errors.exposureStartDate && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.exposureStartDate?.message as string}
+                </p>
+              )}
+            </div>
+            <div className="pb-4">
+              <Label>Exposure Period (End)</Label>
+              <DatePicker
+                value={watch("exposureEndDate")}
+                handleChange={handleSetEndDate}
+              />
+              {errors.exposureEndDate && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.exposureEndDate?.message as string}
+                </p>
+              )}
+            </div>
+            <div className="pb-4">
+              <Label>Exposure Days</Label>
+              <Controller
+                name="impressionDay"
+                control={control}
+                render={({ field }) => (
+                  <WeekdayCheckboxes
+                    value={field.value || []}
+                    onChange={field.onChange}
+                  />
                 )}
+              />
+              {errors.exposureDays && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.impressionDay?.message as string}
+                </p>
+              )}
+            </div>
+            <div className="pb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Start</Label>
+                  <TimePicker
+                    value={watch("dailyStartTime")}
+                    handleChange={handleSetStartTime}
+                  />
+                  {errors.dailyStartTime && (
+                    <p className="mt-1 text-sm text-error-500">
+                      {errors.dailyStartTime?.message as string}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label>End</Label>
+                  <TimePicker
+                    value={watch("dailyEndTime")}
+                    handleChange={handleSetEndTime}
+                  />
+                  {errors.dailyEndTime && (
+                    <p className="mt-1 text-sm text-error-500">
+                      {errors.dailyEndTime?.message as string}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="pb-4">
-            <Label>Inventory Allocated/Remaining Budget</Label>
-            <Input
-              placeholder="Enter allocated budget"
-              type="text"
-              registration={register("budgetTotal")}
-              error={errors.budgetTotal?.message as string}
-            />
-          </div>
-          {/* <div className="pb-4"> 
+            <div className="pb-4">
+              <Label>Inventory Allocated/Remaining Budget</Label>
+              <Input
+                placeholder="Enter allocated budget"
+                type="text"
+                registration={register("budgetTotal")}
+                error={errors.budgetTotal?.message as string}
+              />
+            </div>
+            {/* <div className="pb-4"> 
             <Label>Inventory Total Budget</Label>
             <Input placeholder="Enter your description" type="text" />
           </div> */}
-          {/* <div className="pb-4"> 
+            {/* <div className="pb-4"> 
           <Label>Bonus Budget Setting (%)</Label>
           <Input placeholder="Enter your description" type="text" />
         </div>
@@ -646,53 +651,93 @@ const CreateInventory: React.FC = () => {
           <Input placeholder="Enter your description" type="text" />
         </div> */}
 
-          <p className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90">
-            Inventory Details
-          </p>
-          <div />
-          <div className="pb-4">
-            <Label>Material Name</Label>
-            <Input
-              placeholder="Enter material name"
-              type="text"
-              registration={register("materialName")}
-              error={errors.materialName?.message as string}
-              disabled={true}
-            />
-          </div>
-
-          <div className="pb-4">
-            <Label>Material Type</Label>
-            <Input
-              placeholder="Enter material type"
-              type="text"
-              registration={register("materialType")}
-              error={errors.materialType?.message as string}
-              disabled={true}
-            />
-          </div>
-          <div className="pb-4">
-            <Label>Material Size</Label>
-            <Input
-              placeholder="Enter material size"
-              type="text"
-              registration={register("materialSize")}
-              error={errors.materialSize?.message as string}
-              disabled={true}
-            />
-          </div>
-          <div className="pb-4">
+            <p className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90">
+              Inventory Details
+            </p>
+            <div />
             <div className="pb-4">
-              <Label>Landing Type</Label>
+              <Label>Material Name</Label>
+              <Input
+                placeholder="Enter material name"
+                type="text"
+                registration={register("materialName")}
+                error={errors.materialName?.message as string}
+                disabled={true}
+              />
+            </div>
+
+            <div className="pb-4">
+              <Label>Material Type</Label>
+              <Input
+                placeholder="Enter material type"
+                type="text"
+                registration={register("materialType")}
+                error={errors.materialType?.message as string}
+                disabled={true}
+              />
+            </div>
+            <div className="pb-4">
+              <Label>Material Size</Label>
+              <Input
+                placeholder="Enter material size"
+                type="text"
+                registration={register("materialSize")}
+                error={errors.materialSize?.message as string}
+                disabled={true}
+              />
+            </div>
+            <div className="pb-4">
+              <div className="pb-4">
+                <Label>Landing Type</Label>
+                <Controller
+                  name="landingType"
+                  control={control}
+                  render={() => (
+                    <SearchableDropdown
+                      value={watch("landingType")?.label ?? ""}
+                      options={landingTypeOptions}
+                      onSelect={handleSelectLandingType}
+                      placeholder="Select Landing Type"
+                      // disabled={!selectedAdvertiser}
+                    />
+                  )}
+                />
+                {errors.landingType && (
+                  <p className="mt-1 text-sm text-error-500">
+                    {errors.landingType?.message as string}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="pb-4">
+              <Label>Landing URL</Label>
+              <Input
+                placeholder="Enter landing URL"
+                type="text"
+                registration={register("landingUrl")}
+                error={errors.landingUrl?.message as string}
+              />
+            </div>
+            <div className="pb-4">
+              <Label>Unit Cost</Label>
+              <Input
+                placeholder="Enter Unit Cost"
+                type="text"
+                registration={register("unitCost")}
+                error={errors.unitCost?.message as string}
+              />
+            </div>
+            <div className="pb-4">
+              <Label>Unit Cost Type</Label>
               <Controller
-                name="landingType"
+                name="unitCostType"
                 control={control}
                 render={() => (
                   <SearchableDropdown
-                    value={watch("landingType")?.label ?? ""}
-                    options={landingTypeOptions}
-                    onSelect={handleSelectLandingType}
-                    placeholder="Select Landing Type"
+                    value={watch("unitCostType").label ?? ""}
+                    options={unitCostTypeOptions}
+                    onSelect={handleSelectUnitCostType}
+                    placeholder="Select Unit Cost type"
                     // disabled={!selectedAdvertiser}
                   />
                 )}
@@ -703,70 +748,30 @@ const CreateInventory: React.FC = () => {
                 </p>
               )}
             </div>
-          </div>
-          <div className="pb-4">
-            <Label>Landing URL</Label>
-            <Input
-              placeholder="Enter landing URL"
-              type="text"
-              registration={register("landingUrl")}
-              error={errors.landingUrl?.message as string}
-            />
-          </div>
-          <div className="pb-4">
-            <Label>Unit Cost</Label>
-            <Input
-              placeholder="Enter Unit Cost"
-              type="text"
-              registration={register("unitCost")}
-              error={errors.unitCost?.message as string}
-            />
-          </div>
-          <div className="pb-4">
-            <Label>Unit Cost Type</Label>
-            <Controller
-              name="unitCostType"
-              control={control}
-              render={() => (
-                <SearchableDropdown
-                  value={watch("unitCostType").label ?? ""}
-                  options={unitCostTypeOptions}
-                  onSelect={handleSelectUnitCostType}
-                  placeholder="Select Unit Cost type"
-                  // disabled={!selectedAdvertiser}
-                />
+            <div className="pb-4">
+              <Label>Creative File</Label>
+              <Controller
+                name="creativeFile"
+                control={control}
+                render={({ field }) => (
+                  <FileUpload
+                    value={field.value}
+                    onChange={(url) => {
+                      setValue("creativeFile", url);
+                    }}
+                    accept="image/*,video/mp4"
+                    maxSize={10 * 1024 * 1024} // 10MB
+                  />
+                )}
+              />
+              {errors.creativeFile && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.creativeFile.message as string}
+                </p>
               )}
-            />
-            {errors.landingType && (
-              <p className="mt-1 text-sm text-error-500">
-                {errors.landingType?.message as string}
-              </p>
-            )}
-          </div>
-          <div className="pb-4">
-            <Label>Creative File</Label>
-            <Controller
-              name="creativeFile"
-              control={control}
-              render={({ field }) => (
-                <FileUpload
-                  value={field.value}
-                  onChange={(url) => {
-                    setValue("creativeFile", url);
-                  }}
-                  accept="image/*,video/mp4"
-                  maxSize={10 * 1024 * 1024} // 10MB
-                />
-              )}
-            />
-            {errors.creativeFile && (
-              <p className="mt-1 text-sm text-error-500">
-                {errors.creativeFile.message as string}
-              </p>
-            )}
-            {/* <FileUpload /> */}
-          </div>
-          {/* <div className="pb-4"> 
+              {/* <FileUpload /> */}
+            </div>
+            {/* <div className="pb-4"> 
           <Label>Optimization Setting Selection</Label>
           <CustomSelect placeholder="Yes/No"/>
         </div>
@@ -786,17 +791,18 @@ const CreateInventory: React.FC = () => {
           <Label>C Grade Ratio</Label>
           <Input placeholder="Search and select the campaign" type="text" />
         </div> */}
-        </div>
-        <div className="flex justify-end gap-4">
-          {/* <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[10rem] rounded-[5rem]">
+          </div>
+          <div className="flex justify-end gap-4">
+            {/* <button className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[10rem] rounded-[5rem]">
             Save
           </button> */}
-          <button className="flex items-center justify-center  text-[#000] bg-white border border-[#D9D9D9] h-[2.5rem] w-[10rem] rounded-[5rem]">
-            {isLoading ? <Loading /> : "Submit"}
-          </button>
-        </div>
-      </form>
-    </div>
+            <button className="flex items-center justify-center  text-[#000] bg-white border border-[#D9D9D9] h-[2.5rem] w-[10rem] rounded-[5rem]">
+              {isLoading ? <Loading /> : "Submit"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 

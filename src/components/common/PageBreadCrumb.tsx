@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useLanguage } from "./LanguageContext";
 
 interface BreadcrumbProps {
   pageTitle: string;
-  categoryInfo?: boolean;
+  info?: string;
   calendarInfo?: boolean;
   eventsInfo?: boolean;
   pricingInfo?: boolean;
@@ -21,7 +22,7 @@ interface BreadcrumbProps {
 
 const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
   pageTitle,
-  categoryInfo,
+  info,
   calendarInfo,
   eventsInfo,
   pricingInfo,
@@ -33,6 +34,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
   btnInventory,
   btnAdvertiser,
 }) => {
+  const { t } = useLanguage();
   const router = useRouter();
 
   const handleAddAdvertiser = () => {
@@ -55,12 +57,10 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
       >
         {pageTitle}
 
-        {categoryInfo && (
-          <span className="text-base font-normal mt-[1rem]">
-            Manage your Categories and their settings
-          </span>
+        {info && (
+          <span className="text-base font-normal mt-[1rem]">{info}</span>
         )}
-        {calendarInfo && (
+        {/* {calendarInfo && (
           <span className="text-base font-normal mt-[1rem]">
             Manage your Calendars and their settings
           </span>
@@ -75,12 +75,12 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
             Manage pricing and their settings
           </span>
         )}
-                {settingsInfo && (
+        {settingsInfo && (
           <span className="text-base font-normal mt-[1rem]">
             Admin manage receivable email
           </span>
-        )}
-          
+        )} */}
+
         {counter && (
           <span className="text-base font-normal mt-[1rem]">
             {counterText}: {counterValue}

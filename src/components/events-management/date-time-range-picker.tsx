@@ -1,7 +1,9 @@
 import React from "react";
 import TimeZoneSelectDropdown from "../atoms/time-zone-select-dropdown/time-zone-select-dropdown";
+import { useLanguage } from "../common/LanguageContext";
 
 const DateTimeRangePicker: React.FC = () => {
+  const { t } = useLanguage();
   return (
     <div className="flex space-y-4 w-full px-2">
       {/* Start */}
@@ -10,12 +12,12 @@ const DateTimeRangePicker: React.FC = () => {
           <div className=" flex items-center justify-start gap-1 absolute top-[-1rem] left-[-0.25rem]">
             {" "}
             <div className="h-2 w-2 bg-gray-400 rounded-full" />{" "}
-            <span className="font-semibold text-gray-700">Start</span>
+            <span className="font-semibold text-gray-700">{t("start")}</span>
           </div>
 
           <div className=" flex items-center justify-start gap-1 absolute bottom-[-1rem] left-[-0.25rem]">
             <div className="h-2 w-2 border border-gray-400 rounded-full" />
-            <span className="font-semibold text-gray-700">End</span>
+            <span className="font-semibold text-gray-700">{t("end")}</span>
           </div>
         </div>
         <div className="flex flex-col items-start justify-between gap-2 w-[40%]">

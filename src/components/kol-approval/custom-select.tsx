@@ -204,21 +204,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import React, { useState } from "react";
 // import { BlueIcon, GoldenIcon, SilverIcon } from "@/icons";
 
@@ -273,11 +258,10 @@
 
 // export default CustomSelect;
 
-
-
 import React, { useState } from "react";
 import { BlueIcon, GoldenIcon, SilverIcon } from "@/icons";
 import { IKolBadge } from "@/services/kols-api/kols-api.types"; // ensure correct path
+import { useLanguage } from "../common/LanguageContext";
 
 type Option = {
   label: string;
@@ -290,25 +274,25 @@ type CustomSelectProps = {
   disabled?: boolean;
 };
 
-const options: Option[] = [
-  {
-    label: "Golden",
-    value: "golden",
-    icon: <GoldenIcon />,
-  },
-  {
-    label: "Blue",
-    value: "blue",
-    icon: <BlueIcon />,
-  },
-  {
-    label: "Silver",
-    value: "silver",
-    icon: <SilverIcon />,
-  },
-];
-
 const CustomSelect: React.FC<CustomSelectProps> = ({ onSelect, disabled }) => {
+  const { t } = useLanguage();
+  const options: Option[] = [
+    {
+      label: t("golden"),
+      value: "golden",
+      icon: <GoldenIcon />,
+    },
+    {
+      label: t("blue"),
+      value: "blue",
+      icon: <BlueIcon />,
+    },
+    {
+      label: t("silver"),
+      value: "silver",
+      icon: <SilverIcon />,
+    },
+  ];
   const [selected, setSelected] = useState<Option>(options[0]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

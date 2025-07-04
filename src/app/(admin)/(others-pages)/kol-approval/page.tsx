@@ -1,4 +1,3 @@
-
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import KOLApproval from "@/components/kol-approval/kol-approval";
 import { Metadata } from "next";
@@ -9,10 +8,5 @@ export const metadata: Metadata = {
   description: "KOL Approval",
 };
 export default function page() {
-  return (
-    <div>
-      <PageBreadcrumb pageTitle="KOL Approval" />
-      <KOLApproval />
-    </div>
-  );
+  return <KOLApproval />;
 }

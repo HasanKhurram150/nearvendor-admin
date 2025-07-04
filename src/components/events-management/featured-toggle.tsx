@@ -16,9 +16,6 @@ const FeaturedToggle: React.FC<FeaturedToggleProps> = ({
       onClick={onToggle}
       className="flex items-center p-2 rounded-full transition-colors duration-300"
     >
-      {/* <span className="mr-2 font-medium">
-        {isFeatured ? "Featured" : "Mark as Featured"}
-      </span> */}
       {isFeatured ? <ActiveStarIcon /> : <StarIcon />}
     </button>
   );

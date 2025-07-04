@@ -20,6 +20,7 @@ import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import Loading from "../atoms/loading/loading";
 import { useProcessEventCSVMutation } from "@/services/events-management-api";
 import { useGetCategoriesQuery } from "@/services/categories-api";
+import { useLanguage } from "../common/LanguageContext";
 
 // Type-safe error message extractor
 const getError = (
@@ -50,6 +51,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
+  const { t } = useLanguage();
   const [uploadEventCSV, { isLoading }] = useProcessEventCSVMutation();
   const { data: categories, isLoading: isCategoryLoading } =
     useGetCategoriesQuery({});
@@ -117,7 +119,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
       <div className="flex items-center justify-start gap-4">
         <AddCategoryIcon />
         <p className="font-semibold text-[1.25rem] text-[#102445]">
-          Upload CSV
+          {t("uploadCSV")}
         </p>
       </div>
 
@@ -130,10 +132,10 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
           <div className="space-y-6 py-2 w-full max-h-[40rem] overflow-y-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="eventName">Event Name</Label>
+                <Label htmlFor="eventName">{t("eventName")}</Label>
                 <Input
                   id="eventName"
-                  placeholder="Enter event name"
+                  placeholder={t("enterEventName")}
                   registration={register("eventName")}
                   // error={errors.eventName?.message}
                   error={getError(errors?.eventName)}
@@ -145,7 +147,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
                   control={control}
                   render={({ field }) => (
                     <GenericSelectDropdown
-                      label="Category"
+                      label={t("category")}
                       options={technologyCategories}
                       onChange={(value) => {
                         field.onChange(value);
@@ -163,7 +165,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
             </div>
 
             <div>
-              <Label>Side Events CSV File</Label>
+              <Label>{t("sideEventsCSV")}</Label>
               <Controller
                 name="file"
                 control={control}
@@ -179,13 +181,11 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
               )}
             </div>
           </div>
-          <span>
-            Note: Upload CSV as per the sample file (Click to Download)
-          </span>
+          <span>{t("noteCSV")}</span>
 
           <div className="flex items-center gap-4 justify-end mt-6 w-full">
             <GenericButton
-              btnText="Cancel"
+              btnText={t("cancel")}
               bgColor="transparent"
               borderRadius="5rem"
               color="#000"
@@ -195,7 +195,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
               type="button"
             />
             <GenericButton
-              btnText={isLoading ? "" : "Save"}
+              btnText={isLoading ? "" : t("save")}
               icon={isLoading && <Loading size="sm" />}
               bgColor="#1862D4"
               borderRadius="5rem"

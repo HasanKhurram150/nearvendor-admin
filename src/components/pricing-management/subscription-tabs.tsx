@@ -6,11 +6,12 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { proPackageColumns } from "./columns";
+import { usePackageColumns } from "./columns";
 import GenericButton from "../atoms/generic-button/generic-button";
 import { EditIcon } from "@/icons";
 import { IPackages, IPrice } from "@/services/packages-api/packages-api.types";
 import Loading from "../atoms/loading/loading";
+import { useLanguage } from "../common/LanguageContext";
 
 const SubscriptionTabs = ({
   packages,
@@ -21,6 +22,8 @@ const SubscriptionTabs = ({
   handleOpenEditPricingModal: (price: IPrice, id: string) => void;
   isLoading?: boolean;
 }) => {
+  const { t } = useLanguage();
+  const columns = usePackageColumns();
   const [activeTab, setActiveTab] = useState(0);
   const activePackage = packages[activeTab];
 
@@ -54,7 +57,7 @@ const SubscriptionTabs = ({
           <Table aria-label="Calendars management table" className="w-full">
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
-                {proPackageColumns.map((col) => (
+                {columns.map((col) => (
                   <TableCell
                     key={col.id}
                     isHeader
@@ -69,7 +72,7 @@ const SubscriptionTabs = ({
               {isLoading ? (
                 <TableRow>
                   <TableCell
-                    colSpan={proPackageColumns.length}
+                    colSpan={columns.length}
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
@@ -106,10 +109,10 @@ const SubscriptionTabs = ({
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={proPackageColumns?.length}
+                    colSpan={columns?.length}
                     className="text-center py-8 text-gray-500"
                   >
-                    No pricing data found
+                    {t("noPricingDataFound")}
                   </TableCell>
                 </TableRow>
               )}

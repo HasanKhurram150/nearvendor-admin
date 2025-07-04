@@ -10,10 +10,13 @@ import {
 import { useGetAllPlacementsQuery } from "@/services/placement-api";
 import Loading from "../atoms/loading/loading";
 import PageBreadcrumb from "../common/PageBreadCrumb";
-import { placementColumns } from "./columns";
+import { usePlacementColumns } from "./columns";
+import { useLanguage } from "../common/LanguageContext";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const PlacementList: React.FC = () => {
+  const { t } = useLanguage();
+  const columns = usePlacementColumns();
   const { data: placements, isLoading } = useGetAllPlacementsQuery();
 
   // const [currentPage, setCurrentPage] = useState(1);
@@ -24,9 +27,9 @@ const PlacementList: React.FC = () => {
   return (
     <>
       <PageBreadcrumb
-        pageTitle="Placement List"
+        pageTitle={t("placementList")}
         counter={true}
-        counterText="Total Placement"
+        counterText={t("totalPlacement")}
         counterValue={placements?.length}
       />
       <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
@@ -35,7 +38,7 @@ const PlacementList: React.FC = () => {
             {/* Table Header - Always visible */}
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
-                {placementColumns.map((col) => (
+                {columns.map((col) => (
                   <TableCell
                     key={col?.id}
                     isHeader
@@ -52,7 +55,7 @@ const PlacementList: React.FC = () => {
               {isLoading ? (
                 <TableRow>
                   <TableCell
-                    colSpan={placementColumns.length}
+                    colSpan={columns.length}
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
@@ -86,10 +89,10 @@ const PlacementList: React.FC = () => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={placementColumns.length}
+                    colSpan={columns.length}
                     className="text-center py-10 text-gray-500 dark:text-gray-400"
                   >
-                    No placements found
+                    {t("noPlacementsFound")}
                   </TableCell>
                 </TableRow>
               )}
