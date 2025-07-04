@@ -7,9 +7,5 @@ export const metadata: Metadata = {
   description: "Advertiser Management",
 };
 export default function page() {
-  return (
-    <div>
-      <AdvertiserManagement />
-    </div>
-  );
+  return <AdvertiserManagement />;
 }

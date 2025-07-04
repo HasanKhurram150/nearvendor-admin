@@ -36,7 +36,7 @@ export const useCampaignColumns = () => {
     },
     {
       id: "7",
-      header: `${t("budget")} ($)`,
+      header: `${t("budget")} (KRW)`,
       className: "min-w-[8.125rem]",
     },
   ];

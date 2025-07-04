@@ -9,11 +9,14 @@ import {
 } from "../ui/table";
 import { useGetAllAdvertiserQuery } from "@/services";
 import PageBreadcrumb from "../common/PageBreadCrumb";
-import { advertiserColumns } from "./columns";
+import { useAdvertiserColumns } from "./columns";
 import Loading from "../atoms/loading/loading";
+import { useLanguage } from "../common/LanguageContext";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const AdvertiserManagement: React.FC = () => {
+  const { t } = useLanguage();
+  const columns = useAdvertiserColumns();
   const { data: advertisers, isLoading } = useGetAllAdvertiserQuery();
 
   // const [currentPage, setCurrentPage] = useState(1);
@@ -24,9 +27,9 @@ const AdvertiserManagement: React.FC = () => {
   return (
     <>
       <PageBreadcrumb
-        pageTitle="Advertiser Management"
+        pageTitle={t("advertiserManagement")}
         counter={true}
-        counterText="Total Advertiser"
+        counterText={t("totalAdvertiser")}
         counterValue={advertisers?.length}
         btnAdvertiser={true}
       />
@@ -36,7 +39,7 @@ const AdvertiserManagement: React.FC = () => {
             {/* Table Header - Always visible */}
             <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
-                {advertiserColumns.map((col) => (
+                {columns.map((col) => (
                   <TableCell
                     key={col.id}
                     isHeader
@@ -53,7 +56,7 @@ const AdvertiserManagement: React.FC = () => {
               {isLoading ? (
                 <TableRow>
                   <TableCell
-                    colSpan={advertiserColumns.length}
+                    colSpan={columns.length}
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
@@ -90,10 +93,10 @@ const AdvertiserManagement: React.FC = () => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={advertiserColumns.length}
+                    colSpan={columns.length}
                     className="text-center py-10 text-gray-500 dark:text-gray-400"
                   >
-                    No advertisers found
+                    {t("noAdvertisersFound")}
                   </TableCell>
                 </TableRow>
               )}

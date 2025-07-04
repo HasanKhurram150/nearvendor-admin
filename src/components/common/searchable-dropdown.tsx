@@ -79,7 +79,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
           }}
           onFocus={handleInputFocus}
           placeholder={isLoading ? "Loading options..." : placeholder}
-          className={`w-full p-2 pr-8 border border-gray-300 rounded-md ${disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white"}`}
+          className={`h-14 w-full rounded-xl border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-0 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white"}`}
           disabled={disabled || isLoading}
         />
 
