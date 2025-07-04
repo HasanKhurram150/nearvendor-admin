@@ -64,6 +64,7 @@ const AddCampaign: React.FC = () => {
     handleSubmit,
     setValue,
     reset,
+    watch,
     control,
     formState: { errors },
   } = useForm<any>({
@@ -156,6 +157,7 @@ const AddCampaign: React.FC = () => {
               control={control}
               render={() => (
                 <SearchableDropdown
+                  value={watch("advertiser")}
                   isLoading={isFetching}
                   options={advertiserOptions}
                   onSelect={handleSelectAdvertiser}
