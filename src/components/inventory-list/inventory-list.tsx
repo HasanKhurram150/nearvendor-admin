@@ -10,9 +10,13 @@ import {
 import { inventoryColumns } from "./columns";
 import { useGetAllInventoryQuery } from "@/services";
 import Loading from "../atoms/loading/loading";
+import GenericButton from "../atoms/generic-button/generic-button";
+import { EditIcon, TrashBinIcon } from "@/icons";
+import { useRouter } from "next/navigation";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const InventoryList: React.FC = () => {
+  const router = useRouter();
   const { data: inventory, isLoading } = useGetAllInventoryQuery({
     page: 1,
     limit: 200,
@@ -20,8 +24,6 @@ const InventoryList: React.FC = () => {
 
   // const [currentPage, setCurrentPage] = useState(1);
   // const totalPages = 5;
-
-  console.log("inventory", inventory);
 
   return (
     <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
@@ -39,6 +41,12 @@ const InventoryList: React.FC = () => {
                   {col.header}
                 </TableCell>
               ))}
+              <TableCell
+                isHeader
+                className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white`}
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHeader>
 
@@ -81,6 +89,18 @@ const InventoryList: React.FC = () => {
                   </TableCell>
                   <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
                     {item?.totalClicks}
+                  </TableCell>
+
+                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
+                    <div className="flex justify-end gap-2">
+                      <GenericButton
+                        icon={<EditIcon />}
+                        handleClick={() => {
+                          router.push(`/edit-inventory/${item.id}`);
+                        }}
+                      />
+                      <GenericButton icon={<TrashBinIcon />} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
