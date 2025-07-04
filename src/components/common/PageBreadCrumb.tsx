@@ -92,7 +92,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
           className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
           onClick={handleAddAdvertiser}
         >
-          Create Advertiser
+          {t("createAdvertiser")}
         </button>
       )}
       {btnCampaign && (
@@ -100,7 +100,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
           className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
           onClick={handleAddCampaign}
         >
-          Create Campaign
+          {t("createCampaign")}
         </button>
       )}
       {btnInventory && (
@@ -108,7 +108,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
           className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
           onClick={handleCreateInventory}
         >
-          Create Inventory
+          {t("createInventory")}
         </button>
       )}
 

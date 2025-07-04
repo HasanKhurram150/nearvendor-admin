@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function page() {
   return (
     <div>
-      <PageBreadcrumb pageTitle="Update Inventory" />
+
       <EditInventory />
     </div>
   );
