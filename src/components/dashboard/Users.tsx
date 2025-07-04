@@ -12,6 +12,7 @@ import {
 import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 import GenericSearchField from "../atoms/generic-search-field/generic-search-field";
 import Loading from "../atoms/loading/loading";
+import { useLanguage } from "../common/LanguageContext";
 
 interface User {
   id: string;
@@ -31,6 +32,7 @@ const DEFAULT_PAGE_SIZE = 10;
 const DEBOUNCE_DELAY = 400;
 
 const UsersTable = ({ users, isLoading }: UsersTableProps) => {
+  const { t } = useLanguage();
   if (isLoading) {
     return (
       <TableRow>
@@ -48,7 +50,7 @@ const UsersTable = ({ users, isLoading }: UsersTableProps) => {
           colSpan={4}
           className="text-center py-10 text-gray-500 dark:text-gray-400"
         >
-          No users found
+          {t("noUsersFound")}
         </TableCell>
       </TableRow>
     );
@@ -92,6 +94,7 @@ const UsersTable = ({ users, isLoading }: UsersTableProps) => {
 };
 
 export default function Users() {
+  const { t } = useLanguage();
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, DEBOUNCE_DELAY);
@@ -111,10 +114,10 @@ export default function Users() {
 
   const tableHeaders = useMemo(
     () => [
-      { label: "Users", className: "min-w-[12rem]" },
-      { label: "Email", className: "min-w-[15rem]" },
-      { label: "Phone Number", className: "min-w-[10rem]" },
-      { label: "Total Events", className: "min-w-[10rem]" },
+      { label: t("users"), className: "min-w-[12rem]" },
+      { label: t("email"), className: "min-w-[15rem]" },
+      { label: t("phoneNumber"), className: "min-w-[10rem]" },
+      { label: t("totalEvents"), className: "min-w-[10rem]" },
     ],
     [],
   );
@@ -125,7 +128,7 @@ export default function Users() {
         <GenericSearchField
           value={searchTerm}
           onChange={setSearchTerm}
-          placeholder="Search user"
+          placeholder={t("searchUser")}
           aria-label="Search user"
         />
       </div>

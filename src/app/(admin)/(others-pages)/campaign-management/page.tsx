@@ -7,9 +7,5 @@ export const metadata: Metadata = {
   description: "Campaign Management",
 };
 export default function page() {
-  return (
-    <div>
-      <CampaignManagement />
-    </div>
-  );
+  return <CampaignManagement />;
 }

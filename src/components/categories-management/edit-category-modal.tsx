@@ -13,6 +13,7 @@ import { ICategory } from "@/services/categories-api/categories-api.types";
 import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import Select from "../form/Select";
 import Loading from "../atoms/loading/loading";
+import { useLanguage } from "../common/LanguageContext";
 
 interface EditCategoryModalProps {
   onClose: () => void;
@@ -24,16 +25,11 @@ const validationSchema = Yup.object().shape({
   type: Yup.string().required("Type is required"),
 });
 
-const typeOptions = [
-  { label: "Tech", value: "technology" },
-  { label: "General", value: "general" },
-  { label: "None", value: "none" },
-];
-
 export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
   onClose,
   category,
 }) => {
+  const { t } = useLanguage();
   const [updateCategory, { isLoading }] = useUpdateCategoryMutation();
 
   const {
@@ -55,6 +51,12 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
   const handleSelectType = (value: string) => {
     setValue("type", value, { shouldValidate: true });
   };
+
+  const typeOptions = [
+    { label: t("tech"), value: "technology" },
+    { label: t("general"), value: "general" },
+    { label: t("none"), value: "none" },
+  ];
 
   const onSubmit = async (formData: { name: string; type: string }) => {
     try {
@@ -82,30 +84,32 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
     <div className="flex flex-col gap-10 items-start w-full">
       <div className="flex items-center gap-4">
         <AddCategoryIcon />
-        <h2 className="font-semibold text-xl text-primary">Edit Category</h2>
+        <h2 className="font-semibold text-xl text-primary">
+          {t("editCategory")}
+        </h2>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <div className="space-y-6 w-full">
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t("name")}</Label>
             <Input
               id="name"
-              placeholder="Enter category name"
+              placeholder={("enterCategoryName")}
               registration={register("name")}
               error={errors.name?.message}
             />
           </div>
 
           <div>
-            <Label htmlFor="type">Type</Label>
+            <Label htmlFor="type">{t("type")}</Label>
             <Controller
               name="type"
               control={control}
               render={() => (
                 <Select
                   options={typeOptions}
-                  placeholder="Select type"
+                  placeholder={t("selectType")}
                   onChange={handleSelectType}
                   defaultValue={category.type}
                   className="dark:bg-dark-900"
@@ -121,7 +125,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
 
           <div className="flex items-center gap-4 justify-end">
             <GenericButton
-              btnText="Cancel"
+              btnText={t("cancel")}
               bgColor="transparent"
               borderRadius="5rem"
               color="#000"
@@ -131,7 +135,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
               type="button"
             />
             <GenericButton
-              btnText={isLoading ? "" : "Update"}
+              btnText={isLoading ? "" : t("update")}
               icon={isLoading && <Loading size="sm" />}
               bgColor="#1862D4"
               borderRadius="5rem"

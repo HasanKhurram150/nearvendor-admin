@@ -7,9 +7,5 @@ export const metadata: Metadata = {
   description: "Placement List",
 };
 export default function page() {
-  return (
-    <div>
-      <PlacementList />
-    </div>
-  );
+  return <PlacementList />;
 }

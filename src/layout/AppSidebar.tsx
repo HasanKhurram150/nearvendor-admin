@@ -19,6 +19,7 @@ import {
   PlacementIcon,
   TicketIcon,
 } from "../icons/index";
+import { useLanguage } from "@/components/common/LanguageContext";
 
 type NavItem = {
   name: string;
@@ -27,77 +28,78 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-const navItems: NavItem[] = [
-  {
-    icon: <DashboardIcon />,
-    name: "Dashboard",
-    path: "/",
-    // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-  },
-  {
-    icon: <CategoriesIcon />,
-    name: "Categories Management",
-    path: "/categories-management",
-  },
-  {
-    icon: <TicketIcon />,
-    name: "Events Management",
-    path: "/events-management",
-  },
-    {
-    icon: <CalenderIcon />,
-    name: "Calendars Management",
-    path: "/calendars-management",
-  },
-  {
-    icon: <PeopleIcon />,
-    name: "KOL Approval",
-    path: "/kol-approval",
-  },
-  {
-    icon: <EventsIcon />,
-    name: "Events",
-    path: "/events",
-  },
-  {
-    icon: <DollarLineIcon />,
-    name: "Pricing",
-    path: "/pricing",
-  },
-  {
-    icon: <EnvelopeIcon />,
-    name: "Settings",
-    path: "/settings",
-  },
-];
-
-const othersItems: NavItem[] = [
-  {
-    icon: <PlacementIcon />,
-    name: "Placement List",
-    path: "/placement-list",
-  },
-  {
-    icon: <InventoryListIcon />,
-    name: "Inventory List",
-    path: "/inventory-list",
-  },
-
-  {
-    icon: <ListIcon />,
-    name: "Advertiser Management",
-    path: "/advertiser-management",
-  },
-  {
-    icon: <ListIcon />,
-    name: "Campaign Management",
-    path: "/campaign-management",
-  },
-];
-
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const navItems: NavItem[] = [
+    {
+      icon: <DashboardIcon />,
+      name: t("dashboard"),
+      path: "/",
+      // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    },
+    {
+      icon: <CategoriesIcon />,
+      name: t("categoriesManagement"),
+      path: "/categories-management",
+    },
+    {
+      icon: <TicketIcon />,
+      name: t("eventManagement"),
+      path: "/events-management",
+    },
+    {
+      icon: <CalenderIcon />,
+      name: t("calendarsManagement"),
+      path: "/calendars-management",
+    },
+    {
+      icon: <PeopleIcon />,
+      name: t("kolApproval"),
+      path: "/kol-approval",
+    },
+    {
+      icon: <EventsIcon />,
+      name: t("events"),
+      path: "/events",
+    },
+    {
+      icon: <DollarLineIcon />,
+      name: t("pricing"),
+      path: "/pricing",
+    },
+    {
+      icon: <EnvelopeIcon />,
+      name: t("settings"),
+      path: "/settings",
+    },
+  ];
+
+  const othersItems: NavItem[] = [
+    {
+      icon: <PlacementIcon />,
+      name: t("placementList"),
+      path: "/placement-list",
+    },
+    {
+      icon: <InventoryListIcon />,
+      name: t("inventoryList"),
+      path: "/inventory-list",
+    },
+
+    {
+      icon: <ListIcon />,
+      name: t("advertiserManagement"),
+      path: "/advertiser-management",
+    },
+    {
+      icon: <ListIcon />,
+      name: t("campaignManagement"),
+      path: "/campaign-management",
+    },
+  ];
 
   const renderMenuItems = (
     navItems: NavItem[],
