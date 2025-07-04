@@ -11,9 +11,12 @@ export const ENDPOINTS = {
   getAllPlacements: "/placement/all", //GET
   getAllAdvertiser: "/advertiser/all", //GET
   getAllInventory: "/inventory/all", //GET
+  getInventoryById: "/inventory/one", //GET
   addCampaign: "/campaign", //POST
   addAdvertiser: "/advertiser", //POST
   addInventory: "/inventory", //POST
+  updateInventory: "/inventory/update", //PUT
+  updateInventoryStatus: "/inventory/update/status", //PUT
   getCategories: "/categories", //GET
   createCategory: "/categories", //POST
   updateCategory: "/categories", //PATCH

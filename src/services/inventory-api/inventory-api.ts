@@ -2,8 +2,11 @@ import { ENDPOINTS } from "@/config";
 import { baseAPI } from "../base-api";
 import {
   IAddInventory,
+  IInventory,
   IInventoryQueryParams,
   IInventoryResponse,
+  IUpdateInventory,
+  IUpdateStatus,
 } from "./inventory-api.types";
 import { TAGS } from "../tags";
 
@@ -29,8 +32,46 @@ export const inventoryAPI = baseAPI.injectEndpoints({
       }),
       invalidatesTags: [TAGS.INVENTORY],
     }),
+    getInventoryById: builder.query<IInventory, string | string[] | undefined>({
+      query: (id) => ({
+        url: `${ENDPOINTS.getInventoryById}/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response: any) => {
+        return response;
+      },
+      providesTags: [TAGS.INVENTORY],
+    }),
+    updateInventory: builder.mutation<void, IUpdateInventory>({
+      query: (payload) => {
+        const { id, ...rest } = payload;
+        return {
+          url: `${ENDPOINTS.updateInventory}/${payload.id}`,
+          method: "PUT",
+          body: rest,
+        };
+      },
+      invalidatesTags: [TAGS.INVENTORY],
+    }),
+    updateStatus: builder.mutation<void, IUpdateStatus>({
+      query: (payload) => {
+        return {
+          url: `${ENDPOINTS.updateInventoryStatus}/${payload.id}`,
+          method: "PUT",
+          body: {
+            status: payload.status ? 1 : 0,
+          },
+        };
+      },
+      invalidatesTags: [TAGS.INVENTORY],
+    }),
   }),
 });
 
-export const { useGetAllInventoryQuery, useAddInventoryMutation } =
-  inventoryAPI;
+export const {
+  useGetAllInventoryQuery,
+  useAddInventoryMutation,
+  useGetInventoryByIdQuery,
+  useUpdateInventoryMutation,
+  useUpdateStatusMutation
+} = inventoryAPI;

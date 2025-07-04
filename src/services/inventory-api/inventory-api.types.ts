@@ -171,5 +171,33 @@ export interface IAddInventory {
   landingUrl: string;
   unitCost: string;
   costType: string;
-  file1: string| null;
+  file1: string | null;
+}
+
+export interface IUpdateInventory {
+  id: string;
+  placementId: string;
+  campaignId: string;
+  inventorySelection: string;
+  inventoryName: string;
+  inventoryDesc: string;
+  startDate: string;
+  endDate: string;
+  impressionDay: string;
+  startTime: string;
+  endTime: string;
+  budgetTotal: number;
+  adsName: string;
+  materialType: string;
+  materialSize: string;
+  landingType: string;
+  landingUrl: string;
+  unitCost: string;
+  costType: string;
+  file1: string | null;
+}
+
+export interface IUpdateStatus {
+  id: string;
+  status: number;
 }
