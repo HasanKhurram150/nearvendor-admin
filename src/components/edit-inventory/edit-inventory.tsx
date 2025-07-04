@@ -286,6 +286,7 @@ const EditInventory: React.FC = () => {
       setValue("materialName", selectedInventory.adsName, {
         shouldValidate: true,
       });
+
       setValue(
         "campaign",
         {
@@ -385,6 +386,7 @@ const EditInventory: React.FC = () => {
       setValue("materialName", inventory.adsName, {
         shouldValidate: true,
       });
+      setValue("budgetTotal", inventory.budgetTotal);
       setValue(
         "campaign",
         {

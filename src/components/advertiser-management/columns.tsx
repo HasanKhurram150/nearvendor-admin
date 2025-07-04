@@ -39,5 +39,10 @@ export const useAdvertiserColumns = () => {
       header: t("businessRegDoc"),
       className: "min-w-[12rem]",
     },
+    {
+      id: "7",
+      header: t("action"),
+      className: "min-w-[8.125rem]",
+    },
   ];
 };
