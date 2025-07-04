@@ -1,4 +1,3 @@
-
 import AddCampaign from "@/components/add-campaign/add-campaign";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import EditCampaign from "@/components/edit-campaign/edit-campaign";
@@ -10,10 +9,5 @@ export const metadata: Metadata = {
   description: "Edit Campaign",
 };
 export default function page() {
-  return (
-    <div>
-
-      <EditCampaign />
-    </div>
-  );
+  return <EditCampaign />;
 }
