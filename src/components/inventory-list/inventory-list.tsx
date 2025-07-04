@@ -10,64 +10,32 @@ import {
 import { useInventoryColumns } from "./columns";
 import { useGetAllInventoryQuery } from "@/services";
 import Loading from "../atoms/loading/loading";
-<<<<<<< HEAD
-import GenericButton from "../atoms/generic-button/generic-button";
-import { EditIcon, TrashBinIcon } from "@/icons";
-=======
 import { useLanguage } from "../common/LanguageContext";
 import GenericButton from "../atoms/generic-button/generic-button";
 import { EditIcon } from "@/icons";
 import PageBreadcrumb from "../common/PageBreadCrumb";
->>>>>>> 8c34d4343ab9422d7f92ee2482cad4a3796576f7
 import { useRouter } from "next/navigation";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const InventoryList: React.FC = () => {
-<<<<<<< HEAD
-  const router = useRouter();
-=======
   const { t } = useLanguage();
   const router = useRouter();
   const columns = useInventoryColumns();
->>>>>>> 8c34d4343ab9422d7f92ee2482cad4a3796576f7
   const { data: inventory, isLoading } = useGetAllInventoryQuery({
     page: 1,
     limit: 200,
   });
 
-  const handleEditInventory = () => {
-    router.push("/edit-inventory");
+  const handleEditInventory = (id: string) => {
+    router.push(`/edit-inventory/${id}`);
   };
 
   // const [currentPage, setCurrentPage] = useState(1);
   // const totalPages = 5;
 
+  console.log("inventory", inventory);
+
   return (
-<<<<<<< HEAD
-    <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
-      <div className="max-w-full overflow-x-auto">
-        <Table>
-          {/* Table Header - Always visible */}
-          <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
-            <TableRow>
-              {inventoryColumns.map((col) => (
-                <TableCell
-                  key={col.id}
-                  isHeader
-                  className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white ${col.className}`}
-                >
-                  {col.header}
-                </TableCell>
-              ))}
-              <TableCell
-                isHeader
-                className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white`}
-              >
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHeader>
-=======
     <>
       <PageBreadcrumb
         pageTitle={t("inventoryList")}
@@ -76,7 +44,6 @@ const InventoryList: React.FC = () => {
         counterValue={0}
         btnInventory={true}
       />
->>>>>>> 8c34d4343ab9422d7f92ee2482cad4a3796576f7
 
       <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
@@ -106,18 +73,6 @@ const InventoryList: React.FC = () => {
                   >
                     <div className="flex justify-center">
                       <Loading size="lg" />
-                    </div>
-                  </TableCell>
-
-                  <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                    <div className="flex justify-end gap-2">
-                      <GenericButton
-                        icon={<EditIcon />}
-                        handleClick={() => {
-                          router.push(`/edit-inventory/${item.id}`);
-                        }}
-                      />
-                      <GenericButton icon={<TrashBinIcon />} />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -153,7 +108,9 @@ const InventoryList: React.FC = () => {
                         <GenericButton
                           icon={<EditIcon />}
                           aria-label={`Edit ${item?.inventoryName}`}
-                          handleClick={handleEditInventory}
+                          handleClick={() => {
+                            handleEditInventory(item.id);
+                          }}
                         />
                       </div>
                     </TableCell>
