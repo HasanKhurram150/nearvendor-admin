@@ -10,6 +10,7 @@ export const ENDPOINTS = {
   getCampaigns: "/campaign", //GET
   getAllPlacements: "/placement/all", //GET
   getAllAdvertiser: "/advertiser/all", //GET
+   getAdvertiserById: "/advertiser", //GET
   getAllInventory: "/inventory/all", //GET
   getInventoryById: "/inventory/one", //GET
   addCampaign: "/campaign", //POST

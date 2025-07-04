@@ -12,17 +12,22 @@ import PageBreadcrumb from "../common/PageBreadCrumb";
 import { useAdvertiserColumns } from "./columns";
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
+import GenericButton from "../atoms/generic-button/generic-button";
+import { EditIcon } from "@/icons";
+import { useRouter } from "next/navigation";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const AdvertiserManagement: React.FC = () => {
   const { t } = useLanguage();
   const columns = useAdvertiserColumns();
+  const router = useRouter();
   const { data: advertisers, isLoading } = useGetAllAdvertiserQuery();
 
   // const [currentPage, setCurrentPage] = useState(1);
   // const totalPages = 5;
-
-  console.log("advertiser", advertisers);
+  const handleEditInventory = (id: string) => {
+    router.push(`/edit-advertiser/${id}`);
+  };
 
   return (
     <>
@@ -87,6 +92,17 @@ const AdvertiserManagement: React.FC = () => {
                     </TableCell>
                     <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
                       {advertiser?.businessRegistrationDocument}
+                    </TableCell>
+                    <TableCell className="pl-3 pr-6 py-5 text-left min-w-[10rem]">
+                      <div className="flex justify-start gap-2">
+                        <GenericButton
+                          icon={<EditIcon />}
+                          aria-label={`Edit ${advertiser?.nickName}`}
+                          handleClick={() => {
+                            handleEditInventory(advertiser.id);
+                          }}
+                        />
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

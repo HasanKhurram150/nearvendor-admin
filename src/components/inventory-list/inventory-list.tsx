@@ -80,7 +80,7 @@ const InventoryList: React.FC = () => {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {isLoading || updatinginventory ? (
+              {isLoading ? (
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}

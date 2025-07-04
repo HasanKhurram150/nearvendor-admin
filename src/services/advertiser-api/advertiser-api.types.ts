@@ -19,6 +19,18 @@ export interface Iadvertiser {
 }
 
 export interface IAddAdvertiser {
+  id: string
+  companyName: string;
+  nickName: string;
+  registrationNumber: string;
+  representative: string;
+  businessRegistrationDocument: string;
+  departmentName: string;
+  bankName: string;
+}
+
+export interface IUpdateAdvertiser {
+  id: string
   companyName: string;
   nickName: string;
   registrationNumber: string;
