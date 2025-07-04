@@ -128,7 +128,7 @@ export default function Users() {
         <GenericSearchField
           value={searchTerm}
           onChange={setSearchTerm}
-          placeholder="Search user"
+          placeholder={t("searchUser")}
           aria-label="Search user"
         />
       </div>

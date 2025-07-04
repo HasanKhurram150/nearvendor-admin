@@ -13,15 +13,23 @@ import { formatStartEndDate } from "@/utils/formatStartEndDate";
 import { useCampaignColumns } from "./columns";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { useLanguage } from "../common/LanguageContext";
+import { useRouter } from "next/navigation";
+import GenericButton from "../atoms/generic-button/generic-button";
+import { EditIcon } from "@/icons";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const CampaignManagement: React.FC = () => {
   const { t } = useLanguage();
+  const router = useRouter();
   const columns = useCampaignColumns();
   const { data: campaigns, isLoading } = useGetCampaignsQuery({
     page: 1,
     limit: 200,
   });
+
+  const handleEditCampaign = () => {
+    router.push("/edit-campaign");
+  };
 
   // const [currentPage, setCurrentPage] = useState(1);
   // const totalPages = 5;
@@ -48,7 +56,7 @@ const CampaignManagement: React.FC = () => {
                   <TableCell
                     key={col.id}
                     isHeader
-                    className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white ${col.className}`}
+                    className={`py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white last:text-right last:pr-[1rem] ${col.className}`}
                   >
                     {col.header}
                   </TableCell>
@@ -95,6 +103,15 @@ const CampaignManagement: React.FC = () => {
                     </TableCell>
                     <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
                       {campaign?.budgetTotal}
+                    </TableCell>
+                    <TableCell className="pl-3 pr-6 py-5 text-right min-w-[8rem]">
+                      <div className="flex justify-end gap-2">
+                        <GenericButton
+                          icon={<EditIcon />}
+                          aria-label={`Edit ${campaign?.name}`}
+                          handleClick={handleEditCampaign}
+                        />
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

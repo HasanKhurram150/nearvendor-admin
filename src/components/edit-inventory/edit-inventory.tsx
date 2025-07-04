@@ -61,7 +61,7 @@ const reverseDaysMap: { [key in Days]: string } = {
   SUNDAY: "7",
 };
 
-const CreateInventory: React.FC = () => {
+const EditInventory: React.FC = () => {
   const { t } = useLanguage();
   const [budgetCap, setSetBudget] = useState(0);
   const router = useRouter();
@@ -423,7 +423,7 @@ const CreateInventory: React.FC = () => {
   };
   return (
     <>
-      <PageBreadcrumb pageTitle={t("createInventory")} />
+      <PageBreadcrumb pageTitle={t("editInventory")} />
       <div className="rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] p-[1.875rem]">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -806,4 +806,4 @@ const CreateInventory: React.FC = () => {
   );
 };
 
-export default CreateInventory;
+export default EditInventory;
