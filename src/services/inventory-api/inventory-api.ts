@@ -6,6 +6,7 @@ import {
   IInventoryQueryParams,
   IInventoryResponse,
   IUpdateInventory,
+  IUpdateStatus,
 } from "./inventory-api.types";
 import { TAGS } from "../tags";
 
@@ -52,6 +53,18 @@ export const inventoryAPI = baseAPI.injectEndpoints({
       },
       invalidatesTags: [TAGS.INVENTORY],
     }),
+    updateStatus: builder.mutation<void, IUpdateStatus>({
+      query: (payload) => {
+        return {
+          url: `${ENDPOINTS.updateInventoryStatus}/${payload.id}`,
+          method: "PUT",
+          body: {
+            status: payload.status ? 1 : 0,
+          },
+        };
+      },
+      invalidatesTags: [TAGS.INVENTORY],
+    }),
   }),
 });
 
@@ -59,5 +72,6 @@ export const {
   useGetAllInventoryQuery,
   useAddInventoryMutation,
   useGetInventoryByIdQuery,
-  useUpdateInventoryMutation
+  useUpdateInventoryMutation,
+  useUpdateStatusMutation
 } = inventoryAPI;

@@ -8,13 +8,16 @@ import {
   TableRow,
 } from "../ui/table";
 import { useInventoryColumns } from "./columns";
-import { useGetAllInventoryQuery } from "@/services";
+import { useGetAllInventoryQuery, useUpdateStatusMutation } from "@/services";
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
 import GenericButton from "../atoms/generic-button/generic-button";
 import { EditIcon } from "@/icons";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { useRouter } from "next/navigation";
+import { ToggleSwitch } from "../toggle-button/toggle-button";
+import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import toast from "react-hot-toast";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
 const InventoryList: React.FC = () => {
@@ -25,6 +28,7 @@ const InventoryList: React.FC = () => {
     page: 1,
     limit: 200,
   });
+  const [mutate, { isLoading: updatinginventory }] = useUpdateStatusMutation();
 
   const handleEditInventory = (id: string) => {
     router.push(`/edit-inventory/${id}`);
@@ -33,7 +37,18 @@ const InventoryList: React.FC = () => {
   // const [currentPage, setCurrentPage] = useState(1);
   // const totalPages = 5;
 
-  console.log("inventory", inventory);
+  const handleMutateStatus = async (id: string, state: number) => {
+    try {
+      await mutate({ id: id, status: state === 1 ? 0 : 1 });
+    } catch (error) {
+      const apiError = error as ApiErrorResponse;
+      if (apiError.data && apiError.data.message) {
+        toast.error(apiError.data.message);
+      } else {
+        toast.error("Failed to update status. Please try again");
+      }
+    }
+  };
 
   return (
     <>
@@ -41,7 +56,7 @@ const InventoryList: React.FC = () => {
         pageTitle={t("inventoryList")}
         counter={true}
         counterText={t("totalInventory")}
-        counterValue={0}
+        counterValue={inventory?.meta.totalItems}
         btnInventory={true}
       />
 
@@ -65,7 +80,7 @@ const InventoryList: React.FC = () => {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {isLoading ? (
+              {isLoading || updatinginventory ? (
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
@@ -82,9 +97,7 @@ const InventoryList: React.FC = () => {
                     <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
                       {item?.inventoryName}
                     </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                      {item?.uniqueId}
-                    </TableCell>
+
                     <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8.125rem]">
                       {item?.status}
                     </TableCell>
@@ -102,6 +115,16 @@ const InventoryList: React.FC = () => {
                     </TableCell>
                     <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[8rem]">
                       {item?.totalClicks}
+                    </TableCell>
+                    <TableCell className="pl-3 pr-6 py-5 text-left min-w-[10rem]">
+                      <div className="flex justify-start gap-2">
+                        <ToggleSwitch
+                          checked={item.status === 1 ? true : false}
+                          onChange={() => {
+                            handleMutateStatus(item.id, item.status);
+                          }}
+                        />
+                      </div>
                     </TableCell>
                     <TableCell className="pl-3 pr-6 py-5 text-left min-w-[10rem]">
                       <div className="flex justify-start gap-2">

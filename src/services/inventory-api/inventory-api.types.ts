@@ -196,3 +196,8 @@ export interface IUpdateInventory {
   costType: string;
   file1: string | null;
 }
+
+export interface IUpdateStatus {
+  id: string;
+  status: number;
+}
