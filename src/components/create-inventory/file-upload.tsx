@@ -1,6 +1,7 @@
 import { ExportIcon } from "@/icons";
 import React, { useRef, useState } from "react";
 import { API_KEY, BASE_URL } from "@/config";
+import { useLanguage } from "../common/LanguageContext";
 
 interface FileUploadProps {
   value?: File | null;
@@ -19,6 +20,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   disabled = false,
   multiple = false,
 }) => {
+  const { t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -119,7 +121,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
               aria-label="Remove file"
               type="button"
             >
-              Remove
+              {t("remove")}
             </button>
           )}
         </div>
@@ -134,7 +136,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           onClick={handleClick}
         >
           <span className="text-sm text-gray-400 dark:text-gray-400">
-            {isUploading ? "Uploading..." : "Attach Document"}
+            {isUploading ? t("uploading") : t("attachDocument")}
           </span>
           <div
             className={`flex items-center justify-center gap-2 px-2 py-1 text-sm border rounded-xl transition w-[7.25rem] h-[2.375rem]
@@ -144,7 +146,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
                   : "bg-white dark:bg-gray-800 text-black dark:text-white border-[#EAEAEA] dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
               }`}
           >
-            <ExportIcon /> {isUploading ? "..." : "Upload File"}
+            <ExportIcon /> {isUploading ? "..." : t("uploadFile")}
           </div>
         </div>
       )}

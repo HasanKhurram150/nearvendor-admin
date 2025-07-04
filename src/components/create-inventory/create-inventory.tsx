@@ -428,7 +428,7 @@ const CreateInventory: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="pb-4">
-              <Label>Placements</Label>
+              <Label>{t("placements")}</Label>
               <Controller
                 name="placementId"
                 control={control}
@@ -438,7 +438,7 @@ const CreateInventory: React.FC = () => {
                     isLoading={isFetchingPlacements}
                     options={placementsOptions}
                     onSelect={handleSelectPlacement}
-                    placeholder="Search and select placement"
+                    placeholder={t("searchPlacement")}
                   />
                 )}
               />
@@ -450,7 +450,7 @@ const CreateInventory: React.FC = () => {
               {/* <Input placeholder="Search and select the advertiser" type="text" /> */}
             </div>
             <div className="pb-4">
-              <Label>Campaign</Label>
+              <Label>{t("campaign")}</Label>
               <Controller
                 name="campaign"
                 control={control}
@@ -460,7 +460,7 @@ const CreateInventory: React.FC = () => {
                     isLoading={isFetchingCampaigns}
                     options={campaignOptions}
                     onSelect={handleSelectCampaign}
-                    placeholder="Search and select campaign"
+                    placeholder={t("searchCampaign")}
                     // disabled={!selectedAdvertiser}
                   />
                 )}
@@ -496,7 +496,7 @@ const CreateInventory: React.FC = () => {
           <Input placeholder="Enter your code" type="text" />
         </div> */}
             <p className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90">
-              Basic Inventory Information
+              {t("basicInventoryInfo")}
             </p>
             <div />
             {/* <div className="pb-4"> 
@@ -504,7 +504,7 @@ const CreateInventory: React.FC = () => {
           <Input placeholder="Enter your code" type="text" />
         </div> */}
             <div className="pb-4">
-              <Label>Inventory Selection</Label>
+              <Label>{t("inventorySelection")}</Label>
               <Controller
                 name="inventorySelection"
                 control={control}
@@ -514,7 +514,7 @@ const CreateInventory: React.FC = () => {
                     isLoading={inventoryLoading}
                     options={inventoryOptions}
                     onSelect={handleSelectInventrory}
-                    placeholder="Search and select inventory"
+                    placeholder={t("searchInventory")}
                     // disabled={!selectedAdvertiser}
                   />
                 )}
@@ -526,25 +526,25 @@ const CreateInventory: React.FC = () => {
               )}
             </div>
             <div className="pb-4">
-              <Label>Inventory Name</Label>
+              <Label>{t("inventoryName")}</Label>
               <Input
-                placeholder="Enter your inventory name"
+                placeholder={t("enterInventoryName")}
                 type="text"
                 registration={register("inventoryName")}
                 error={errors.inventoryName?.message as string}
               />
             </div>
             <div className="pb-4">
-              <Label>Inventory Description</Label>
+              <Label>{t("inventoryDescription")}</Label>
               <Input
-                placeholder="Enter your description"
+                placeholder={t("enterDescription")}
                 type="text"
                 registration={register("inventoryDesc")}
                 error={errors.inventoryDesc?.message as string}
               />
             </div>
             <div className="pb-4">
-              <Label>Exposure Period (Start)</Label>
+              <Label>{t("exposureStart")}</Label>
               <DatePicker
                 value={watch("exposureStartDate")}
                 handleChange={handleSetStartDate}
@@ -556,7 +556,7 @@ const CreateInventory: React.FC = () => {
               )}
             </div>
             <div className="pb-4">
-              <Label>Exposure Period (End)</Label>
+              <Label>{t("exposureEnd")}</Label>
               <DatePicker
                 value={watch("exposureEndDate")}
                 handleChange={handleSetEndDate}
@@ -568,7 +568,7 @@ const CreateInventory: React.FC = () => {
               )}
             </div>
             <div className="pb-4">
-              <Label>Exposure Days</Label>
+              <Label>{t("exposureDays")}</Label>
               <Controller
                 name="impressionDay"
                 control={control}
@@ -588,7 +588,7 @@ const CreateInventory: React.FC = () => {
             <div className="pb-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Start</Label>
+                  <Label>{t("start")}</Label>
                   <TimePicker
                     value={watch("dailyStartTime")}
                     handleChange={handleSetStartTime}
@@ -600,7 +600,7 @@ const CreateInventory: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  <Label>End</Label>
+                  <Label>{t("end")}</Label>
                   <TimePicker
                     value={watch("dailyEndTime")}
                     handleChange={handleSetEndTime}
@@ -614,9 +614,9 @@ const CreateInventory: React.FC = () => {
               </div>
             </div>
             <div className="pb-4">
-              <Label>Inventory Allocated/Remaining Budget</Label>
+              <Label> {t("inventoryBudget")}</Label>
               <Input
-                placeholder="Enter allocated budget"
+                placeholder={t("enterAllocatedBudget")}
                 type="text"
                 registration={register("budgetTotal")}
                 error={errors.budgetTotal?.message as string}
@@ -652,13 +652,13 @@ const CreateInventory: React.FC = () => {
         </div> */}
 
             <p className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90">
-              Inventory Details
+              {t("inventoryDetails")}
             </p>
             <div />
             <div className="pb-4">
-              <Label>Material Name</Label>
+              <Label>{t("materialName")}</Label>
               <Input
-                placeholder="Enter material name"
+                placeholder={t("enterMaterialName")}
                 type="text"
                 registration={register("materialName")}
                 error={errors.materialName?.message as string}
@@ -667,9 +667,9 @@ const CreateInventory: React.FC = () => {
             </div>
 
             <div className="pb-4">
-              <Label>Material Type</Label>
+              <Label>{t("materialType")}</Label>
               <Input
-                placeholder="Enter material type"
+                placeholder={t("enterMaterialType")}
                 type="text"
                 registration={register("materialType")}
                 error={errors.materialType?.message as string}
@@ -677,9 +677,9 @@ const CreateInventory: React.FC = () => {
               />
             </div>
             <div className="pb-4">
-              <Label>Material Size</Label>
+              <Label>{t("materialSize")}</Label>
               <Input
-                placeholder="Enter material size"
+                placeholder={t("enterMaterialSize")}
                 type="text"
                 registration={register("materialSize")}
                 error={errors.materialSize?.message as string}
@@ -688,7 +688,7 @@ const CreateInventory: React.FC = () => {
             </div>
             <div className="pb-4">
               <div className="pb-4">
-                <Label>Landing Type</Label>
+                <Label>{t("landingType")}</Label>
                 <Controller
                   name="landingType"
                   control={control}
@@ -697,7 +697,7 @@ const CreateInventory: React.FC = () => {
                       value={watch("landingType")?.label ?? ""}
                       options={landingTypeOptions}
                       onSelect={handleSelectLandingType}
-                      placeholder="Select Landing Type"
+                      placeholder={t("enterLandingType")}
                       // disabled={!selectedAdvertiser}
                     />
                   )}
@@ -710,25 +710,25 @@ const CreateInventory: React.FC = () => {
               </div>
             </div>
             <div className="pb-4">
-              <Label>Landing URL</Label>
+              <Label>{t("landingUrl")}</Label>
               <Input
-                placeholder="Enter landing URL"
+                placeholder={t("enterLandingUrl")}
                 type="text"
                 registration={register("landingUrl")}
                 error={errors.landingUrl?.message as string}
               />
             </div>
             <div className="pb-4">
-              <Label>Unit Cost</Label>
+              <Label>{t("unitCost")}</Label>
               <Input
-                placeholder="Enter Unit Cost"
+                placeholder={t("enterUnitCost")}
                 type="text"
                 registration={register("unitCost")}
                 error={errors.unitCost?.message as string}
               />
             </div>
             <div className="pb-4">
-              <Label>Unit Cost Type</Label>
+              <Label>{"unitCostType"}</Label>
               <Controller
                 name="unitCostType"
                 control={control}
@@ -737,7 +737,7 @@ const CreateInventory: React.FC = () => {
                     value={watch("unitCostType").label ?? ""}
                     options={unitCostTypeOptions}
                     onSelect={handleSelectUnitCostType}
-                    placeholder="Select Unit Cost type"
+                    placeholder={t("selectUnitCostType")}
                     // disabled={!selectedAdvertiser}
                   />
                 )}
@@ -749,7 +749,7 @@ const CreateInventory: React.FC = () => {
               )}
             </div>
             <div className="pb-4">
-              <Label>Creative File</Label>
+              <Label>{t("creativeFile")}</Label>
               <Controller
                 name="creativeFile"
                 control={control}
@@ -797,7 +797,7 @@ const CreateInventory: React.FC = () => {
             Save
           </button> */}
             <button className="flex items-center justify-center  text-[#000] bg-white border border-[#D9D9D9] h-[2.5rem] w-[10rem] rounded-[5rem]">
-              {isLoading ? <Loading /> : "Submit"}
+              {isLoading ? <Loading /> : t("submit")}
             </button>
           </div>
         </form>
