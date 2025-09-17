@@ -5,7 +5,7 @@ import { getLocalStorage } from "@/utils";
 
 
 export const ThemeIntitalState: ThemesSliceStateProps = {
-  mode: getLocalStorage("theme") || "light",
+  mode: getLocalStorage("theme") || "dark",
 };
 
 const ThemeSlice = createSlice({

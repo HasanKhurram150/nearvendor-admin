@@ -4,7 +4,7 @@ import { GenericButtonProps } from "./generic-button.types";
 const GenericButton: React.FC<GenericButtonProps> = ({
   btnText,
   icon,
-  bgColor,
+  bgColor = "#BF00FF",
   color,
   borderColor = "#1024452E",
   borderRadius = "0.625rem",
@@ -18,7 +18,7 @@ const GenericButton: React.FC<GenericButtonProps> = ({
   return (
     <button
       disabled={disabled}
-      className="flex items-center justify-center gap-2 text-sm px-1 py-1"
+      className="flex justify-center items-center gap-2 px-1 py-1 text-sm btn-icon"
       style={{
         backgroundColor: disabled ? disabledBgColor : bgColor,
         background: bgColor,

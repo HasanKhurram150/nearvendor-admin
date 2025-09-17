@@ -111,7 +111,7 @@ const CategoriesManagement: React.FC = () => {
         <TableRow>
           <TableCell colSpan={columns.length} className="text-center py-8">
             <div className="flex justify-center">
-              <Loading size="lg" />
+              <Loading size="lg" className="border-[#1862D4]" />
             </div>
           </TableCell>
         </TableRow>
@@ -202,10 +202,10 @@ const CategoriesManagement: React.FC = () => {
         </div>
 
         {/* Categories Table */}
-        <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
+        <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full  border dark:border-gray-800 pb-[1.5rem]">
           <div className="max-w-full overflow-x-auto">
             <Table aria-label="Categories management table">
-              <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-4">
+              <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-4">
                 <TableRow>
                   {columns.map((col) => (
                     <TableCell

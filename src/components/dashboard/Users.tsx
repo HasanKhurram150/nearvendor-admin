@@ -37,7 +37,7 @@ const UsersTable = ({ users, isLoading }: UsersTableProps) => {
     return (
       <TableRow>
         <TableCell colSpan={4} className="text-center py-10">
-          <Loading size="lg" />
+          <Loading size="lg" className="border-[#1862D4]" />
         </TableCell>
       </TableRow>
     );
@@ -133,10 +133,10 @@ export default function Users() {
         />
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] pb-[1.5rem]">
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] border dark:border-gray-800 pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
           <Table>
-            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+            <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
                 {tableHeaders.map((header) => (
                   <TableCell

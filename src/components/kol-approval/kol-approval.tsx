@@ -94,10 +94,10 @@ const KOLApproval: React.FC = () => {
     <>
       <PageBreadcrumb pageTitle={t("kolApproval")} />
 
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
+      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] border dark:border-gray-800 pb-[1.5rem]">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+            <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
                 <TableCell
                   isHeader
@@ -141,7 +141,7 @@ const KOLApproval: React.FC = () => {
                         setFilterStatus(e.target.value as any);
                         setPage(1);
                       }}
-                      className="border border-gray-300 rounded-xl pl-1 pr-3 py-1 text-sm text-[#201D1D99] bg-white"
+                      className="border border-gray-300 dark:border-gray-800 rounded-xl pl-1 pr-3 py-1 text-sm text-[#201D1D99] dark:text-white bg-white dark:bg-transparent"
                     >
                       <option value="all">{t("all")}</option>
                       <option value="approved">{t("approved")}</option>
@@ -160,7 +160,7 @@ const KOLApproval: React.FC = () => {
                     colSpan={6}
                     className="text-center py-10 text-gray-500 dark:text-gray-400"
                   >
-                    <Loading size="lg" />
+                    <Loading size="lg" className="border-[#1862D4]" />
                   </TableCell>
                 </TableRow>
               ) : kolRequests?.length === 0 ? (

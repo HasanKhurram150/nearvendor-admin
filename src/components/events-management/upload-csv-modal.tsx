@@ -56,6 +56,8 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
   const { data: categories, isLoading: isCategoryLoading } =
     useGetCategoriesQuery({});
 
+    // console.log("this is categories...", categories);
+
   const technologyCategories =
     categories
       ?.filter((category) => category?.type === "technology")
@@ -115,23 +117,24 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <div className="flex flex-col gap-[2.5rem] items-start w-full">
-      <div className="flex items-center justify-start gap-4">
-        <AddCategoryIcon />
-        <p className="font-semibold text-[1.25rem] text-[#102445]">
+    <div className="flex flex-col items-start gap-[2.5rem] w-full">
+      <div className="flex justify-start items-center gap-4">
+        {/* <AddCategoryIcon /> */}
+        <p className="font-semibold text-[#102445] text-[1.25rem] dark:text-white">
           {t("uploadCSV")}
         </p>
       </div>
 
       {isCategoryLoading ? (
-        <div className="w-full flex justify-center items-center h-[300px]">
-          <Loading size="lg" />
+        <div className="flex justify-center items-center w-full h-[300px]">
+          <Loading size="lg" className="border-[#1862D4]" />
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="space-y-6 py-2 w-full max-h-[40rem] overflow-y-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
               <div>
+                <p className="invisible">Only Technology category type side events is accepted</p>
                 <Label htmlFor="eventName">{t("eventName")}</Label>
                 <Input
                   id="eventName"
@@ -142,6 +145,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
                 />
               </div>
               <div>
+                <p>Only Technology category type side events are accepted</p>
                 <Controller
                   name="categoryId"
                   control={control}
@@ -157,7 +161,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
                   )}
                 />
                 {errors.categoryId && (
-                  <p className="mt-1 text-sm text-error-500">
+                  <p className="mt-1 text-error-500 text-sm">
                     {getError(errors.categoryId)}
                   </p>
                 )}
@@ -174,21 +178,28 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
                 )}
               />
               {errors.file && (
-                <p className="mt-1 text-sm text-error-500">
+                <p className="mt-1 text-error-500 text-sm">
                   {/* {errors.file.message} */}
                   {getError(errors.file)}
                 </p>
               )}
             </div>
           </div>
-          <span>{t("noteCSV")}</span>
+          <a
+            href="/test-sheets.csv"
+            download
+            className="hover:text-blue-600 dark:text-white underline cursor-pointer"
+            style={{ textDecoration: "underline" }}
+          >
+            {t("noteCSV")}
+          </a>
 
-          <div className="flex items-center gap-4 justify-end mt-6 w-full">
+          <div className="flex justify-end items-center gap-4 mt-6 w-full">
             <GenericButton
               btnText={t("cancel")}
               bgColor="transparent"
               borderRadius="5rem"
-              color="#000"
+              color="white"
               height="2.5rem"
               width="5.813rem"
               handleClick={onClose}

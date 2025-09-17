@@ -59,30 +59,30 @@ const SignInForm = () => {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="flex flex-col items-center justify-center w-full max-w-[33.75rem] mx-auto">
+    <div className="flex flex-col justify-center items-center bg-[#08070d] w-full">
+      <div className="flex flex-col justify-center items-center mx-auto w-full max-w-[33.75rem]">
         <>
-          <Image
-            className="dark:hidden"
-            src="/images/logo/logo.svg"
-            alt="Logo"
-            width={136}
-            height={37}
-          />
-          <Image
-            className="hidden dark:block"
-            src="/images/logo/logo-dark.svg"
-            alt="Logo"
-            width={136}
-            height={37}
-          />
+           <Image
+                          className="dark:hidden"
+                          src="/images/logo/logo.svg"
+                          alt="Logo"
+                          width={57}
+                          height={65}
+                        />
+                        <Image
+                          className="hidden dark:block"
+                          src="/images/logo/logo.svg"
+                          alt="Logo"
+                          width={57}
+                          height={65}
+                        />
         </>
-        <div className="w-full p-[1.875rem] mt-[3.125rem] bg-white dark:bg-gray-900 rounded-[1.875rem]">
-          <div className="mb-5 text-center sm:mb-8">
-            <h1 className="mb-2 text-title-sm sm:text-title-md font-semibold text-[#201D1D] dark:text-white/90">
+        <div className="bg-transparent dark:bg-gray-900 mt-[3.125rem] p-[1.875rem] border border-[#46464666] rounded-[1.875rem] w-full">
+          <div className="mb-5 sm:mb-8 text-center">
+            <h1 className="mb-2 font-semibold text-[#fff] text-title-sm sm:text-title-md dark:text-white">
               Login to Continue
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
               Enter your email and password to login.
             </p>
           </div>
@@ -91,7 +91,7 @@ const SignInForm = () => {
             <div className="space-y-6">
               <div>
                 <Label>
-                  Email <span className="text-error-500">*</span>
+                  Email <span className="text-error-500 dark:text-white">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -104,7 +104,7 @@ const SignInForm = () => {
 
               <div>
                 <Label>
-                  Password <span className="text-error-500">*</span>
+                  Password <span className="text-error-500 dark:text-white">*</span>
                 </Label>
                 <div className="relative">
                   <Input
@@ -116,7 +116,7 @@ const SignInForm = () => {
                   />
                   <span
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute top-1/2 right-4 -translate-y-1/2 z-30 cursor-pointer"
+                    className="top-1/2 right-4 z-30 absolute -translate-y-1/2 cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
@@ -127,9 +127,9 @@ const SignInForm = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center justify-between">
+              <div className="flex flex-col justify-between items-center">
                 <Button
-                  className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base"
+                  className="rounded-2xl w-full h-[3.25rem] text-white text-base btn-bg"
                   size="sm"
                   type="submit"
                   disabled={isLoading}
@@ -138,7 +138,7 @@ const SignInForm = () => {
                 </Button>
                 <Link
                   href="/reset-password"
-                  className="mt-[1rem] text-sm text-[#201D1D] hover:text-[#201D1D] dark:text-brand-400"
+                  className="mt-[1rem] text-[#201D1D] hover:text-[#201D1D] dark:text-brand-400 text-sm"
                 >
                   Forgot password?
                 </Link>

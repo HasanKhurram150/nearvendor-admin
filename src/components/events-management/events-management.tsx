@@ -187,9 +187,9 @@ const EventsManagement: React.FC = () => {
     if (isLoading) {
       return (
         <TableRow>
-          <TableCell colSpan={columns.length} className="text-center py-8">
+          <TableCell colSpan={columns.length} className="py-8 text-center">
             <div className="flex justify-center">
-              <Loading size="lg" />
+              <Loading size="lg" className="border-[#1862D4]" />
             </div>
           </TableCell>
         </TableRow>
@@ -199,7 +199,7 @@ const EventsManagement: React.FC = () => {
     if (!events || events?.length === 0) {
       return (
         <TableRow>
-          <TableCell colSpan={columns.length} className="text-center py-8">
+          <TableCell colSpan={columns.length} className="py-8 text-center">
             <span className="text-gray-500 dark:text-gray-400 text-lg">
               {searchQuery
                 ? t("noMatchingEventsFound")
@@ -212,15 +212,15 @@ const EventsManagement: React.FC = () => {
 
     return events?.map((event) => (
       <TableRow key={event.id}>
-        <TableCell className="pl-6 pr-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap min-w-[10rem]">
+        <TableCell className="py-[1.25rem] pr-3 pl-6 min-w-[10rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           <p className="max-w-[10rem] break-all whitespace-pre-wrap">
             {event.name}
           </p>
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap min-w-[10rem]">
+        <TableCell className="px-3 py-[1.25rem] min-w-[10rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           {event?.phoneNumber ? event.phoneNumber : "N/A"}
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           {event?.telegram?.length ? (
             <a href={event.telegram} target="_blank">
               <TelegramIcon />
@@ -229,25 +229,25 @@ const EventsManagement: React.FC = () => {
             "N/A"
           )}
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           {event?.date}
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           {event?.time}
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           {event.type}
         </TableCell>
-        {/* <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        {/* <TableCell className="px-3 py-[1.25rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           {event.location?.location}
         </TableCell> */}
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           {event?.identifier ? (
             <Link
-              href={`https://noobit.pro/event/${event.identifier}`}
+              href={`https://cfcy.io/event/${event.identifier}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:underline dark:text-blue-400"
+              className="text-blue-600 dark:text-blue-400 hover:underline"
               aria-label="Open event"
             >
               Link
@@ -256,7 +256,7 @@ const EventsManagement: React.FC = () => {
             "N/A"
           )}
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           <div className="flex justify-center items-center">
             <FeaturedToggle
               isFeatured={event.isFeatured}
@@ -266,10 +266,10 @@ const EventsManagement: React.FC = () => {
             />
           </div>
         </TableCell>
-        <TableCell className="px-3 py-[1.25rem] text-capitalize text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="px-3 py-[1.25rem] text-[#201D1D] dark:text-white/90 text-base text-capitalize whitespace-nowrap">
           {event?.approvalStatus ? event.approvalStatus : "N/A"}
         </TableCell>
-        <TableCell className="pl-3 pr-6 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 whitespace-nowrap">
+        <TableCell className="py-[1.25rem] pr-6 pl-3 text-[#201D1D] dark:text-white/90 text-base whitespace-nowrap">
           <div className="flex justify-end gap-2">
             {event.approvalStatus === "pending" ? (
               <>
@@ -319,16 +319,16 @@ const EventsManagement: React.FC = () => {
         pageTitle={t("eventManagement")}
         info={t("manageEvents")}
       />
-      <div className="flex flex-col gap-10 items-start w-full">
+      <div className="flex flex-col items-start gap-10 w-full">
         {/* Search and Action Buttons Section */}
-        <div className="flex justify-between flex-wrap gap-4 items-center w-full">
+        <div className="flex flex-wrap justify-between items-center gap-4 w-full">
           <GenericSearchField
             value={searchQuery}
             onChange={setSearchQuery}
             placeholder={t("searchEvents")}
             aria-label="Search events"
           />
-          <div className="flex flex-wrap sm:flex-nowrap gap-4 justify-start md:justify-end">
+          <div className="flex flex-wrap sm:flex-nowrap justify-start md:justify-end gap-4">
             <GenericButton
               icon={<UploadWhiteIcon />}
               btnText={t("uploadCSV")}
@@ -355,10 +355,10 @@ const EventsManagement: React.FC = () => {
         </div>
 
         {/* Events Table */}
-        <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
+        <div className="grid bg-white dark:bg-white/[0.03] pb-[1.5rem] border dark:border-gray-800 rounded-2xl w-full min-h-[calc(100vh-200px)] overflow-hidden">
           <div className="overflow-x-auto">
             <Table aria-label="Events management table" className="w-full">
-              <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b">
+              <TableHeader className="bg-[#FAFAFA] dark:bg-[#18181887] border-gray-100 dark:border-gray-800 border-b">
                 <TableRow>
                   {columns.map((col, index) => (
                     <TableCell

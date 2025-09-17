@@ -92,7 +92,7 @@
 //     <div className="rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
 //       <div className="min-w-full">
 //         <Table>
-//           <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+//           <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
 //             <TableRow>
 //               <TableCell
 //                 isHeader
@@ -154,7 +154,7 @@
 //                   colSpan={6}
 //                   className="text-center py-10 text-gray-500 dark:text-gray-400"
 //                 >
-//                   <Loading size="lg" />
+//                   <Loading size="lg" className="border-[#1862D4]" />
 //                 </TableCell>
 //               </TableRow>
 //             ) : filteredKolRequests?.length === 0 ? (

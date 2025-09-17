@@ -83,8 +83,8 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
   return (
     <div className="flex flex-col gap-10 items-start w-full">
       <div className="flex items-center gap-4">
-        <AddCategoryIcon />
-        <h2 className="font-semibold text-xl text-primary">
+        {/* <AddCategoryIcon /> */}
+        <h2 className="font-semibold text-xl text-primary dark:text-white">
           {t("editCategory")}
         </h2>
       </div>
@@ -128,7 +128,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
               btnText={t("cancel")}
               bgColor="transparent"
               borderRadius="5rem"
-              color="#000"
+              color="white"
               height="2.5rem"
               width="5.813rem"
               handleClick={onClose}

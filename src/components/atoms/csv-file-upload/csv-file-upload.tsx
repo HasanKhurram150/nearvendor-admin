@@ -42,7 +42,7 @@ export const CSVFileUpload = ({ label, onFileChange }: CSVFileUploadProps) => {
       {label && <Label>{label}</Label>}
       <div className="flex gap-4 items-end w-full">
         {fileName ? (
-          <div className="w-full h-[4rem] border border-dashed border-[#B1B1B1] rounded-[1.25rem] flex items-center justify-between cursor-pointer bg-white px-3 text-[0.75rem] text-[#555] font-semibold">
+          <div className="w-full h-[4rem] border border-dashed border-[#B1B1B1] rounded-[1.25rem] flex items-center justify-between cursor-pointer bg-white dark:bg-gray-900 px-3 text-[0.75rem] text-[#555] font-semibold">
             <p className="text-[#102445] text-base font-medium break-all">
               {fileName}
             </p>
@@ -56,12 +56,12 @@ export const CSVFileUpload = ({ label, onFileChange }: CSVFileUploadProps) => {
         ) : (
           <div
             onClick={handleUploadClick}
-            className="w-full h-[11.938rem] border border-dashed border-[#B1B1B1] rounded-[1.25rem] flex items-center justify-center cursor-pointer bg-white text-[0.75rem] text-[#555] font-semibold"
+            className="w-full h-[11.938rem] border border-dashed border-[#B1B1B1] rounded-[1.25rem] flex items-center justify-center cursor-pointer bg-white dark:bg-gray-900 text-[0.75rem] text-[#555] font-semibold"
           >
             <div className="flex flex-col gap-2 items-center justify-center w-full">
               <BackupIcon />
               <div className="flex gap-1">
-                <p className="text-[#102445] text-sm font-medium">
+                <p className="text-[#102445] dark:text-white text-sm font-medium">
                   Drag your file or
                 </p>
                 <p className="text-[#B1B1B1] text-sm font-semibold">browse</p>

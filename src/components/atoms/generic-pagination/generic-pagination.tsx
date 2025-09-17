@@ -62,8 +62,8 @@ const GenericPagination: React.FC<GenericPaginationProps> = ({
         disabled={currentPage === 1}
         className={`px-3 py-1 rounded-md text-sm ${
           currentPage === 1
-            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-            : "bg-white text-blue-600 hover:bg-blue-100"
+            ? "dark:bg-transparent bg-gray-200 text-gray-500 cursor-not-allowed"
+            : "dark:bg-transparent bg-white text-blue-600 hover:bg-blue-100"
         }`}
       >
         Prev
@@ -99,7 +99,7 @@ const GenericPagination: React.FC<GenericPaginationProps> = ({
             className={`px-3 py-1 rounded-md text-sm ${
               currentPage === page
                 ? "bg-blue-600 text-white"
-                : "bg-white text-blue-600 hover:bg-blue-100"
+                : "dark:bg-transparent bg-white text-blue-600 hover:bg-blue-100"
             }`}
             aria-current={currentPage === page ? "page" : undefined}
             aria-label={`Page ${page}`}
@@ -115,7 +115,7 @@ const GenericPagination: React.FC<GenericPaginationProps> = ({
         className={`px-3 py-1 rounded-md text-sm ${
           currentPage === totalPages
             ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-            : "bg-white text-blue-600 hover:bg-blue-100"
+            : "dark:bg-transparent bg-white text-blue-600 hover:bg-blue-100"
         }`}
       >
         Next

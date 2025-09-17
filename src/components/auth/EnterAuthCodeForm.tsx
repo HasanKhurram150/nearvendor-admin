@@ -134,36 +134,36 @@ export default function EnterAuthCodeForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="flex flex-col items-center justify-center w-full max-w-[33.75rem] mx-auto">
+    <div className="flex flex-col justify-center items-center bg-[#08070d] w-full">
+      <div className="flex flex-col justify-center items-center mx-auto w-full max-w-[33.75rem]">
         <>
-          <Image
-            className="dark:hidden"
-            src="/images/logo/logo.svg"
-            alt="Logo"
-            width={136}
-            height={37}
-          />
-          <Image
-            className="hidden dark:block"
-            src="/images/logo/logo-dark.svg"
-            alt="Logo"
-            width={136}
-            height={37}
-          />
+           <Image
+                          className="dark:hidden"
+                          src="/images/logo/logo.svg"
+                          alt="Logo"
+                          width={57}
+                          height={65}
+                        />
+                        <Image
+                          className="hidden dark:block"
+                          src="/images/logo/logo.svg"
+                          alt="Logo"
+                          width={57}
+                          height={65}
+                        />
         </>
-        <div className="w-full p-[1.875rem] mt-[3.125rem] bg-white dark:bg-gray-900 rounded-[1.875rem]">
+        <div className="bg-transparent dark:bg-gray-900 mt-[3.125rem] p-[1.875rem] border border-[#46464666] rounded-[1.875rem] w-full">
           <div className="mb-5 sm:mb-8 text-center">
-            <h1 className="mb-2 text-lg sm:text-2xl font-semibold text-[#201D1D] dark:text-white/90">
+            <h1 className="mb-2 font-semibold text-[#fff] dark:text-white/90 text-lg sm:text-2xl">
               Enter Authentication Code
             </h1>
-            <p className="mx-auto max-w-[20rem] text-sm text-gray-500 dark:text-gray-400">
+            <p className="mx-auto max-w-[20rem] text-gray-500 dark:text-gray-400 text-sm">
               Authenticator app should be installed on your device to use 2FA.
             </p>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-7 mt-[3rem]">
-              <p className="text-[1.25rem] font-AzoSansTest-medium text-[#1862D4] text-center">
+              <p className="font-Arbutus text-[#1862D4] text-[1.25rem] text-center">
                 ENTER THE 6 DIGIT CODE
               </p>
 
@@ -182,13 +182,13 @@ export default function EnterAuthCodeForm() {
                       onChange={(e) => handleChange(e.target.value, index)}
                       onKeyDown={(e) => handleKeyDown(e, index)}
                       onPaste={handlePaste}
-                      // className="w-[3.5rem] h-[3.75rem] text-center border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-xl"
+                      // className="border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-[3.5rem] h-[3.75rem] text-xl text-center"
                       className={getInputClassName(index)}
                     />
                   ))}
                 </div>
                 {errors.code && (
-                  <p className="text-sm text-error-500 text-center -mt-8 mb-4">
+                  <p className="-mt-8 mb-4 text-error-500 text-sm text-center">
                     {errors.code.message}
                   </p>
                 )}
@@ -197,7 +197,7 @@ export default function EnterAuthCodeForm() {
                   disabled={isLoading}
                   type="submit"
                   // onClick={handleAccountCreated}
-                  className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base"
+                  className="rounded-2xl w-full h-[3.25rem] text-white text-base btn-bg"
                 >
                   {isLoading ? <Loading /> : "Confirm"}
                 </button>

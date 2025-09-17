@@ -135,36 +135,36 @@ const SignUpForm = () => {
   if (isTokenLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="w-12 h-12 border-4 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
+        <div className="border-4 border-t-transparent border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="flex flex-col items-center justify-center w-full max-w-[33.75rem] mx-auto">
+    <div className="flex flex-col justify-center items-center bg-[#08070d] w-full">
+      <div className="flex flex-col justify-center items-center mx-auto w-full max-w-[33.75rem]">
         {/* Logo */}
-        <Image
-          className="dark:hidden"
-          src="/images/logo/logo.svg"
-          alt="Logo"
-          width={136}
-          height={37}
-        />
-        <Image
-          className="hidden dark:block"
-          src="/images/logo/logo-dark.svg"
-          alt="Logo"
-          width={136}
-          height={37}
-        />
+         <Image
+                        className="dark:hidden"
+                        src="/images/logo/logo.svg"
+                        alt="Logo"
+                        width={57}
+                        height={65}
+                      />
+                      <Image
+                        className="hidden dark:block"
+                        src="/images/logo/logo.svg"
+                        alt="Logo"
+                        width={57}
+                        height={65}
+                      />
 
-        <div className="w-full mt-[3.125rem] p-[1.875rem] bg-white dark:bg-gray-900 rounded-[1.875rem]">
+        <div className="bg-transparent dark:bg-gray-900 mt-[3.125rem] p-[1.875rem] border border-[#46464666] rounded-[1.875rem] w-full">
           <header className="mb-5 sm:mb-8 text-center">
-            <h1 className="mb-2 text-title-sm sm:text-title-md font-semibold text-[#201D1D] dark:text-white/90">
+            <h1 className="mb-2 font-semibold text-[#fff] text-title-sm sm:text-title-md dark:text-white/90">
               Sign Up to Devent
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
               Sign up to your new Devent account.
             </p>
           </header>
@@ -204,7 +204,7 @@ const SignUpForm = () => {
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute top-1/2 right-4 -translate-y-1/2 z-30 cursor-pointer"
+                    className="top-1/2 right-4 z-30 absolute -translate-y-1/2 cursor-pointer"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -217,7 +217,7 @@ const SignUpForm = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p id="password-hint" className="mt-2 text-xs text-[#BFBFBF]">
+                  <p id="password-hint" className="mt-2 text-[#BFBFBF] text-xs">
                     * Minimum of 8 characters. Must also contain one number and
                     one special character.
                   </p>
@@ -241,7 +241,7 @@ const SignUpForm = () => {
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute top-1/2 right-4 -translate-y-1/2 z-30 cursor-pointer"
+                    className="top-1/2 right-4 z-30 absolute -translate-y-1/2 cursor-pointer"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -258,12 +258,12 @@ const SignUpForm = () => {
               {/* Submit Button */}
               <div>
                 <Button
-                  className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base"
+                  className="rounded-2xl w-full h-[3.25rem] text-white text-base btn-bg"
                   size="sm"
                   type="submit"
                   disabled={isLoading}
                 >
-                  {isLoading ? <Loading /> : "Sign in"}
+                  {isLoading ? <Loading /> : "Sign up"}
                 </Button>
               </div>
             </div>

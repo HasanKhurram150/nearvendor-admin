@@ -29,7 +29,7 @@ const GenericSelectDropdown: React.FC<GenericSelectDropdownProps> = ({
   }, [selectedType, onChange]);
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col w-full">
       <Label>{label}</Label>
       <div className="relative w-full">
         <select
@@ -37,7 +37,7 @@ const GenericSelectDropdown: React.FC<GenericSelectDropdownProps> = ({
           name="type"
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value)}
-          className="block w-full appearance-none rounded-xl border border-gray-300 bg-white pr-10 px-4 py-4 text-sm shadow-none focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="block w-full appearance-none rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 pr-10 px-4 py-4 text-sm shadow-none focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:text-white"
         >
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>

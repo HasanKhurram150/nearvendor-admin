@@ -68,25 +68,25 @@ export default function EnableGoogleAuthForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className="bg-[#08070d] flex flex-col items-center justify-center w-full">
       <div className="flex flex-col items-center justify-center w-full max-w-[33.75rem] mx-auto">
         <>
-          <Image
-            className="dark:hidden"
-            src="/images/logo/logo.svg"
-            alt="Logo"
-            width={136}
-            height={37}
-          />
-          <Image
-            className="hidden dark:block"
-            src="/images/logo/logo-dark.svg"
-            alt="Logo"
-            width={136}
-            height={37}
-          />
+           <Image
+                          className="dark:hidden"
+                          src="/images/logo/logo.svg"
+                          alt="Logo"
+                          width={57}
+                          height={65}
+                        />
+                        <Image
+                          className="hidden dark:block"
+                          src="/images/logo/logo.svg"
+                          alt="Logo"
+                          width={57}
+                          height={65}
+                        />
         </>
-        <div className="w-full p-[1.875rem] mt-[3.125rem] bg-white dark:bg-gray-900 rounded-[1.875rem]">
+        <div className="w-full mt-[3.125rem] p-[1.875rem] bg-transparent dark:bg-gray-900 rounded-[1.875rem] border border-[#46464666]">
           <div className="mb-5 sm:mb-8 text-center">
             <h1 className="mb-2 text-lg sm:text-2xl font-semibold text-[#201D1D] dark:text-white/90">
               Enable Google Authenticator
@@ -105,13 +105,14 @@ export default function EnableGoogleAuthForm() {
                   height={90}
                   className="block mx-auto my-[1rem]"
                 />
-
+<div className="flex justify-center w-full">
                 <button
                   onClick={handleDownloadClick}
-                  className="text-[1.25rem] font-AzoSansTest-medium text-[#1862D4] text-center"
+                  className="text-[1.25rem] font-Arbutus text-[#1862D4] text-center"
                 >
                   DOWNLOAD APP
                 </button>
+                </div>
 
                 <div className="flex items-center justify-center w-full gap-[1.25rem]">
                   <Image

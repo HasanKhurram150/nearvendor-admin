@@ -12,13 +12,13 @@ export default function DashboardPage() {
 
   if (isLoading || !stats) return;
   <div className="flex justify-center">
-    <Loading size="lg" />
+    <Loading size="lg" className="border-[#1862D4]" />
   </div>;
 
   return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
+    <div className="gap-4 md:gap-6 grid grid-cols-12">
       <div className="col-span-12">
-        <h2 className="mb-4 text-xl text-[#201D1D] font-AzoSansTest-medium">
+        <h2 className="mb-4 font-Arbutus text-white text-xl">
           {t("dashboard")}
         </h2>
       </div>

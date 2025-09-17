@@ -97,7 +97,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
         endTime: event.endDateTime
           ? dayjs(event.endDateTime).format("HH:mm")
           : dayjs().format("HH:mm"),
-        link: event.link || `https://noobit.pro/event/${event.identifier}`,
+        link: event.link || `https://cfcy.io/event/${event.identifier}`,
         type: event.type || "free",
       });
     }
@@ -135,7 +135,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
   };
 
   if (isEventLoading) {
-    return <Loading size="lg" />;
+    return <Loading size="lg" className="border-[#1862D4]" />;
   }
 
   if (isError) {
@@ -143,14 +143,14 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
   }
 
   return (
-    <div className="flex flex-col gap-[2.5rem] items-start w-full">
-      <div className="flex items-center justify-start gap-4">
+    <div className="flex flex-col items-start gap-[2.5rem] w-full">
+      <div className="flex justify-start items-center gap-4">
         <AddCategoryIcon />{" "}
-        <p className="font-semibold text-[1.25rem] text-[#102445]">
+        <p className="font-semibold text-[#102445] text-[1.25rem]">
           {t("editSideEvent")}
         </p>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
         <div className="space-y-6 w-full">
           <div>
             <Label>{t("eventName")}</Label>
@@ -242,7 +242,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
                 onChange={(value) => setValue("type", value)}
               />
               {errors.type && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="mt-1 text-red-500 text-sm">
                   {errors.type.message}
                 </p>
               )}
@@ -260,7 +260,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 justify-end">
+          <div className="flex justify-end items-center gap-4">
             <GenericButton
               btnText={t("cancel")}
               bgColor="transparent"

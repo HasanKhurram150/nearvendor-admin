@@ -46,11 +46,12 @@ const CampaignManagement: React.FC = () => {
         btnCampaign={true}
       />
 
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] pb-[1.5rem]">
+      {/* <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]  border dark:border-gray-800 pb-[1.5rem]"> */}
+      <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full border dark:border-gray-800 pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
           <Table>
             {/* Table Header - Always visible */}
-            <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+            <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
               <TableRow>
                 {columns.map((col) => (
                   <TableCell
@@ -73,7 +74,7 @@ const CampaignManagement: React.FC = () => {
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="lg" />
+                      <Loading size="lg" className="border-[#1862D4]" />
                     </div>
                   </TableCell>
                 </TableRow>

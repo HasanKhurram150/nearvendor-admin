@@ -14,7 +14,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
       <div className="flex justify-between items-center rounded-2xl bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-end justify-between mt-5">
           <div>
-            <span className="text-base text-black dark:text-whihte">
+            <span className="text-xl text-black dark:text-white">
               {t("totalEvents")}
             </span>
             <h4 className="mt-2 font-bold text-[#202224] text-[2.25rem] dark:text-white/90">
@@ -28,6 +28,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
             width={180}
             height={160}
             alt="state"
+            className="rounded-xl"
           />
         </div>
       </div>
@@ -37,7 +38,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
       <div className="flex justify-between items-center rounded-2xl bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-end justify-between mt-5">
           <div>
-            <span className="text-base text-black dark:text-whihte">
+                <span className="text-xl text-black dark:text-white">
               {t("totalUsers")}
             </span>
             <h4 className="mt-2 font-bold text-[#202224] text-[2.25rem] dark:text-white/90">
@@ -51,6 +52,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
             width={180}
             height={160}
             alt="state"
+            className="rounded-xl"
           />
         </div>
       </div>
@@ -59,7 +61,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
       <div className="flex justify-between items-center rounded-2xl bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-end justify-between mt-5">
           <div>
-            <span className="text-base text-black dark:text-whihte">
+                <span className="text-xl text-black dark:text-white">
               {t("dailyEvents")}
             </span>
             <h4 className="mt-2 font-bold text-[#202224] text-[2.25rem] dark:text-white/90">
@@ -73,6 +75,7 @@ export const States = ({ stats }: { stats: IDashboardStats | undefined }) => {
             width={180}
             height={160}
             alt="state"
+            className="rounded-xl"
           />
         </div>
       </div>

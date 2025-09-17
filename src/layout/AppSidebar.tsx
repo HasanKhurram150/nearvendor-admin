@@ -180,7 +180,7 @@ const AppSidebar: React.FC = () => {
                     : "0px",
               }}
             >
-              <ul className="mt-2 space-y-1 ml-9">
+              <ul className="space-y-1 mt-2 ml-9">
                 {nav.subItems.map((subItem) => (
                   <li key={subItem.name}>
                     <Link
@@ -296,7 +296,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-[#08070D] dark:bg-[#08070D] dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -321,15 +321,15 @@ const AppSidebar: React.FC = () => {
                 className="dark:hidden"
                 src="/images/logo/logo.svg"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={57}
+                height={65}
               />
               <Image
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="/images/logo/logo.svg"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={57}
+                height={65}
               />
             </>
           ) : (
@@ -342,7 +342,7 @@ const AppSidebar: React.FC = () => {
           )}
         </Link>
       </div>
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar pt-4">
+      <div className="flex flex-col pt-4 overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
             <div>
@@ -364,7 +364,7 @@ const AppSidebar: React.FC = () => {
 
             <div className="">
               <p
-                className={`mb-4 text-base flex leading-[20px] text-black ${
+                className={`mb-4 text-base flex leading-[20px] dark:text-white text-black ${
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"

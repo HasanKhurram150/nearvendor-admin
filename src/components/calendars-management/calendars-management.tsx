@@ -81,11 +81,11 @@ const CalendarsManagement: React.FC = () => {
           handleClick={handleOpenAddCalendarModal}
         /> */}
         </div>
-        <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
+        <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full border dark:border-gray-800 pb-[1.5rem]">
           <div className="overflow-x-auto">
             <Table aria-label="Calendars management table" className="w-full">
               {/* Table Header */}
-              <TableHeader className="bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+              <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
                 <TableRow>
                   {columns.map((col) => (
                     <TableCell
@@ -106,7 +106,7 @@ const CalendarsManagement: React.FC = () => {
                   <TableRow>
                     <TableCell className="text-center py-8">
                       <div className="flex justify-center">
-                        <Loading size="lg" />
+                        <Loading size="lg" className="border-[#1862D4]" />
                       </div>
                     </TableCell>
                   </TableRow>
