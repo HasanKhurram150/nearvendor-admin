@@ -1,0 +1,73 @@
+steps:
+  # Step 1: Build Docker image with commit SHA in the tag
+  # CHANGED: ${_PROJECT_ID} -> ${PROJECT_ID}
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--build-arg",
+        "NEXT_PUBLIC_API_URL=$_NEXT_PUBLIC_API_URL",
+        "-t",
+        "gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${SHORT_SHA}",
+        ".",
+      ]
+
+  # Step 2: Push Docker image to Google Container Registry with the commit SHA in the tag
+  # CHANGED: ${_PROJECT_ID} -> ${PROJECT_ID}
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${SHORT_SHA}"]
+
+  # Step 3: SSH into EC2 and pull the new image, stop and redeploy the container
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        # SSH into EC2
+        gcloud compute ssh ${_EC2_USER}@${_EC2_INSTANCE} --zone=${_ZONE} --project=${PROJECT_ID} --command="
+          # FIX: Corrected gcr.io typo and added '|| true' to make subsequent commands robust
+          gcloud auth configure-docker gcr.io || true 
+          
+          # Pull the latest Docker image with commit SHA
+          docker pull gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${SHORT_SHA} &&
+
+          # Stop and remove the existing container
+          docker stop ${_CONTAINER_NAME} || true &&
+          docker rm ${_CONTAINER_NAME} || true &&
+
+          # Run the new container with the new image
+          docker run -d --name ${_CONTAINER_NAME} -p ${_PORT}:${_INTERNAL_PORT} --restart unless-stopped gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${SHORT_SHA}
+        "
+
+  # Step 4: Send a Discord notification about successful deployment
+  - name: "curlimages/curl"
+    entrypoint: "curl"
+    args:
+      [
+        "-X",
+        "POST",
+        "${_DISCORD_WEBHOOK_URL}",
+        "-H",
+        "Content-Type: application/json",
+        "-d",
+        '{"content": "✅ Deployment successful! Container `${_CONTAINER_NAME}` is now running version `${SHORT_SHA}` on EC2 instance `${_EC2_INSTANCE}`."}',
+      ]
+
+# --- FIX APPLIED HERE ---
+options:
+  # This option resolves the "build.service_account" logging error
+  default_logs_bucket_behavior: REGIONAL_USER_OWNED_BUCKET
+
+images:
+  - "gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${SHORT_SHA}"
+
+substitutions:
+  _IMAGE_NAME: "symoria-admin-app"
+  _CONTAINER_NAME: "symoria-nft-app"
+  _PORT: "3033"
+  _INTERNAL_PORT: "3000"
+  _EC2_USER: "ubuntu"
+  _EC2_INSTANCE: "coinchance-prod-server"
+  _ZONE: "us-central1-a"
+  _DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/1449998286848004218/4CwanZpdwyh_LRGLVKdvO-3EI-7YI7-JM1UkALGT3J18oMfoz2wgvMsYzLwrg2AnziuZ"
+  _ENV_PATH: "/var/symoria-backend"
