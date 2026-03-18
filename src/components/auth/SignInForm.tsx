@@ -62,20 +62,20 @@ const SignInForm = () => {
     <div className="flex flex-col justify-center items-center bg-[#08070d] w-full">
       <div className="flex flex-col justify-center items-center mx-auto w-full max-w-[33.75rem]">
         <>
-           <Image
-                          className="dark:hidden"
-                          src="/images/logo/logo.svg"
-                          alt="Logo"
-                          width={57}
-                          height={65}
-                        />
-                        <Image
-                          className="hidden dark:block"
-                          src="/images/logo/logo.svg"
-                          alt="Logo"
-                          width={57}
-                          height={65}
-                        />
+          <Image
+            className="dark:hidden"
+            src="/images/logo/main-logo.svg"
+            alt="Logo"
+            width={57}
+            height={65}
+          />
+          <Image
+            className="hidden dark:block"
+            src="/images/logo/main-logo.svg"
+            alt="Logo"
+            width={57}
+            height={65}
+          />
         </>
         <div className="bg-transparent dark:bg-gray-900 mt-[3.125rem] p-[1.875rem] border border-[#46464666] rounded-[1.875rem] w-full">
           <div className="mb-5 sm:mb-8 text-center">
@@ -91,7 +91,8 @@ const SignInForm = () => {
             <div className="space-y-6">
               <div>
                 <Label>
-                  Email <span className="text-error-500 dark:text-white">*</span>
+                  Email{" "}
+                  <span className="text-error-500 dark:text-white">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -104,7 +105,8 @@ const SignInForm = () => {
 
               <div>
                 <Label>
-                  Password <span className="text-error-500 dark:text-white">*</span>
+                  Password{" "}
+                  <span className="text-error-500 dark:text-white">*</span>
                 </Label>
                 <div className="relative">
                   <Input
@@ -138,7 +140,7 @@ const SignInForm = () => {
                 </Button>
                 <Link
                   href="/reset-password"
-                  className="mt-[1rem] text-[#201D1D] hover:text-[#201D1D] dark:text-brand-400 text-sm"
+                  className="mt-[1rem] text-[#fff] hover:text-[#201D1D] dark:text-brand-400 text-sm"
                 >
                   Forgot password?
                 </Link>

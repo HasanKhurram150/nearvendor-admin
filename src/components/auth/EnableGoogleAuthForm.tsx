@@ -108,7 +108,7 @@ export default function EnableGoogleAuthForm() {
 <div className="flex justify-center w-full">
                 <button
                   onClick={handleDownloadClick}
-                  className="text-[1.25rem] font-Arbutus text-[#1862D4] text-center"
+                  className="text-[1.25rem] font-Arbutus text-[#50FF56] text-center"
                 >
                   DOWNLOAD APP
                 </button>

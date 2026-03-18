@@ -111,7 +111,7 @@ const CategoriesManagement: React.FC = () => {
         <TableRow>
           <TableCell colSpan={columns.length} className="text-center py-8">
             <div className="flex justify-center">
-              <Loading size="lg" className="border-[#1862D4]" />
+              <Loading size="lg" className="border-[#50FF56]" />
             </div>
           </TableCell>
         </TableRow>
@@ -192,7 +192,7 @@ const CategoriesManagement: React.FC = () => {
           <GenericButton
             icon={<PlusIcon />}
             btnText={t("addNew")}
-            bgColor="#1862D4"
+            bgColor="#50FF56"
             color="#fff"
             height="2.5rem"
             width="7.188rem"

@@ -34,71 +34,16 @@ const AppSidebar: React.FC = () => {
   const { t } = useLanguage();
 
   const navItems: NavItem[] = [
-    {
-      icon: <DashboardIcon />,
-      name: t("dashboard"),
-      path: "/",
-      // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-    },
-    {
-      icon: <CategoriesIcon />,
-      name: t("categoriesManagement"),
-      path: "/categories-management",
-    },
+   
     {
       icon: <TicketIcon />,
-      name: t("eventManagement"),
-      path: "/events-management",
-    },
-    {
-      icon: <CalenderIcon />,
-      name: t("calendarsManagement"),
-      path: "/calendars-management",
-    },
-    {
-      icon: <PeopleIcon />,
-      name: t("kolApproval"),
-      path: "/kol-approval",
-    },
-    {
-      icon: <EventsIcon />,
-      name: t("events"),
-      path: "/events",
-    },
-    {
-      icon: <DollarLineIcon />,
-      name: t("pricing"),
-      path: "/pricing",
-    },
-    {
-      icon: <EnvelopeIcon />,
-      name: t("settings"),
-      path: "/settings",
+      name: t("nftMinting"),
+      path: "/mint-nft",
     },
   ];
 
   const othersItems: NavItem[] = [
-    {
-      icon: <PlacementIcon />,
-      name: t("placementList"),
-      path: "/placement-list",
-    },
-    {
-      icon: <InventoryListIcon />,
-      name: t("inventoryList"),
-      path: "/inventory-list",
-    },
-
-    {
-      icon: <ListIcon />,
-      name: t("advertiserManagement"),
-      path: "/advertiser-management",
-    },
-    {
-      icon: <ListIcon />,
-      name: t("campaignManagement"),
-      path: "/campaign-management",
-    },
+   
   ];
 
   const renderMenuItems = (
@@ -318,19 +263,13 @@ const AppSidebar: React.FC = () => {
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
+                className="h-auto w-[160px]"
+                src="/images/logo/main-logo.svg"
                 alt="Logo"
-                width={57}
-                height={65}
+                width={160}
+                height={27}
               />
-              <Image
-                className="hidden dark:block"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={57}
-                height={65}
-              />
+             
             </>
           ) : (
             <Image
@@ -362,22 +301,7 @@ const AppSidebar: React.FC = () => {
               {renderMenuItems(navItems, "main")}
             </div>
 
-            <div className="">
-              <p
-                className={`mb-4 text-base flex leading-[20px] dark:text-white text-black ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Inventory"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </p>
-              {renderMenuItems(othersItems, "inventory")}
-            </div>
+          
           </div>
         </nav>
         {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}

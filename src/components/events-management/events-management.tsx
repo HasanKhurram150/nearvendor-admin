@@ -189,7 +189,7 @@ const EventsManagement: React.FC = () => {
         <TableRow>
           <TableCell colSpan={columns.length} className="py-8 text-center">
             <div className="flex justify-center">
-              <Loading size="lg" className="border-[#1862D4]" />
+              <Loading size="lg" className="border-[#50FF56]" />
             </div>
           </TableCell>
         </TableRow>
@@ -332,9 +332,9 @@ const EventsManagement: React.FC = () => {
             <GenericButton
               icon={<UploadWhiteIcon />}
               btnText={t("uploadCSV")}
-              bgColor="#1862D4"
+              bgColor="#50FF56"
               color="#fff"
-              borderColor="#1862D4"
+              borderColor="#50FF56"
               height="2.5rem"
               width="8.688rem"
               handleClick={handleOpenUploadModal}

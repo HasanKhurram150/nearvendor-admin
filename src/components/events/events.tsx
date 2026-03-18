@@ -74,7 +74,7 @@ const Events: React.FC = () => {
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-10">
-                    <Loading size="lg" className="border-[#1862D4]" />
+                    <Loading size="lg" className="border-[#50FF56]" />
                   </TableCell>
                 </TableRow>
               ) : ourEvents?.length > 0 ? (

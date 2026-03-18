@@ -137,7 +137,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
             <GenericButton
               btnText={isLoading ? "" : t("update")}
               icon={isLoading && <Loading size="sm" />}
-              bgColor="#1862D4"
+              bgColor="#50FF56"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"

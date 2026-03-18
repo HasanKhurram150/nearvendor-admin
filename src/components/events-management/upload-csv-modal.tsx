@@ -127,7 +127,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
 
       {isCategoryLoading ? (
         <div className="flex justify-center items-center w-full h-[300px]">
-          <Loading size="lg" className="border-[#1862D4]" />
+          <Loading size="lg" className="border-[#50FF56]" />
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
@@ -208,7 +208,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
             <GenericButton
               btnText={isLoading ? "" : t("save")}
               icon={isLoading && <Loading size="sm" />}
-              bgColor="#1862D4"
+              bgColor="#50FF56"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"

@@ -3,7 +3,7 @@
 import type React from "react";
 import { createContext, useState, useContext, useEffect } from "react";
 
-type Theme = "dark" | "dark";
+type Theme = "dark";
 
 type ThemeContextType = {
   theme: Theme;
@@ -19,27 +19,19 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // This code will only run on the client side
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const initialTheme = savedTheme || "dark"; // Default to light theme
-
-    setTheme(initialTheme);
+    setTheme("dark");
     setIsInitialized(true);
   }, []);
 
   useEffect(() => {
     if (isInitialized) {
-      localStorage.setItem("theme", theme);
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
+      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add("dark");
     }
   }, [theme, isInitialized]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "dark" ? "dark" : "dark"));
+    setTheme("dark");
   };
 
   return (

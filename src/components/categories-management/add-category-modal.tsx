@@ -141,7 +141,7 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
             <GenericButton
               btnText={isLoading ? "" : t("save")}
               icon={isLoading && <Loading size="sm" />}
-              bgColor="#1862D4"
+              bgColor="#50FF56"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"

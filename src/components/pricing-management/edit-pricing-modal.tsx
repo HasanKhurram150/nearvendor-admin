@@ -107,7 +107,7 @@ export const EditPricingModal = ({
             />
             <GenericButton
               btnText={isLoading ? "" : t("update")}
-              bgColor="#1862D4"
+              bgColor="#50FF56"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"

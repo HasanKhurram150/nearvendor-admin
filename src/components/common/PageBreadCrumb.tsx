@@ -52,13 +52,15 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
       <h2
-        className="flex flex-col items-start text-xl font-semibold text-gray-800 dark:text-white/90"
+        className="flex flex-col items-start text-xl font-semibold text-white/90"
         x-text="pageName"
       >
         {pageTitle}
 
         {info && (
-          <span className="text-base font-normal mt-[1rem]">{info}</span>
+          <span className="mt-[1rem] text-base font-normal text-gray-400">
+            {info}
+          </span>
         )}
         {/* {calendarInfo && (
           <span className="text-base font-normal mt-[1rem]">
@@ -82,7 +84,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
         )} */}
 
         {counter && (
-          <span className="text-base font-normal mt-[1rem]">
+          <span className="mt-[1rem] text-base font-normal text-gray-400">
             {counterText}: {counterValue}
           </span>
         )}
@@ -138,7 +140,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
               </svg>
             </Link>
           </li>
-          <li className="text-sm text-gray-800 dark:text-white/90">
+          <li className="text-sm text-white/90">
             {pageTitle}
           </li>
         </ol>

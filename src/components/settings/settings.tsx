@@ -68,7 +68,7 @@ const Settings: React.FC = () => {
           <p className="text-gray-600 mb-4">{adminEmailData?.description}</p>
           {isEmailLoading ? (
             <div className="flex justify-center py-8">
-              <Loading size="lg" className="border-[#1862D4]" />
+              <Loading size="lg" className="border-[#50FF56]" />
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)}>

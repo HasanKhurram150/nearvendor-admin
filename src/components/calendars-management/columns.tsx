@@ -34,8 +34,8 @@ export const calendarData = [
       "A calendar featuring upcoming global tech conferences and meetups.",
     identifier: "mkt-002",
     cover: "/images/logo/cover-1.png",
-    colorCode: "#1862D4",
-    colorBg: "#1862D417",
+    colorCode: "#50FF56",
+    colorBg: "#50FF5617",
     location: "New York, NY",
   },
   {

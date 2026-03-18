@@ -160,7 +160,7 @@ const KOLApproval: React.FC = () => {
                     colSpan={6}
                     className="text-center py-10 text-gray-500 dark:text-gray-400"
                   >
-                    <Loading size="lg" className="border-[#1862D4]" />
+                    <Loading size="lg" className="border-[#50FF56]" />
                   </TableCell>
                 </TableRow>
               ) : kolRequests?.length === 0 ? (

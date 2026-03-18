@@ -12,7 +12,7 @@ export default function DashboardPage() {
 
   if (isLoading || !stats) return;
   <div className="flex justify-center">
-    <Loading size="lg" className="border-[#1862D4]" />
+    <Loading size="lg" className="border-[#50FF56]" />
   </div>;
 
   return (

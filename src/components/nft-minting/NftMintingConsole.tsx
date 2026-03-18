@@ -1,0 +1,1503 @@
+"use client";
+
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import Badge from "@/components/ui/badge/Badge";
+import Button from "@/components/ui/button/Button";
+import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import ComponentCard from "@/components/common/ComponentCard";
+import Input from "@/components/form/input/InputField";
+import Label from "@/components/form/Label";
+import Select from "@/components/form/Select";
+import { useWallet } from "@/context/WalletContext";
+
+type ConsoleTab = "minting" | "governance" | "tiers" | "collection";
+type EditionType = "unique" | "limited" | "open";
+
+interface Attribute {
+  trait_type: string;
+  value: string;
+}
+
+interface PreviewAsset {
+  id: number;
+  name: string;
+  tier: string;
+  status: string;
+  price: string;
+  owner: string;
+  image: string;
+  badge?: string;
+  maxSupply?: string;
+  imageFile?: string;
+}
+
+interface TierCard {
+  id: number;
+  name: string;
+  minted: number;
+  maxSupply: number;
+  uri: string;
+  paused: boolean;
+}
+
+interface MetadataCsvRow {
+  id: number;
+  name: string;
+  imageFile: string;
+  maxSupply: string;
+  usd: string;
+  badge: string;
+}
+
+const requiredMetadataHeaders = [
+  "id",
+  "name",
+  "image_file",
+  "max_supply",
+  "usd",
+  "badge",
+] as const;
+
+const tierOptions = [
+  { value: "1", label: "Genesis" },
+  { value: "2", label: "Collector" },
+  { value: "3", label: "Signature" },
+];
+
+const initialCollection: PreviewAsset[] = [
+  {
+    id: 1042,
+    name: "Genesis Aurora",
+    tier: "Genesis",
+    status: "Live",
+    price: "0.20 ETH",
+    owner: "Vault",
+    image: "/images/cards/card-01.png",
+  },
+  {
+    id: 1043,
+    name: "Neon Archive",
+    tier: "Collector",
+    status: "Locked",
+    price: "0.35 ETH",
+    owner: "Reserved",
+    image: "/images/cards/card-02.png",
+  },
+  {
+    id: 1044,
+    name: "Signal Bloom",
+    tier: "Signature",
+    status: "Preview",
+    price: "0.48 ETH",
+    owner: "Treasury",
+    image: "/images/cards/card-03.png",
+  },
+  {
+    id: 1045,
+    name: "Chain Relic",
+    tier: "Genesis",
+    status: "Live",
+    price: "0.18 ETH",
+    owner: "Vault",
+    image: "/images/cards/card-04.png",
+  },
+];
+
+const initialTiers: TierCard[] = [
+  {
+    id: 1,
+    name: "Genesis",
+    minted: 42,
+    maxSupply: 100,
+    uri: "ipfs://genesis/",
+    paused: false,
+  },
+  {
+    id: 2,
+    name: "Collector",
+    minted: 16,
+    maxSupply: 50,
+    uri: "ipfs://collector/",
+    paused: false,
+  },
+  {
+    id: 3,
+    name: "Signature",
+    minted: 4,
+    maxSupply: 12,
+    uri: "ipfs://signature/",
+    paused: true,
+  },
+];
+
+const recentMints = [
+  {
+    recipient: "0xA5f2...91cD",
+    status: "Queued",
+    tx: "0x9f...d01a",
+    time: "09:18",
+  },
+  {
+    recipient: "0xB821...44E2",
+    status: "Confirmed",
+    tx: "0x3c...84f2",
+    time: "08:52",
+  },
+  {
+    recipient: "0xF11a...2b7C",
+    status: "Minted",
+    tx: "0xaa...019e",
+    time: "08:11",
+  },
+];
+
+function parseCsvLine(line: string) {
+  const values: string[] = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+
+    if (character === '"') {
+      const nextCharacter = line[index + 1];
+
+      if (inQuotes && nextCharacter === '"') {
+        current += '"';
+        index += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (character === "," && !inQuotes) {
+      values.push(current.trim());
+      current = "";
+      continue;
+    }
+
+    current += character;
+  }
+
+  values.push(current.trim());
+  return values;
+}
+
+function parseMetadataCsv(text: string) {
+  const normalizedText = text.replace(/^\uFEFF/, "");
+  const lines = normalizedText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length < 2) {
+    throw new Error("CSV must include a header row and at least one metadata row.");
+  }
+
+  const headers = parseCsvLine(lines[0]).map((header) =>
+    header.toLowerCase().replace(/\s+/g, "_"),
+  );
+
+  const missingHeaders = requiredMetadataHeaders.filter(
+    (header) => !headers.includes(header),
+  );
+
+  if (missingHeaders.length > 0) {
+    throw new Error(
+      `Missing required column(s): ${missingHeaders.join(", ")}. Expected id,name,image_file,max_supply,usd,badge.`,
+    );
+  }
+
+  return lines.slice(1).map((line, rowIndex) => {
+    const values = parseCsvLine(line);
+    const getValue = (header: (typeof requiredMetadataHeaders)[number]) => {
+      const headerIndex = headers.indexOf(header);
+      return values[headerIndex]?.trim() ?? "";
+    };
+
+    const idValue = getValue("id");
+    const parsedId = Number(idValue);
+
+    if (!Number.isFinite(parsedId) || parsedId <= 0) {
+      throw new Error(`Row ${rowIndex + 2}: id must be a positive number.`);
+    }
+
+    const nameValue = getValue("name");
+    const imageFileValue = getValue("image_file");
+    const maxSupplyValue = getValue("max_supply");
+    const usdValue = getValue("usd");
+    const badgeValue = getValue("badge");
+
+    if (!nameValue || !imageFileValue || !maxSupplyValue || !usdValue || !badgeValue) {
+      throw new Error(
+        `Row ${rowIndex + 2}: all metadata fields must be populated.`,
+      );
+    }
+
+    return {
+      id: parsedId,
+      name: nameValue,
+      imageFile: imageFileValue,
+      maxSupply: maxSupplyValue,
+      usd: usdValue,
+      badge: badgeValue,
+    } satisfies MetadataCsvRow;
+  });
+}
+
+function SectionTab({
+  active,
+  label,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${
+        active
+          ? "bg-brand-500 text-white shadow-theme-xs"
+          : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50 dark:bg-white/[0.03] dark:text-gray-300 dark:ring-gray-800 dark:hover:bg-white/[0.06]"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function Textarea({
+  value,
+  onChange,
+  placeholder,
+  rows = 4,
+}: {
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  placeholder: string;
+  rows?: number;
+}) {
+  return (
+    <textarea
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      rows={rows}
+      className="w-full rounded-xl border border-gray-300 bg-transparent px-4 py-3 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+    />
+  );
+}
+
+export default function NftMintingConsole() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const metadataCsvInputRef = useRef<HTMLInputElement>(null);
+  const {
+    account,
+    connectWallet,
+    disconnectWallet,
+    isConnecting,
+    isCorrectNetwork,
+    switchNetwork,
+    targetChainName,
+  } = useWallet();
+  const [activeTab, setActiveTab] = useState<ConsoleTab>("minting");
+  const [selectedTier, setSelectedTier] = useState("1");
+  const [editionType, setEditionType] = useState<EditionType>("limited");
+  const [maxSupply, setMaxSupply] = useState("100");
+  const [name, setName] = useState("Symoria Genesis #001");
+  const [description, setDescription] = useState(
+    "A public mint interface for high-signal digital collectibles.",
+  );
+  const [attributes, setAttributes] = useState<Attribute[]>([
+    { trait_type: "Tier", value: "Genesis" },
+    { trait_type: "Utility", value: "Vault Access" },
+  ]);
+  const [files, setFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [previewIndex, setPreviewIndex] = useState(0);
+  const [metadataRows, setMetadataRows] = useState<MetadataCsvRow[]>([]);
+  const [metadataCsvName, setMetadataCsvName] = useState<string | null>(null);
+  const [mintStatus, setMintStatus] = useState(
+    "Wallet connection is live. Mint execution is still waiting on contract and IPFS integration.",
+  );
+  const [transfersPaused, setTransfersPaused] = useState(false);
+  const [tiers, setTiers] = useState<TierCard[]>(initialTiers);
+  const [registrySearch, setRegistrySearch] = useState("");
+  const [registryTierFilter, setRegistryTierFilter] = useState("all");
+
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewUrls]);
+
+  const shortAddress = (value: string) =>
+    `${value.slice(0, 6)}...${value.slice(-4)}`;
+
+  const selectedTierLabel =
+    tierOptions.find((option) => option.value === selectedTier)?.label ?? "Genesis";
+
+  const metadataImageMap = useMemo(() => {
+    return new Map(metadataRows.map((row) => [row.imageFile.toLowerCase(), row]));
+  }, [metadataRows]);
+
+  const previewUrlByFileName = useMemo(() => {
+    return new Map(
+      files.map((file, index) => [file.name.toLowerCase(), previewUrls[index] ?? ""]),
+    );
+  }, [files, previewUrls]);
+
+  const matchedMetadataCount = useMemo(() => {
+    return metadataRows.filter((row) => previewUrlByFileName.has(row.imageFile.toLowerCase()))
+      .length;
+  }, [metadataRows, previewUrlByFileName]);
+
+  const requiredArtworkCount = metadataRows.length;
+  const hasMetadataCsv = requiredArtworkCount > 0;
+  const hasExactArtworkCount = !hasMetadataCsv || files.length === requiredArtworkCount;
+  const hasCompleteArtworkMapping =
+    !hasMetadataCsv || matchedMetadataCount === requiredArtworkCount;
+
+  const collectionItems = useMemo<PreviewAsset[]>(() => {
+    if (metadataRows.length === 0) {
+      return initialCollection;
+    }
+
+    return metadataRows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      tier: selectedTierLabel,
+      status: previewUrlByFileName.has(row.imageFile.toLowerCase())
+        ? "Artwork Ready"
+        : "Metadata Loaded",
+      price: `$${Number(row.usd).toLocaleString()} USD`,
+      owner: row.badge,
+      image: previewUrlByFileName.get(row.imageFile.toLowerCase()) ?? "",
+      badge: row.badge,
+      maxSupply: row.maxSupply,
+      imageFile: row.imageFile,
+    }));
+  }, [metadataRows, previewUrlByFileName, selectedTierLabel]);
+
+  const filteredCollection = useMemo(() => {
+    return collectionItems.filter((item) => {
+      const matchesSearch =
+        registrySearch.trim() === "" ||
+        item.name.toLowerCase().includes(registrySearch.toLowerCase()) ||
+        String(item.id).includes(registrySearch);
+      const matchesTier =
+        registryTierFilter === "all" ||
+        item.tier.toLowerCase() === registryTierFilter.toLowerCase();
+
+      return matchesSearch && matchesTier;
+    });
+  }, [collectionItems, registrySearch, registryTierFilter]);
+
+  const activeMetadata = useMemo(() => {
+    const file = files[previewIndex];
+
+    if (file) {
+      const matchedByImageName = metadataImageMap.get(file.name.toLowerCase());
+      if (matchedByImageName) {
+        return matchedByImageName;
+      }
+    }
+
+    return metadataRows[previewIndex];
+  }, [files, metadataImageMap, metadataRows, previewIndex]);
+
+  const currentPreview = useMemo(() => {
+    const currentUrl = previewUrls[previewIndex];
+    const previewAttributes = activeMetadata
+      ? [
+          { trait_type: "Badge", value: activeMetadata.badge },
+          { trait_type: "Price", value: `$${Number(activeMetadata.usd).toLocaleString()} USD` },
+          { trait_type: "Max Supply", value: activeMetadata.maxSupply },
+          { trait_type: "Image File", value: activeMetadata.imageFile },
+        ]
+      : attributes;
+
+    return {
+      url: currentUrl,
+      title: activeMetadata?.name || name || "Untitled NFT",
+      description:
+        activeMetadata
+          ? `${activeMetadata.badge} release priced at $${Number(activeMetadata.usd).toLocaleString()} with a max supply of ${activeMetadata.maxSupply}.`
+          : description || "No description provided yet for this release.",
+      attributes: previewAttributes,
+    };
+  }, [activeMetadata, attributes, description, name, previewIndex, previewUrls]);
+
+  const stageArtworkFiles = (incomingFiles: File[], sourceLabel: string) => {
+    if (incomingFiles.length === 0) {
+      return;
+    }
+
+    if (hasMetadataCsv) {
+      const nextCount = files.length + incomingFiles.length;
+
+      if (nextCount > requiredArtworkCount) {
+        setMintStatus(
+          `Artwork upload blocked. The metadata CSV contains ${requiredArtworkCount} row(s), so you can only stage ${requiredArtworkCount} image(s) in total.`,
+        );
+        return;
+      }
+    }
+
+    const nextUrls = incomingFiles.map((file) => URL.createObjectURL(file));
+    const nextFiles = [...files, ...incomingFiles];
+    const nextPreviewUrls = [...previewUrls, ...nextUrls];
+    const nextPreviewUrlByFileName = new Map(
+      nextFiles.map((file, index) => [file.name.toLowerCase(), nextPreviewUrls[index] ?? ""]),
+    );
+    const nextMatchedMetadataCount = metadataRows.filter((row) =>
+      nextPreviewUrlByFileName.has(row.imageFile.toLowerCase()),
+    ).length;
+
+    setFiles(nextFiles);
+    setPreviewUrls(nextPreviewUrls);
+    setMintStatus(
+      hasMetadataCsv
+        ? `${nextFiles.length}/${requiredArtworkCount} artwork file(s) uploaded. ${nextMatchedMetadataCount}/${requiredArtworkCount} metadata row(s) currently match uploaded filenames.`
+        : `${incomingFiles.length} asset(s) ${sourceLabel} in the mint queue.`,
+    );
+  };
+
+  const handleFileSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files?.length) {
+      return;
+    }
+
+    const selected = Array.from(event.target.files);
+    stageArtworkFiles(selected, "staged");
+
+    if (event.target) {
+      event.target.value = "";
+    }
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    if (!event.dataTransfer.files?.length) {
+      return;
+    }
+
+    const dropped = Array.from(event.dataTransfer.files);
+    stageArtworkFiles(dropped, "added");
+  };
+
+  const handleRemoveFile = (index: number) => {
+    const removedUrl = previewUrls[index];
+    if (removedUrl) {
+      URL.revokeObjectURL(removedUrl);
+    }
+
+    setFiles((current) => current.filter((_, currentIndex) => currentIndex !== index));
+    setPreviewUrls((current) => current.filter((_, currentIndex) => currentIndex !== index));
+    setPreviewIndex((current) => Math.max(0, Math.min(current, previewUrls.length - 2)));
+
+    if (hasMetadataCsv) {
+      setMintStatus(
+        `${files.length - 1}/${requiredArtworkCount} artwork file(s) remain. Upload exactly ${requiredArtworkCount} images and ensure every image_file from the CSV is present.`,
+      );
+    }
+  };
+
+  const handleMetadataCsvUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const content = await file.text();
+      const parsedRows = parseMetadataCsv(content);
+      const firstRow = parsedRows[0];
+
+      setMetadataRows(parsedRows);
+      setMetadataCsvName(file.name);
+      setName(firstRow?.name ?? "");
+      setMaxSupply(firstRow?.maxSupply ?? "");
+      setDescription(
+        firstRow
+          ? `${firstRow.badge} release priced at $${Number(firstRow.usd).toLocaleString()} with a max supply of ${firstRow.maxSupply}.`
+          : "",
+      );
+      setAttributes(
+        firstRow
+          ? [
+              { trait_type: "Badge", value: firstRow.badge },
+              { trait_type: "Price", value: `$${Number(firstRow.usd).toLocaleString()} USD` },
+              { trait_type: "Max Supply", value: firstRow.maxSupply },
+            ]
+          : [],
+      );
+      setMintStatus(
+        `${parsedRows.length} metadata row(s) imported from ${file.name}. Upload exactly ${parsedRows.length} image(s); ${parsedRows.filter((row) => previewUrlByFileName.has(row.imageFile.toLowerCase())).length}/${parsedRows.length} currently match uploaded artwork by image filename.`,
+      );
+    } catch (error) {
+      setMetadataRows([]);
+      setMetadataCsvName(null);
+      setMintStatus(
+        error instanceof Error
+          ? error.message
+          : "Unable to parse metadata CSV.",
+      );
+    } finally {
+      if (event.target) {
+        event.target.value = "";
+      }
+    }
+  };
+
+  const clearMetadataCsv = () => {
+    setMetadataRows([]);
+    setMetadataCsvName(null);
+    setMintStatus(
+      "Metadata CSV cleared. You can upload a new file with id,name,image_file,max_supply,usd,badge.",
+    );
+  };
+
+  const updateAttribute = (
+    index: number,
+    field: keyof Attribute,
+    value: string,
+  ) => {
+    setAttributes((current) =>
+      current.map((attribute, currentIndex) =>
+        currentIndex === index ? { ...attribute, [field]: value } : attribute,
+      ),
+    );
+  };
+
+  const addAttribute = () => {
+    setAttributes((current) => [...current, { trait_type: "", value: "" }]);
+  };
+
+  const removeAttribute = (index: number) => {
+    setAttributes((current) => current.filter((_, currentIndex) => currentIndex !== index));
+  };
+
+  const handleConnectWallet = async () => {
+    if (!account) {
+      await connectWallet();
+      return;
+    }
+
+    if (!isCorrectNetwork) {
+      await switchNetwork();
+      return;
+    }
+
+    disconnectWallet();
+    setMintStatus("Wallet disconnected. Reconnect to continue with mint preparation.");
+  };
+
+  const handleMintClick = () => {
+    if (!account) {
+      setMintStatus("Connect a wallet before preparing a mint transaction.");
+      return;
+    }
+
+    if (!isCorrectNetwork) {
+      setMintStatus(`Switch to ${targetChainName} before minting.`);
+      return;
+    }
+
+    if (hasMetadataCsv && !hasExactArtworkCount) {
+      setMintStatus(
+        `Upload exactly ${requiredArtworkCount} image(s) to match the ${requiredArtworkCount} metadata row(s) before minting.`,
+      );
+      return;
+    }
+
+    if (hasMetadataCsv && !hasCompleteArtworkMapping) {
+      setMintStatus(
+        `Filename match incomplete. ${matchedMetadataCount}/${requiredArtworkCount} CSV row(s) currently have matching uploaded artwork.`,
+      );
+      return;
+    }
+
+    setMintStatus(
+      `${shortAddress(account)} is connected. ${files.length || 0} asset(s) are prepared for contract integration.`,
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <PageBreadcrumb
+        pageTitle="NFT Minting Console"
+        info="Public route using the existing dashboard shell. This page is UI-only for now."
+      />
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap gap-2">
+            <SectionTab
+              active={activeTab === "minting"}
+              label="Minting Console"
+              onClick={() => setActiveTab("minting")}
+            />
+            <SectionTab
+              active={activeTab === "governance"}
+              label="Governance"
+              onClick={() => setActiveTab("governance")}
+            />
+            <SectionTab
+              active={activeTab === "tiers"}
+              label="Tier Config"
+              onClick={() => setActiveTab("tiers")}
+            />
+            <SectionTab
+              active={activeTab === "collection"}
+              label="Asset Registry"
+              onClick={() => setActiveTab("collection")}
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              variant={account && isCorrectNetwork ? "outline" : "primary"}
+              onClick={() => {
+                void handleConnectWallet();
+              }}
+              disabled={isConnecting}
+              className="min-w-[180px]"
+            >
+              {!account
+                ? isConnecting
+                  ? "Connecting..."
+                  : "Connect Wallet"
+                : !isCorrectNetwork
+                  ? `Switch to ${targetChainName}`
+                  : shortAddress(account)}
+            </Button>
+            <Badge color={transfersPaused ? "error" : "success"}>
+              {transfersPaused ? "Transfers Paused" : "Network Live"}
+            </Badge>
+            <Badge color="info">Public Route</Badge>
+            <Badge color={isCorrectNetwork || !account ? "light" : "warning"}>
+              {account
+                ? isCorrectNetwork
+                  ? targetChainName
+                  : "Wrong Network"
+                : "Wallet Disconnected"}
+            </Badge>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-brand-200/40 bg-brand-50/50 px-4 py-3 text-sm text-brand-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-300">
+        {mintStatus}
+      </div>
+
+      {activeTab === "minting" && (
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)]">
+          <div className="space-y-6">
+            <ComponentCard
+              title="Minting Configuration"
+              desc="Stage assets, define metadata, and prepare the public mint flow."
+            >
+              <div className="grid gap-6">
+                <div>
+                  <Label>Select Tier</Label>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    {tierOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setSelectedTier(option.value)}
+                        className={`rounded-xl border px-4 py-3 text-left text-sm font-medium transition ${
+                          selectedTier === option.value
+                            ? "border-brand-500 bg-brand-500 text-white"
+                            : "border-gray-200 bg-white text-gray-700 hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <Label>Asset Collection</Label>
+                    <Badge color="light">Drag, drop, or browse</Badge>
+                  </div>
+                  <div
+                    className="rounded-2xl border border-dashed border-gray-300 bg-gray-50/70 p-6 transition hover:border-brand-400 dark:border-gray-700 dark:bg-gray-900/50"
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={handleDrop}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={handleFileSelection}
+                    />
+
+                    {previewUrls.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center gap-4 py-8 text-center">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-500/10 text-brand-500">
+                          <span className="text-lg font-semibold">UP</span>
+                        </div>
+                        <div>
+                          <p className="text-base font-medium text-gray-800 dark:text-white/90">
+                            Upload artwork for the mint queue
+                          </p>
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            {hasMetadataCsv
+                              ? `CSV loaded: upload exactly ${requiredArtworkCount} image(s) and keep filenames aligned with image_file values.`
+                              : "This route is public, but mint execution is still mocked."}
+                          </p>
+                        </div>
+                        <Button onClick={() => fileInputRef.current?.click()}>
+                          Browse Assets
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                          {previewUrls.map((url, index) => (
+                            <button
+                              key={url}
+                              type="button"
+                              onClick={() => setPreviewIndex(index)}
+                              className={`group relative overflow-hidden rounded-2xl border ${
+                                previewIndex === index
+                                  ? "border-brand-500 ring-2 ring-brand-500/30"
+                                  : "border-gray-200 dark:border-gray-800"
+                              }`}
+                            >
+                              <img
+                                src={url}
+                                alt={`NFT preview ${index + 1}`}
+                                className="aspect-square w-full object-cover"
+                              />
+                              <span className="absolute left-2 top-2 rounded-full bg-black/70 px-2 py-1 text-[11px] font-medium text-white">
+                                {index + 1}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleRemoveFile(index);
+                                }}
+                                className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-[11px] font-medium text-white opacity-0 transition group-hover:opacity-100"
+                              >
+                                Remove
+                              </button>
+                            </button>
+                          ))}
+                        </div>
+                        <Button
+                          variant="outline"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={hasMetadataCsv && files.length >= requiredArtworkCount}
+                        >
+                          Add More Assets
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <Label>Metadata and Attributes</Label>
+                    <Button variant="outline" size="sm" onClick={addAttribute}>
+                      Add Trait
+                    </Button>
+                  </div>
+                  <div className="space-y-4 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
+                    <div className="rounded-2xl border border-dashed border-brand-200 bg-brand-50/40 p-4 dark:border-brand-500/20 dark:bg-brand-500/10">
+                      <input
+                        ref={metadataCsvInputRef}
+                        type="file"
+                        accept=".csv,text/csv"
+                        className="hidden"
+                        onChange={(event) => {
+                          void handleMetadataCsvUpload(event);
+                        }}
+                      />
+                      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                            Metadata CSV
+                          </p>
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Upload a CSV using id,name,image_file,max_supply,usd,badge. Rows are matched to artwork by the image_file value.
+                          </p>
+                          {metadataCsvName ? (
+                            <p className="mt-2 text-sm text-brand-700 dark:text-brand-300">
+                              {metadataCsvName} imported. Upload exactly {metadataRows.length} image(s). {matchedMetadataCount}/{metadataRows.length} row(s) currently match uploaded filenames.
+                            </p>
+                          ) : null}
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                          <Button
+                            variant="outline"
+                            onClick={() => metadataCsvInputRef.current?.click()}
+                          >
+                            {metadataCsvName ? "Replace CSV" : "Upload Metadata CSV"}
+                          </Button>
+                          {metadataCsvName ? (
+                            <Button variant="destructive" onClick={clearMetadataCsv}>
+                              Clear CSV
+                            </Button>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      {metadataRows.length > 0 ? (
+                        <div className="mt-4 overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800">
+                          <div className="grid grid-cols-[88px_minmax(0,1.2fr)_minmax(0,1fr)_120px_120px_minmax(0,1fr)] gap-3 bg-white px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-500 dark:bg-gray-900 dark:text-gray-400">
+                            <span>ID</span>
+                            <span>Name</span>
+                            <span>Image File</span>
+                            <span>Supply</span>
+                            <span>USD</span>
+                            <span>Badge</span>
+                          </div>
+                          <div className="divide-y divide-gray-200 bg-white dark:divide-gray-800 dark:bg-white/[0.02]">
+                            {metadataRows.slice(0, 5).map((row) => {
+                              const isMatched = previewUrlByFileName.has(
+                                row.imageFile.toLowerCase(),
+                              );
+
+                              return (
+                                <div
+                                  key={`${row.id}-${row.imageFile}`}
+                                  className="grid grid-cols-[88px_minmax(0,1.2fr)_minmax(0,1fr)_120px_120px_minmax(0,1fr)] gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                                >
+                                  <span className="font-medium text-gray-800 dark:text-white/90">
+                                    {row.id}
+                                  </span>
+                                  <span>{row.name}</span>
+                                  <span className={isMatched ? "text-success-600 dark:text-success-400" : ""}>
+                                    {row.imageFile}
+                                  </span>
+                                  <span>{row.maxSupply}</span>
+                                  <span>${Number(row.usd).toLocaleString()}</span>
+                                  <span>{row.badge}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {metadataRows.length > 5 ? (
+                            <div className="border-t border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
+                              Showing 5 of {metadataRows.length} metadata rows.
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <Input
+                      placeholder="NFT name"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                    />
+                    <Textarea
+                      placeholder="Describe the collection, utility, and release intent"
+                      value={description}
+                      onChange={(event) => setDescription(event.target.value)}
+                    />
+                    <div className="space-y-3">
+                      {attributes.map((attribute, index) => (
+                        <div
+                          key={`${attribute.trait_type}-${index}`}
+                          className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+                        >
+                          <Input
+                            placeholder="Trait"
+                            value={attribute.trait_type}
+                            onChange={(event) =>
+                              updateAttribute(index, "trait_type", event.target.value)
+                            }
+                          />
+                          <Input
+                            placeholder="Value"
+                            value={attribute.value}
+                            onChange={(event) =>
+                              updateAttribute(index, "value", event.target.value)
+                            }
+                          />
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeAttribute(index)}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <Label>Issuance Quantity</Label>
+                    <Badge color="primary">
+                      {editionType === "unique"
+                        ? "1/1 Unique"
+                        : editionType === "open"
+                          ? "Open Edition"
+                          : `Limited ${maxSupply}`}
+                    </Badge>
+                  </div>
+                  <div className="space-y-4 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                      {(["unique", "limited", "open"] as EditionType[]).map((type) => (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => setEditionType(type)}
+                          className={`rounded-xl border px-4 py-3 text-sm font-medium capitalize transition ${
+                            editionType === type
+                              ? "border-brand-500 bg-brand-500 text-white"
+                              : "border-gray-200 bg-white text-gray-700 hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
+
+                    {editionType === "limited" && (
+                      <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
+                        <Input
+                          type="number"
+                          placeholder="Max supply"
+                          value={maxSupply}
+                          onChange={(event) => setMaxSupply(event.target.value)}
+                        />
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Fixed edition sizing gives the collection a clear scarcity model before contract integration.
+                        </p>
+                      </div>
+                    )}
+
+                    {editionType === "unique" && (
+                      <div className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-300">
+                        A single asset will be minted for this artwork. This view is already ready for a 1/1 presentation.
+                      </div>
+                    )}
+
+                    {editionType === "open" && (
+                      <div className="rounded-xl border border-success-200 bg-success-50 px-4 py-3 text-sm text-success-700 dark:border-success-500/20 dark:bg-success-500/10 dark:text-success-300">
+                        Open edition mode is active in the UI. Supply enforcement still needs backend and contract wiring.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </ComponentCard>
+
+            <ComponentCard
+              title="Recent Mint History"
+              desc="Static preview data to validate the layout while contract work is pending."
+            >
+              <div className="space-y-3">
+                {recentMints.map((mint) => (
+                  <div
+                    key={mint.tx}
+                    className="flex flex-col gap-3 rounded-2xl border border-gray-200 p-4 dark:border-gray-800 md:flex-row md:items-center md:justify-between"
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {mint.recipient}
+                      </p>
+                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        TX {mint.tx}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge color={mint.status === "Confirmed" ? "success" : "primary"}>
+                        {mint.status}
+                      </Badge>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {mint.time}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ComponentCard>
+          </div>
+
+          <div className="space-y-6 xl:sticky xl:top-6 xl:self-start">
+            <ComponentCard
+              title="Live Preview"
+              desc="This panel mirrors how a public mint drop can be presented before transaction wiring is added."
+              className="overflow-hidden"
+            >
+              <div className="space-y-6">
+                <div className="overflow-hidden rounded-[28px] border border-gray-200 bg-[#09090f] p-4 dark:border-gray-800">
+                  <div className="relative aspect-[3/4] overflow-hidden rounded-[24px] border border-white/10 bg-gradient-to-br from-[#111827] via-[#0f172a] to-[#020617]">
+                    {currentPreview.url ? (
+                      <img
+                        src={currentPreview.url}
+                        alt={currentPreview.title}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    ) : null}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                    {!currentPreview.url && (
+                      <div className="absolute inset-0 flex items-center justify-center text-center text-white/50">
+                        <div>
+                          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-semibold">
+                            NFT
+                          </div>
+                          <p className="text-sm">Artwork preview appears here</p>
+                        </div>
+                      </div>
+                    )}
+                    <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                      <p className="text-[11px] uppercase tracking-[0.3em] text-white/60">
+                        Public Mint Preview
+                      </p>
+                      <h3 className="mt-2 text-2xl font-semibold">
+                        {currentPreview.title}
+                      </h3>
+                      <p className="mt-2 line-clamp-3 text-sm text-white/70">
+                        {currentPreview.description}
+                      </p>
+                      <div className="mt-4 grid grid-cols-2 gap-2">
+                        {currentPreview.attributes.map((attribute, index) => (
+                          <div
+                            key={`${attribute.trait_type}-${index}`}
+                            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2"
+                          >
+                            <p className="text-[10px] uppercase tracking-wide text-white/45">
+                              {attribute.trait_type || "Trait"}
+                            </p>
+                            <p className="text-xs font-medium text-white">
+                              {attribute.value || "Unset"}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">Network</span>
+                    <span className="font-medium text-gray-800 dark:text-white/90">
+                      Sepolia Testnet
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">Contract Type</span>
+                    <span className="font-medium text-gray-800 dark:text-white/90">
+                      {editionType === "unique" ? "ERC-721" : "ERC-1155"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">Queued Assets</span>
+                    <span className="font-medium text-gray-800 dark:text-white/90">
+                      {previewUrls.length}
+                      {hasMetadataCsv ? ` / ${requiredArtworkCount}` : ""}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">Metadata Rows</span>
+                    <span className="font-medium text-gray-800 dark:text-white/90">
+                      {metadataRows.length}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">Recipient</span>
+                    <span className="font-medium text-gray-800 dark:text-white/90">
+                      {account ? shortAddress(account) : "Wallet not connected"}
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleMintClick}
+                  disabled={previewUrls.length === 0 || !hasExactArtworkCount || !hasCompleteArtworkMapping}
+                  className="w-full"
+                >
+                  {previewUrls.length > 1
+                    ? `Mint Collection (${previewUrls.length})`
+                    : "Mint Asset"}
+                </Button>
+              </div>
+            </ComponentCard>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "governance" && (
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <ComponentCard
+            title="Global Compliance Switch"
+            desc="UI-only controls for freeze state, signer management, and address restrictions."
+          >
+            <div className="space-y-5">
+              <div className="flex items-center justify-between rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
+                <div>
+                  <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                    Transfers {transfersPaused ? "paused" : "active"}
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Toggle the global movement state without leaving the page.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTransfersPaused((current) => !current)}
+                  className={`relative h-8 w-16 rounded-full transition ${
+                    transfersPaused ? "bg-red-500" : "bg-green-500"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${
+                      transfersPaused ? "left-9" : "left-1"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <Label>Lookup Token or Address</Label>
+                  <Input placeholder="Token ID or 0x address" />
+                </div>
+                <div>
+                  <Label>Authorized Signer</Label>
+                  <Input placeholder="0x backend signer address" />
+                </div>
+                <div>
+                  <Label>Lock Token ID</Label>
+                  <Input placeholder="1042" />
+                </div>
+                <div>
+                  <Label>Unlock Schedule</Label>
+                  <Input type="date" />
+                </div>
+                <div className="md:col-span-2">
+                  <Label>Restrict Address</Label>
+                  <Input placeholder="0x target wallet" />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Button variant="outline">Verify Status</Button>
+                <Button variant="primary">Update Signer</Button>
+                <Button variant="destructive">Restrict Wallet</Button>
+              </div>
+            </div>
+          </ComponentCard>
+
+          <ComponentCard
+            title="Granular Token Governance"
+            desc="Mock per-token controls for allowlists, soulbound rules, and emergency burn actions."
+          >
+            <div className="space-y-5">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <Label>Target Token ID</Label>
+                  <Input placeholder="1045" />
+                </div>
+                <div>
+                  <Label>Reference Address</Label>
+                  <Input placeholder="0x allow or block address" />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  "Soulbound Status",
+                  "Allowlist Requirement",
+                  "Address Permissions",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex flex-col gap-3 rounded-2xl border border-gray-200 p-4 dark:border-gray-800 md:flex-row md:items-center md:justify-between"
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {item}
+                      </p>
+                      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Layout ready. Actions will be wired to smart contract methods later.
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm">
+                        Enable
+                      </Button>
+                      <Button variant="primary" size="sm">
+                        Update
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-2xl border border-red-200 bg-red-50 p-4 dark:border-red-500/20 dark:bg-red-500/10">
+                <p className="text-sm font-medium text-red-700 dark:text-red-300">
+                  Danger Zone
+                </p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-200/80">
+                  Burn UI is shown here, but no destructive action is connected on this public route.
+                </p>
+                <div className="mt-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+                  <Input placeholder="Token ID" />
+                  <Input placeholder='Type "BURN" to confirm' />
+                  <Button variant="destructive">Execute Burn</Button>
+                </div>
+              </div>
+            </div>
+          </ComponentCard>
+        </div>
+      )}
+
+      {activeTab === "tiers" && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 2xl:grid-cols-4">
+          {tiers.map((tier) => {
+            const progress = Math.min(100, Math.round((tier.minted / tier.maxSupply) * 100));
+
+            return (
+              <ComponentCard
+                key={tier.id}
+                title={tier.name}
+                desc={`Tier ID ${tier.id}`}
+                className="relative overflow-hidden"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Badge color={tier.paused ? "error" : "success"}>
+                      {tier.paused ? "Paused" : "Live"}
+                    </Badge>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setTiers((current) =>
+                          current.map((item) =>
+                            item.id === tier.id ? { ...item, paused: !item.paused } : item,
+                          ),
+                        )
+                      }
+                      className={`relative h-7 w-14 rounded-full transition ${
+                        tier.paused ? "bg-gray-300 dark:bg-gray-700" : "bg-brand-500"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${
+                          tier.paused ? "left-1" : "left-8"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex items-center justify-between text-sm">
+                      <span className="text-gray-500 dark:text-gray-400">Circulation</span>
+                      <span className="font-medium text-gray-800 dark:text-white/90">
+                        {tier.minted}/{tier.maxSupply}
+                      </span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                      <div
+                        className="h-full rounded-full bg-brand-500"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div>
+                      <Label>Max Supply</Label>
+                      <Input
+                        type="number"
+                        defaultValue={tier.maxSupply}
+                        onChange={(event) =>
+                          setTiers((current) =>
+                            current.map((item) =>
+                              item.id === tier.id
+                                ? { ...item, maxSupply: Number(event.target.value || 0) }
+                                : item,
+                            ),
+                          )
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label>Base Metadata URI</Label>
+                      <Input
+                        defaultValue={tier.uri}
+                        onChange={(event) =>
+                          setTiers((current) =>
+                            current.map((item) =>
+                              item.id === tier.id ? { ...item, uri: event.target.value } : item,
+                            ),
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <Button className="w-full">Sync Configuration</Button>
+                </div>
+              </ComponentCard>
+            );
+          })}
+
+          <div className="flex min-h-[320px] flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-10 text-center dark:border-gray-700 dark:bg-white/[0.03]">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-500/10 text-brand-500">
+              <span className="text-2xl font-semibold">+</span>
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-gray-800 dark:text-white/90">
+              Add New Tier
+            </h3>
+            <p className="mt-2 max-w-xs text-sm text-gray-500 dark:text-gray-400">
+              The shell is ready for a create-tier modal when you want the on-chain action added.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "collection" && (
+        <div className="space-y-6">
+          <div className="grid gap-4 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white/90">
+                Collection Matrix
+              </h3>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Filtered public registry preview for upcoming NFT minting inventory. Uploaded CSV metadata replaces the static mock registry automatically.
+              </p>
+            </div>
+            <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_180px]">
+              <Input
+                placeholder="Search by name or token ID"
+                defaultValue={registrySearch}
+                onChange={(event) => setRegistrySearch(event.target.value)}
+              />
+              <Select
+                options={[
+                  { value: "all", label: "All tiers" },
+                  { value: "genesis", label: "Genesis" },
+                  { value: "collector", label: "Collector" },
+                  { value: "signature", label: "Signature" },
+                ]}
+                defaultValue={registryTierFilter}
+                onChange={setRegistryTierFilter}
+                placeholder="Filter tier"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4 rounded-2xl border border-brand-200/40 bg-brand-50/50 p-4 dark:border-brand-500/20 dark:bg-brand-500/10 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-medium text-brand-700 dark:text-brand-300">
+                Referral Rewards Center
+              </p>
+              <p className="mt-1 text-2xl font-semibold text-gray-800 dark:text-white/90">
+                12.40 ETH
+              </p>
+            </div>
+            <Button>Claim Rewards</Button>
+          </div>
+
+          {filteredCollection.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center dark:border-gray-700 dark:bg-white/[0.03]">
+              <p className="text-base font-medium text-gray-800 dark:text-white/90">
+                No assets match the current filters.
+              </p>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Adjust the registry search or tier filter to continue previewing the collection.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {filteredCollection.map((asset) => (
+                <div
+                  key={asset.id}
+                  className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]"
+                >
+                  <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-900">
+                    {asset.image ? (
+                      <img
+                        src={asset.image}
+                        alt={asset.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center px-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                        Awaiting artwork upload for {asset.imageFile ?? asset.name}
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-4 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h4 className="text-base font-semibold text-gray-800 dark:text-white/90">
+                          {asset.name}
+                        </h4>
+                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                          Token #{asset.id}
+                        </p>
+                      </div>
+                      <Badge color="primary">{asset.tier}</Badge>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div className="rounded-xl bg-gray-50 px-3 py-2 dark:bg-gray-900">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Status</p>
+                        <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
+                          {asset.status}
+                        </p>
+                      </div>
+                      <div className="rounded-xl bg-gray-50 px-3 py-2 dark:bg-gray-900">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Price</p>
+                        <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
+                          {asset.price}
+                        </p>
+                      </div>
+                      <div className="rounded-xl bg-gray-50 px-3 py-2 dark:bg-gray-900">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Badge</p>
+                        <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
+                          {asset.badge ?? asset.owner}
+                        </p>
+                      </div>
+                      <div className="rounded-xl bg-gray-50 px-3 py-2 dark:bg-gray-900">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Supply</p>
+                        <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
+                          {asset.maxSupply ?? "N/A"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <Button className="flex-1">Purchase</Button>
+                      <Button variant="outline" className="flex-1">
+                        View Chain
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

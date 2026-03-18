@@ -10,7 +10,7 @@ export const LanguageToggleButton: React.FC = () => {
       onClick={() => language !== "en" && toggleLanguage()}
       className={`px-4 py-2 transition ${
         language === "en"
-          ? "bg-[#1862D4] text-white"
+          ? "bg-[#50FF56] text-white"
           : "bg-transparent dark:text-white text-gray-800 hover:bg-transparent"
       }`}
     >
@@ -20,7 +20,7 @@ export const LanguageToggleButton: React.FC = () => {
       onClick={() => language !== "ko" && toggleLanguage()}
       className={`px-4 py-2 transition ${
         language === "ko"
-          ? "bg-[#1862D4] text-white"
+          ? "bg-[#50FF56] text-white"
           : "bg-transparent dark:text-white text-gray-800 hover:bg-transparent"
       }`}
     >

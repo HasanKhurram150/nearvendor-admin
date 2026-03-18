@@ -60,7 +60,7 @@ const PlacementList: React.FC = () => {
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#1862D4]" />
+                      <Loading size="lg" className="border-[#50FF56]" />
                     </div>
                   </TableCell>
                 </TableRow>

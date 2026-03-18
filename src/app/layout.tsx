@@ -13,14 +13,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Alexandria:wght@100..900&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className={`bg-[#08070D] dark:bg-[#08070D]`}>
+      <body className="bg-[#08070D] text-white/90">
         <LanguageProvider>
           <Providers>
             <Toaster

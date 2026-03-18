@@ -122,7 +122,7 @@ export const EditCalendarModal = ({ onClose }: { onClose: () => void }) => {
             />
             <GenericButton
               btnText={t("updateCalendar")}
-              bgColor="#1862D4"
+              bgColor="#50FF56"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"
