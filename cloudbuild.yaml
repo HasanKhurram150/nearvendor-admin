@@ -6,7 +6,7 @@ steps:
       [
         "build",
         "--build-arg",
-        "NEXT_PUBLIC_API_URL=$_NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_API_KEY=$_NEXT_PUBLIC_API_KEY",
         "-t",
         "gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${SHORT_SHA}",
         ".",
@@ -62,8 +62,9 @@ images:
   - "gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${SHORT_SHA}"
 
 substitutions:
+  _NEXT_PUBLIC_API_KEY: "https://api.symoria.io/v1/api/admin"
   _IMAGE_NAME: "symoria-admin-app"
-  _CONTAINER_NAME: "symoria-nft-app"
+  _CONTAINER_NAME: "symoria-admin-app"
   _PORT: "3033"
   _INTERNAL_PORT: "3000"
   _EC2_USER: "ubuntu"

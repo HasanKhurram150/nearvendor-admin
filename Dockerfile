@@ -43,13 +43,14 @@ RUN pnpm run build
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN adduser --system --uid 1001 --ingroup nodejs --home /home/nextjs nextjs
+RUN mkdir -p /home/nextjs && chown -R nextjs:nodejs /home/nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 COPY --from=builder /app/next.config.ts ./
@@ -65,5 +66,6 @@ USER nextjs
 
 EXPOSE 3000
 
+ENV HOME=/home/nextjs
 ENV PORT=3000
 CMD ["pnpm","start"]
