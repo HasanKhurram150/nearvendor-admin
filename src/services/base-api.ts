@@ -23,12 +23,14 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+type BaseQueryExtraOptions = Parameters<typeof baseQuery>[2];
+
 const baseQueryWithReauth = async (
   args: string | { url: string; method?: string; body?: any; params?: any },
   api: BaseQueryApi,
-  extraOptions: {},
+  extraOptions: BaseQueryExtraOptions,
 ) => {
-  let result = await baseQuery(args, api, extraOptions);
+  const result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401) {
     // Handle 401 error - typically unauthorized
@@ -78,6 +80,7 @@ export const baseAPI = createApi({
     TAGS.EVENTS,
     TAGS.PACKAGES,
     TAGS.EMAILSETTINGS,
+    TAGS.NFT,
   ],
   endpoints: () => ({}),
 });

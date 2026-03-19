@@ -3,6 +3,7 @@
 import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { jwtDecode } from "jwt-decode";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
@@ -27,6 +28,15 @@ const validationSchema = Yup.object().shape({
 
 type FormData = Yup.InferType<typeof validationSchema>;
 
+interface LoginTokenPayload {
+  uuid?: string;
+  email?: string;
+  tokenType?: string;
+  iat?: number;
+  exp?: number;
+  sub?: string;
+}
+
 const SignInForm = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -45,13 +55,33 @@ const SignInForm = () => {
     async (formData: FormData) => {
       try {
         const response = await login(formData).unwrap();
-        localStorage.setItem("authToken", response?.token);
-        router.push("/enter-auth-code?origin=signin");
+        const token = response?.token;
+
+        if (!token) {
+          throw new Error("Login succeeded but no token was returned.");
+        }
+
+        const decoded = jwtDecode<LoginTokenPayload>(token);
+        const email = decoded.email ?? formData.email;
+        const fallbackName = email.includes("@") ? email.split("@")[0] : email;
+
+        localStorage.setItem("authToken", token);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            uuid: decoded.uuid ?? "",
+            email,
+            name: fallbackName,
+          }),
+        );
+
+        router.push("/mint-nft");
         toast.success("Login successful!");
       } catch (error) {
         const apiError = error as ApiErrorResponse;
         const errorMessage =
-          apiError?.data?.message || "Login failed. Please try again.";
+          apiError?.data?.message ||
+          (error instanceof Error ? error.message : "Login failed. Please try again.");
         toast.error(errorMessage);
       }
     },

@@ -9,6 +9,7 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import { useWallet } from "@/context/WalletContext";
+import { useMintNftsMutation } from "@/services";
 
 type ConsoleTab = "minting" | "governance" | "tiers" | "collection";
 type EditionType = "unique" | "limited" | "open";
@@ -47,6 +48,7 @@ interface MetadataCsvRow {
   maxSupply: string;
   usd: string;
   badge: string;
+  description?: string;
 }
 
 const requiredMetadataHeaders = [
@@ -57,6 +59,23 @@ const requiredMetadataHeaders = [
   "usd",
   "badge",
 ] as const;
+
+const DEFAULT_MINT_CHAIN_ID = 8453;
+const DEFAULT_MAX_SUPPLY = "100";
+const DEFAULT_NFT_NAME = "Symoria Genesis #001";
+const DEFAULT_DESCRIPTION =
+  "A public mint interface for high-signal digital collectibles.";
+const DEFAULT_ATTRIBUTES: Attribute[] = [
+  { trait_type: "Tier", value: "Genesis" },
+  { trait_type: "Utility", value: "Vault Access" },
+];
+
+const parseMintValue = (value: string) => {
+  const trimmedValue = value.trim();
+  const parsedNumber = Number(trimmedValue);
+
+  return Number.isFinite(parsedNumber) ? parsedNumber : trimmedValue;
+};
 
 const tierOptions = [
   { value: "1", label: "Genesis" },
@@ -192,7 +211,9 @@ function parseMetadataCsv(text: string) {
     .filter(Boolean);
 
   if (lines.length < 2) {
-    throw new Error("CSV must include a header row and at least one metadata row.");
+    throw new Error(
+      "CSV must include a header row and at least one metadata row.",
+    );
   }
 
   const headers = parseCsvLine(lines[0]).map((header) =>
@@ -215,6 +236,10 @@ function parseMetadataCsv(text: string) {
       const headerIndex = headers.indexOf(header);
       return values[headerIndex]?.trim() ?? "";
     };
+    const getOptionalValue = (header: string) => {
+      const headerIndex = headers.indexOf(header);
+      return headerIndex >= 0 ? (values[headerIndex]?.trim() ?? "") : "";
+    };
 
     const idValue = getValue("id");
     const parsedId = Number(idValue);
@@ -228,8 +253,15 @@ function parseMetadataCsv(text: string) {
     const maxSupplyValue = getValue("max_supply");
     const usdValue = getValue("usd");
     const badgeValue = getValue("badge");
+    const descriptionValue = getOptionalValue("description");
 
-    if (!nameValue || !imageFileValue || !maxSupplyValue || !usdValue || !badgeValue) {
+    if (
+      !nameValue ||
+      !imageFileValue ||
+      !maxSupplyValue ||
+      !usdValue ||
+      !badgeValue
+    ) {
       throw new Error(
         `Row ${rowIndex + 2}: all metadata fields must be populated.`,
       );
@@ -242,6 +274,7 @@ function parseMetadataCsv(text: string) {
       maxSupply: maxSupplyValue,
       usd: usdValue,
       badge: badgeValue,
+      description: descriptionValue || undefined,
     } satisfies MetadataCsvRow;
   });
 }
@@ -304,30 +337,32 @@ export default function NftMintingConsole() {
     switchNetwork,
     targetChainName,
   } = useWallet();
+  const [mintNfts, { isLoading: isMinting }] = useMintNftsMutation();
   const [activeTab, setActiveTab] = useState<ConsoleTab>("minting");
   const [selectedTier, setSelectedTier] = useState("1");
   const [editionType, setEditionType] = useState<EditionType>("limited");
-  const [maxSupply, setMaxSupply] = useState("100");
-  const [name, setName] = useState("Symoria Genesis #001");
-  const [description, setDescription] = useState(
-    "A public mint interface for high-signal digital collectibles.",
-  );
-  const [attributes, setAttributes] = useState<Attribute[]>([
-    { trait_type: "Tier", value: "Genesis" },
-    { trait_type: "Utility", value: "Vault Access" },
-  ]);
+  const [maxSupply, setMaxSupply] = useState(DEFAULT_MAX_SUPPLY);
+  const [name, setName] = useState(DEFAULT_NFT_NAME);
+  const [description, setDescription] = useState(DEFAULT_DESCRIPTION);
+  const [attributes, setAttributes] = useState<Attribute[]>(DEFAULT_ATTRIBUTES);
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [metadataRows, setMetadataRows] = useState<MetadataCsvRow[]>([]);
   const [metadataCsvName, setMetadataCsvName] = useState<string | null>(null);
   const [mintStatus, setMintStatus] = useState(
-    "Wallet connection is live. Mint execution is still waiting on contract and IPFS integration.",
+    "Mint execution is still waiting on contract and IPFS integration.",
   );
   const [transfersPaused, setTransfersPaused] = useState(false);
   const [tiers, setTiers] = useState<TierCard[]>(initialTiers);
   const [registrySearch, setRegistrySearch] = useState("");
   const [registryTierFilter, setRegistryTierFilter] = useState("all");
+  const mintChainId = Number(
+    process.env.NEXT_PUBLIC_MINT_CHAIN_ID ?? DEFAULT_MINT_CHAIN_ID,
+  );
+  const mintChainLabel =
+    process.env.NEXT_PUBLIC_MINT_CHAIN_NAME ??
+    (mintChainId === 8453 ? "Base" : `Chain ${mintChainId}`);
 
   useEffect(() => {
     return () => {
@@ -335,32 +370,74 @@ export default function NftMintingConsole() {
     };
   }, [previewUrls]);
 
+  const resetMintForm = () => {
+    previewUrls.forEach((url) => URL.revokeObjectURL(url));
+
+    setSelectedTier("1");
+    setEditionType("limited");
+    setMaxSupply(DEFAULT_MAX_SUPPLY);
+    setName(DEFAULT_NFT_NAME);
+    setDescription(DEFAULT_DESCRIPTION);
+    setAttributes(DEFAULT_ATTRIBUTES);
+    setFiles([]);
+    setPreviewUrls([]);
+    setPreviewIndex(0);
+    setMetadataRows([]);
+    setMetadataCsvName(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+
+    if (metadataCsvInputRef.current) {
+      metadataCsvInputRef.current.value = "";
+    }
+  };
+
   const shortAddress = (value: string) =>
     `${value.slice(0, 6)}...${value.slice(-4)}`;
 
   const selectedTierLabel =
-    tierOptions.find((option) => option.value === selectedTier)?.label ?? "Genesis";
+    tierOptions.find((option) => option.value === selectedTier)?.label ??
+    "Genesis";
 
   const metadataImageMap = useMemo(() => {
-    return new Map(metadataRows.map((row) => [row.imageFile.toLowerCase(), row]));
+    return new Map(
+      metadataRows.map((row) => [row.imageFile.toLowerCase(), row]),
+    );
   }, [metadataRows]);
 
   const previewUrlByFileName = useMemo(() => {
     return new Map(
-      files.map((file, index) => [file.name.toLowerCase(), previewUrls[index] ?? ""]),
+      files.map((file, index) => [
+        file.name.toLowerCase(),
+        previewUrls[index] ?? "",
+      ]),
     );
   }, [files, previewUrls]);
 
   const matchedMetadataCount = useMemo(() => {
-    return metadataRows.filter((row) => previewUrlByFileName.has(row.imageFile.toLowerCase()))
-      .length;
+    return metadataRows.filter((row) =>
+      previewUrlByFileName.has(row.imageFile.toLowerCase()),
+    ).length;
   }, [metadataRows, previewUrlByFileName]);
 
   const requiredArtworkCount = metadataRows.length;
   const hasMetadataCsv = requiredArtworkCount > 0;
-  const hasExactArtworkCount = !hasMetadataCsv || files.length === requiredArtworkCount;
+  const hasExactArtworkCount =
+    !hasMetadataCsv || files.length === requiredArtworkCount;
   const hasCompleteArtworkMapping =
     !hasMetadataCsv || matchedMetadataCount === requiredArtworkCount;
+
+  const missingArtworkFileNames = useMemo(() => {
+    if (!hasMetadataCsv) {
+      return [];
+    }
+
+    return metadataRows
+      .filter((row) => !previewUrlByFileName.has(row.imageFile.toLowerCase()))
+      .map((row) => row.imageFile);
+  }, [hasMetadataCsv, metadataRows, previewUrlByFileName]);
 
   const collectionItems = useMemo<PreviewAsset[]>(() => {
     if (metadataRows.length === 0) {
@@ -415,7 +492,10 @@ export default function NftMintingConsole() {
     const previewAttributes = activeMetadata
       ? [
           { trait_type: "Badge", value: activeMetadata.badge },
-          { trait_type: "Price", value: `$${Number(activeMetadata.usd).toLocaleString()} USD` },
+          {
+            trait_type: "Price",
+            value: `$${Number(activeMetadata.usd).toLocaleString()} USD`,
+          },
           { trait_type: "Max Supply", value: activeMetadata.maxSupply },
           { trait_type: "Image File", value: activeMetadata.imageFile },
         ]
@@ -424,13 +504,20 @@ export default function NftMintingConsole() {
     return {
       url: currentUrl,
       title: activeMetadata?.name || name || "Untitled NFT",
-      description:
-        activeMetadata
-          ? `${activeMetadata.badge} release priced at $${Number(activeMetadata.usd).toLocaleString()} with a max supply of ${activeMetadata.maxSupply}.`
-          : description || "No description provided yet for this release.",
+      description: activeMetadata
+        ? activeMetadata.description ||
+          `${activeMetadata.badge} release priced at $${Number(activeMetadata.usd).toLocaleString()} with a max supply of ${activeMetadata.maxSupply}.`
+        : description || "No description provided yet for this release.",
       attributes: previewAttributes,
     };
-  }, [activeMetadata, attributes, description, name, previewIndex, previewUrls]);
+  }, [
+    activeMetadata,
+    attributes,
+    description,
+    name,
+    previewIndex,
+    previewUrls,
+  ]);
 
   const stageArtworkFiles = (incomingFiles: File[], sourceLabel: string) => {
     if (incomingFiles.length === 0) {
@@ -438,6 +525,49 @@ export default function NftMintingConsole() {
     }
 
     if (hasMetadataCsv) {
+      const expectedFileNames = new Set(
+        metadataRows.map((row) => row.imageFile.toLowerCase()),
+      );
+      const existingFileNames = new Set(
+        files.map((file) => file.name.toLowerCase()),
+      );
+      const incomingSeenNames = new Set<string>();
+      const duplicateFileNames: string[] = [];
+      const unexpectedFileNames = incomingFiles
+        .filter((file) => {
+          const normalizedName = file.name.toLowerCase();
+
+          if (
+            existingFileNames.has(normalizedName) ||
+            incomingSeenNames.has(normalizedName)
+          ) {
+            duplicateFileNames.push(file.name);
+            return false;
+          }
+
+          incomingSeenNames.add(normalizedName);
+          return !expectedFileNames.has(normalizedName);
+        })
+        .map((file) => file.name);
+
+      if (unexpectedFileNames.length > 0 || duplicateFileNames.length > 0) {
+        const issues = [
+          unexpectedFileNames.length > 0
+            ? `unexpected filenames: ${unexpectedFileNames.join(", ")}`
+            : null,
+          duplicateFileNames.length > 0
+            ? `duplicate filenames: ${duplicateFileNames.join(", ")}`
+            : null,
+        ]
+          .filter(Boolean)
+          .join("; ");
+
+        setMintStatus(
+          `Artwork upload blocked. Filenames must exactly match the CSV image_file values; ${issues}.`,
+        );
+        return;
+      }
+
       const nextCount = files.length + incomingFiles.length;
 
       if (nextCount > requiredArtworkCount) {
@@ -452,7 +582,10 @@ export default function NftMintingConsole() {
     const nextFiles = [...files, ...incomingFiles];
     const nextPreviewUrls = [...previewUrls, ...nextUrls];
     const nextPreviewUrlByFileName = new Map(
-      nextFiles.map((file, index) => [file.name.toLowerCase(), nextPreviewUrls[index] ?? ""]),
+      nextFiles.map((file, index) => [
+        file.name.toLowerCase(),
+        nextPreviewUrls[index] ?? "",
+      ]),
     );
     const nextMatchedMetadataCount = metadataRows.filter((row) =>
       nextPreviewUrlByFileName.has(row.imageFile.toLowerCase()),
@@ -497,9 +630,15 @@ export default function NftMintingConsole() {
       URL.revokeObjectURL(removedUrl);
     }
 
-    setFiles((current) => current.filter((_, currentIndex) => currentIndex !== index));
-    setPreviewUrls((current) => current.filter((_, currentIndex) => currentIndex !== index));
-    setPreviewIndex((current) => Math.max(0, Math.min(current, previewUrls.length - 2)));
+    setFiles((current) =>
+      current.filter((_, currentIndex) => currentIndex !== index),
+    );
+    setPreviewUrls((current) =>
+      current.filter((_, currentIndex) => currentIndex !== index),
+    );
+    setPreviewIndex((current) =>
+      Math.max(0, Math.min(current, previewUrls.length - 2)),
+    );
 
     if (hasMetadataCsv) {
       setMintStatus(
@@ -528,14 +667,18 @@ export default function NftMintingConsole() {
       setMaxSupply(firstRow?.maxSupply ?? "");
       setDescription(
         firstRow
-          ? `${firstRow.badge} release priced at $${Number(firstRow.usd).toLocaleString()} with a max supply of ${firstRow.maxSupply}.`
+          ? firstRow.description ||
+              `${firstRow.badge} release priced at $${Number(firstRow.usd).toLocaleString()} with a max supply of ${firstRow.maxSupply}.`
           : "",
       );
       setAttributes(
         firstRow
           ? [
               { trait_type: "Badge", value: firstRow.badge },
-              { trait_type: "Price", value: `$${Number(firstRow.usd).toLocaleString()} USD` },
+              {
+                trait_type: "Price",
+                value: `$${Number(firstRow.usd).toLocaleString()} USD`,
+              },
               { trait_type: "Max Supply", value: firstRow.maxSupply },
             ]
           : [],
@@ -562,7 +705,7 @@ export default function NftMintingConsole() {
     setMetadataRows([]);
     setMetadataCsvName(null);
     setMintStatus(
-      "Metadata CSV cleared. You can upload a new file with id,name,image_file,max_supply,usd,badge.",
+      "Metadata CSV cleared. You can upload a new file with id,name,image_file,max_supply,usd,badge and an optional description column.",
     );
   };
 
@@ -583,7 +726,9 @@ export default function NftMintingConsole() {
   };
 
   const removeAttribute = (index: number) => {
-    setAttributes((current) => current.filter((_, currentIndex) => currentIndex !== index));
+    setAttributes((current) =>
+      current.filter((_, currentIndex) => currentIndex !== index),
+    );
   };
 
   const handleConnectWallet = async () => {
@@ -598,17 +743,26 @@ export default function NftMintingConsole() {
     }
 
     disconnectWallet();
-    setMintStatus("Wallet disconnected. Reconnect to continue with mint preparation.");
+    setMintStatus(
+      "Wallet disconnected. Reconnect to continue with mint preparation.",
+    );
   };
 
   const handleMintClick = () => {
-    if (!account) {
-      setMintStatus("Connect a wallet before preparing a mint transaction.");
+    if (transfersPaused) {
+      setMintStatus("Transfers are paused. Resume transfers before minting.");
       return;
     }
 
-    if (!isCorrectNetwork) {
-      setMintStatus(`Switch to ${targetChainName} before minting.`);
+    if (!hasMetadataCsv) {
+      setMintStatus(
+        "Upload a metadata CSV before minting. The API requires an imageFile entry for every NFT.",
+      );
+      return;
+    }
+
+    if (files.length === 0) {
+      setMintStatus("Upload the artwork files before minting.");
       return;
     }
 
@@ -621,24 +775,71 @@ export default function NftMintingConsole() {
 
     if (hasMetadataCsv && !hasCompleteArtworkMapping) {
       setMintStatus(
-        `Filename match incomplete. ${matchedMetadataCount}/${requiredArtworkCount} CSV row(s) currently have matching uploaded artwork.`,
+        `Filename match incomplete. ${matchedMetadataCount}/${requiredArtworkCount} CSV row(s) currently have matching uploaded artwork. Missing: ${missingArtworkFileNames.join(", ")}.`,
       );
       return;
     }
 
-    setMintStatus(
-      `${shortAddress(account)} is connected. ${files.length || 0} asset(s) are prepared for contract integration.`,
+    const imageFileMap = new Map(
+      files.map((file) => [file.name.toLowerCase(), file]),
     );
+    const orderedImages = metadataRows.map((row) =>
+      imageFileMap.get(row.imageFile.toLowerCase()),
+    );
+
+    if (orderedImages.some((image) => !image)) {
+      setMintStatus(
+        `Filename match incomplete. ${matchedMetadataCount}/${requiredArtworkCount} CSV row(s) currently have matching uploaded artwork. Missing: ${missingArtworkFileNames.join(", ")}.`,
+      );
+      return;
+    }
+
+    const payload = metadataRows.map((row) => ({
+      id: String(row.id),
+      name: row.name,
+      imageFile: row.imageFile,
+      maxSupply: parseMintValue(row.maxSupply),
+      usd: parseMintValue(row.usd),
+      badge: row.badge,
+      ...(row.description ? { description: row.description } : {}),
+    }));
+
+    void (async () => {
+      try {
+        const response = await mintNfts({
+          chainId: mintChainId,
+          nfts: payload,
+          images: orderedImages as File[],
+        }).unwrap();
+
+        resetMintForm();
+
+        setMintStatus(
+          response.message ||
+            `${payload.length} NFT(s) submitted successfully for minting on ${mintChainLabel} (${mintChainId}).`,
+        );
+      } catch (error) {
+        const errorMessage =
+          typeof error === "object" && error !== null && "data" in error
+            ? ((error as { data?: { message?: string } }).data?.message ?? null)
+            : null;
+
+        setMintStatus(
+          errorMessage ||
+            "Mint request failed. Check the CSV rows, filenames, and API authentication.",
+        );
+      }
+    })();
   };
 
   return (
     <div className="space-y-6">
       <PageBreadcrumb
         pageTitle="NFT Minting Console"
-        info="Public route using the existing dashboard shell. This page is UI-only for now."
+        info="Mint new NFTs, manage tiers, and oversee your collection with this comprehensive console built for creators and project teams."
       />
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+      {/* <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-2">
             <SectionTab
@@ -683,17 +884,13 @@ export default function NftMintingConsole() {
             <Badge color={transfersPaused ? "error" : "success"}>
               {transfersPaused ? "Transfers Paused" : "Network Live"}
             </Badge>
-            <Badge color="info">Public Route</Badge>
-            <Badge color={isCorrectNetwork || !account ? "light" : "warning"}>
-              {account
-                ? isCorrectNetwork
-                  ? targetChainName
-                  : "Wrong Network"
-                : "Wallet Disconnected"}
+            <Badge color="info">Protected Route</Badge>
+            <Badge color="light">
+              {account ? shortAddress(account) : "Wallet Optional"}
             </Badge>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="rounded-2xl border border-brand-200/40 bg-brand-50/50 px-4 py-3 text-sm text-brand-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-300">
         {mintStatus}
@@ -707,26 +904,6 @@ export default function NftMintingConsole() {
               desc="Stage assets, define metadata, and prepare the public mint flow."
             >
               <div className="grid gap-6">
-                <div>
-                  <Label>Select Tier</Label>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    {tierOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        onClick={() => setSelectedTier(option.value)}
-                        className={`rounded-xl border px-4 py-3 text-left text-sm font-medium transition ${
-                          selectedTier === option.value
-                            ? "border-brand-500 bg-brand-500 text-white"
-                            : "border-gray-200 bg-white text-gray-700 hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 <div>
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <Label>Asset Collection</Label>
@@ -758,7 +935,7 @@ export default function NftMintingConsole() {
                           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                             {hasMetadataCsv
                               ? `CSV loaded: upload exactly ${requiredArtworkCount} image(s) and keep filenames aligned with image_file values.`
-                              : "This route is public, but mint execution is still mocked."}
+                              : "Upload a CSV first so the API receives exact imageFile names for every NFT."}
                           </p>
                         </div>
                         <Button onClick={() => fileInputRef.current?.click()}>
@@ -803,7 +980,10 @@ export default function NftMintingConsole() {
                         <Button
                           variant="outline"
                           onClick={() => fileInputRef.current?.click()}
-                          disabled={hasMetadataCsv && files.length >= requiredArtworkCount}
+                          disabled={
+                            hasMetadataCsv &&
+                            files.length >= requiredArtworkCount
+                          }
                         >
                           Add More Assets
                         </Button>
@@ -836,11 +1016,17 @@ export default function NftMintingConsole() {
                             Metadata CSV
                           </p>
                           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Upload a CSV using id,name,image_file,max_supply,usd,badge. Rows are matched to artwork by the image_file value.
+                            Upload a CSV using
+                            id,name,image_file,max_supply,usd,badge and an
+                            optional description column. Rows are matched to
+                            artwork by the image_file value.
                           </p>
                           {metadataCsvName ? (
                             <p className="mt-2 text-sm text-brand-700 dark:text-brand-300">
-                              {metadataCsvName} imported. Upload exactly {metadataRows.length} image(s). {matchedMetadataCount}/{metadataRows.length} row(s) currently match uploaded filenames.
+                              {metadataCsvName} imported. Upload exactly{" "}
+                              {metadataRows.length} image(s).{" "}
+                              {matchedMetadataCount}/{metadataRows.length}{" "}
+                              row(s) currently match uploaded filenames.
                             </p>
                           ) : null}
                         </div>
@@ -849,10 +1035,15 @@ export default function NftMintingConsole() {
                             variant="outline"
                             onClick={() => metadataCsvInputRef.current?.click()}
                           >
-                            {metadataCsvName ? "Replace CSV" : "Upload Metadata CSV"}
+                            {metadataCsvName
+                              ? "Replace CSV"
+                              : "Upload Metadata CSV"}
                           </Button>
                           {metadataCsvName ? (
-                            <Button variant="destructive" onClick={clearMetadataCsv}>
+                            <Button
+                              variant="destructive"
+                              onClick={clearMetadataCsv}
+                            >
                               Clear CSV
                             </Button>
                           ) : null}
@@ -884,11 +1075,19 @@ export default function NftMintingConsole() {
                                     {row.id}
                                   </span>
                                   <span>{row.name}</span>
-                                  <span className={isMatched ? "text-success-600 dark:text-success-400" : ""}>
+                                  <span
+                                    className={
+                                      isMatched
+                                        ? "text-success-600 dark:text-success-400"
+                                        : ""
+                                    }
+                                  >
                                     {row.imageFile}
                                   </span>
                                   <span>{row.maxSupply}</span>
-                                  <span>${Number(row.usd).toLocaleString()}</span>
+                                  <span>
+                                    ${Number(row.usd).toLocaleString()}
+                                  </span>
                                   <span>{row.badge}</span>
                                 </div>
                               );
@@ -923,14 +1122,22 @@ export default function NftMintingConsole() {
                             placeholder="Trait"
                             value={attribute.trait_type}
                             onChange={(event) =>
-                              updateAttribute(index, "trait_type", event.target.value)
+                              updateAttribute(
+                                index,
+                                "trait_type",
+                                event.target.value,
+                              )
                             }
                           />
                           <Input
                             placeholder="Value"
                             value={attribute.value}
                             onChange={(event) =>
-                              updateAttribute(index, "value", event.target.value)
+                              updateAttribute(
+                                index,
+                                "value",
+                                event.target.value,
+                              )
                             }
                           />
                           <Button
@@ -959,20 +1166,22 @@ export default function NftMintingConsole() {
                   </div>
                   <div className="space-y-4 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                      {(["unique", "limited", "open"] as EditionType[]).map((type) => (
-                        <button
-                          key={type}
-                          type="button"
-                          onClick={() => setEditionType(type)}
-                          className={`rounded-xl border px-4 py-3 text-sm font-medium capitalize transition ${
-                            editionType === type
-                              ? "border-brand-500 bg-brand-500 text-white"
-                              : "border-gray-200 bg-white text-gray-700 hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
-                          }`}
-                        >
-                          {type}
-                        </button>
-                      ))}
+                      {(["unique", "limited", "open"] as EditionType[]).map(
+                        (type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => setEditionType(type)}
+                            className={`rounded-xl border px-4 py-3 text-sm font-medium capitalize transition ${
+                              editionType === type
+                                ? "border-brand-500 bg-brand-500 text-white"
+                                : "border-gray-200 bg-white text-gray-700 hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
+                            }`}
+                          >
+                            {type}
+                          </button>
+                        ),
+                      )}
                     </div>
 
                     {editionType === "limited" && (
@@ -984,55 +1193,27 @@ export default function NftMintingConsole() {
                           onChange={(event) => setMaxSupply(event.target.value)}
                         />
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Fixed edition sizing gives the collection a clear scarcity model before contract integration.
+                          Fixed edition sizing gives the collection a clear
+                          scarcity model before contract integration.
                         </p>
                       </div>
                     )}
 
                     {editionType === "unique" && (
                       <div className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-300">
-                        A single asset will be minted for this artwork. This view is already ready for a 1/1 presentation.
+                        A single asset will be minted for this artwork. This
+                        view is already ready for a 1/1 presentation.
                       </div>
                     )}
 
                     {editionType === "open" && (
                       <div className="rounded-xl border border-success-200 bg-success-50 px-4 py-3 text-sm text-success-700 dark:border-success-500/20 dark:bg-success-500/10 dark:text-success-300">
-                        Open edition mode is active in the UI. Supply enforcement still needs backend and contract wiring.
+                        Open edition mode is active in the UI. Supply
+                        enforcement still needs backend and contract wiring.
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-            </ComponentCard>
-
-            <ComponentCard
-              title="Recent Mint History"
-              desc="Static preview data to validate the layout while contract work is pending."
-            >
-              <div className="space-y-3">
-                {recentMints.map((mint) => (
-                  <div
-                    key={mint.tx}
-                    className="flex flex-col gap-3 rounded-2xl border border-gray-200 p-4 dark:border-gray-800 md:flex-row md:items-center md:justify-between"
-                  >
-                    <div>
-                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                        {mint.recipient}
-                      </p>
-                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        TX {mint.tx}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Badge color={mint.status === "Confirmed" ? "success" : "primary"}>
-                        {mint.status}
-                      </Badge>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {mint.time}
-                      </span>
-                    </div>
-                  </div>
-                ))}
               </div>
             </ComponentCard>
           </div>
@@ -1060,7 +1241,9 @@ export default function NftMintingConsole() {
                           <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-semibold">
                             NFT
                           </div>
-                          <p className="text-sm">Artwork preview appears here</p>
+                          <p className="text-sm">
+                            Artwork preview appears here
+                          </p>
                         </div>
                       </div>
                     )}
@@ -1095,32 +1278,42 @@ export default function NftMintingConsole() {
 
                 <div className="space-y-3 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">Network</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Network
+                    </span>
                     <span className="font-medium text-gray-800 dark:text-white/90">
-                      Sepolia Testnet
+                      {mintChainLabel} ({mintChainId})
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">Contract Type</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Contract Type
+                    </span>
                     <span className="font-medium text-gray-800 dark:text-white/90">
                       {editionType === "unique" ? "ERC-721" : "ERC-1155"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">Queued Assets</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Queued Assets
+                    </span>
                     <span className="font-medium text-gray-800 dark:text-white/90">
                       {previewUrls.length}
                       {hasMetadataCsv ? ` / ${requiredArtworkCount}` : ""}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">Metadata Rows</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Metadata Rows
+                    </span>
                     <span className="font-medium text-gray-800 dark:text-white/90">
                       {metadataRows.length}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">Recipient</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Recipient
+                    </span>
                     <span className="font-medium text-gray-800 dark:text-white/90">
                       {account ? shortAddress(account) : "Wallet not connected"}
                     </span>
@@ -1129,12 +1322,20 @@ export default function NftMintingConsole() {
 
                 <Button
                   onClick={handleMintClick}
-                  disabled={previewUrls.length === 0 || !hasExactArtworkCount || !hasCompleteArtworkMapping}
+                  disabled={
+                    isMinting ||
+                    previewUrls.length === 0 ||
+                    !hasMetadataCsv ||
+                    !hasExactArtworkCount ||
+                    !hasCompleteArtworkMapping
+                  }
                   className="w-full"
                 >
-                  {previewUrls.length > 1
-                    ? `Mint Collection (${previewUrls.length})`
-                    : "Mint Asset"}
+                  {isMinting
+                    ? "Submitting Mint Request..."
+                    : previewUrls.length > 1
+                      ? `Mint Collection (${previewUrls.length})`
+                      : "Mint Asset"}
                 </Button>
               </div>
             </ComponentCard>
@@ -1235,7 +1436,8 @@ export default function NftMintingConsole() {
                         {item}
                       </p>
                       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Layout ready. Actions will be wired to smart contract methods later.
+                        Layout ready. Actions will be wired to smart contract
+                        methods later.
                       </p>
                     </div>
                     <div className="flex gap-2">
@@ -1255,7 +1457,8 @@ export default function NftMintingConsole() {
                   Danger Zone
                 </p>
                 <p className="mt-1 text-sm text-red-600 dark:text-red-200/80">
-                  Burn UI is shown here, but no destructive action is connected on this public route.
+                  Burn UI is shown here, but no destructive action is connected
+                  on this public route.
                 </p>
                 <div className="mt-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
                   <Input placeholder="Token ID" />
@@ -1271,7 +1474,10 @@ export default function NftMintingConsole() {
       {activeTab === "tiers" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 2xl:grid-cols-4">
           {tiers.map((tier) => {
-            const progress = Math.min(100, Math.round((tier.minted / tier.maxSupply) * 100));
+            const progress = Math.min(
+              100,
+              Math.round((tier.minted / tier.maxSupply) * 100),
+            );
 
             return (
               <ComponentCard
@@ -1290,12 +1496,16 @@ export default function NftMintingConsole() {
                       onClick={() =>
                         setTiers((current) =>
                           current.map((item) =>
-                            item.id === tier.id ? { ...item, paused: !item.paused } : item,
+                            item.id === tier.id
+                              ? { ...item, paused: !item.paused }
+                              : item,
                           ),
                         )
                       }
                       className={`relative h-7 w-14 rounded-full transition ${
-                        tier.paused ? "bg-gray-300 dark:bg-gray-700" : "bg-brand-500"
+                        tier.paused
+                          ? "bg-gray-300 dark:bg-gray-700"
+                          : "bg-brand-500"
                       }`}
                     >
                       <span
@@ -1308,7 +1518,9 @@ export default function NftMintingConsole() {
 
                   <div>
                     <div className="mb-2 flex items-center justify-between text-sm">
-                      <span className="text-gray-500 dark:text-gray-400">Circulation</span>
+                      <span className="text-gray-500 dark:text-gray-400">
+                        Circulation
+                      </span>
                       <span className="font-medium text-gray-800 dark:text-white/90">
                         {tier.minted}/{tier.maxSupply}
                       </span>
@@ -1331,7 +1543,10 @@ export default function NftMintingConsole() {
                           setTiers((current) =>
                             current.map((item) =>
                               item.id === tier.id
-                                ? { ...item, maxSupply: Number(event.target.value || 0) }
+                                ? {
+                                    ...item,
+                                    maxSupply: Number(event.target.value || 0),
+                                  }
                                 : item,
                             ),
                           )
@@ -1345,7 +1560,9 @@ export default function NftMintingConsole() {
                         onChange={(event) =>
                           setTiers((current) =>
                             current.map((item) =>
-                              item.id === tier.id ? { ...item, uri: event.target.value } : item,
+                              item.id === tier.id
+                                ? { ...item, uri: event.target.value }
+                                : item,
                             ),
                           )
                         }
@@ -1367,7 +1584,8 @@ export default function NftMintingConsole() {
               Add New Tier
             </h3>
             <p className="mt-2 max-w-xs text-sm text-gray-500 dark:text-gray-400">
-              The shell is ready for a create-tier modal when you want the on-chain action added.
+              The shell is ready for a create-tier modal when you want the
+              on-chain action added.
             </p>
           </div>
         </div>
@@ -1381,7 +1599,9 @@ export default function NftMintingConsole() {
                 Collection Matrix
               </h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Filtered public registry preview for upcoming NFT minting inventory. Uploaded CSV metadata replaces the static mock registry automatically.
+                Filtered public registry preview for upcoming NFT minting
+                inventory. Uploaded CSV metadata replaces the static mock
+                registry automatically.
               </p>
             </div>
             <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_180px]">
@@ -1422,7 +1642,8 @@ export default function NftMintingConsole() {
                 No assets match the current filters.
               </p>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Adjust the registry search or tier filter to continue previewing the collection.
+                Adjust the registry search or tier filter to continue previewing
+                the collection.
               </p>
             </div>
           ) : (
@@ -1441,7 +1662,8 @@ export default function NftMintingConsole() {
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center px-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                        Awaiting artwork upload for {asset.imageFile ?? asset.name}
+                        Awaiting artwork upload for{" "}
+                        {asset.imageFile ?? asset.name}
                       </div>
                     )}
                   </div>
@@ -1460,25 +1682,33 @@ export default function NftMintingConsole() {
 
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div className="rounded-xl bg-gray-50 px-3 py-2 dark:bg-gray-900">
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Status</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Status
+                        </p>
                         <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
                           {asset.status}
                         </p>
                       </div>
                       <div className="rounded-xl bg-gray-50 px-3 py-2 dark:bg-gray-900">
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Price</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Price
+                        </p>
                         <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
                           {asset.price}
                         </p>
                       </div>
                       <div className="rounded-xl bg-gray-50 px-3 py-2 dark:bg-gray-900">
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Badge</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Badge
+                        </p>
                         <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
                           {asset.badge ?? asset.owner}
                         </p>
                       </div>
                       <div className="rounded-xl bg-gray-50 px-3 py-2 dark:bg-gray-900">
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Supply</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Supply
+                        </p>
                         <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
                           {asset.maxSupply ?? "N/A"}
                         </p>

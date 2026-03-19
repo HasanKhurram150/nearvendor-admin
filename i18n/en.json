@@ -135,6 +135,7 @@
   "manageSettings": "Admin manage receivable email",
   "adminEmail": "Admin email address for notifications",
   "nftMinting": "NFT Minting",
+  "nftListing": "NFT Listing",
 
   "placementList": "Placement List",
   "totalPlacement": "Total Placement",

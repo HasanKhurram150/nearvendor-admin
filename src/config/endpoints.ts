@@ -7,6 +7,7 @@ export const ENDPOINTS = {
   get2Fa: "/auth/2fa-qr", //GET
   verify2Fa: "/auth/verify-2fa",
   login: "/auth/login", //POST
+  getNfts: "/nft", //GET
   getCampaigns: "/campaign", //GET
   getAllPlacements: "/placement/all", //GET
   getAllAdvertiser: "/advertiser/all", //GET

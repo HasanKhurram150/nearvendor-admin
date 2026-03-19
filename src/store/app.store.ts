@@ -3,8 +3,7 @@ import {
   useDispatch as useReduxDispatch,
   useSelector as useReduxSelector,
 } from "react-redux";
-import type { ThunkAction } from "redux-thunk";
-import type { AnyAction } from "@reduxjs/toolkit";
+import type { AnyAction, ThunkAction } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import {

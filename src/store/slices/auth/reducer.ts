@@ -22,7 +22,7 @@ const slice = createSlice({
       const savedTheme = localStorage.getItem("theme");
 
       state.token = null;
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem("authToken");
       localStorage.removeItem("user");
       if (savedTheme) {
         localStorage.setItem("theme", savedTheme);

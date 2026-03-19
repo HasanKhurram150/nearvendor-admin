@@ -134,6 +134,7 @@
   "manageSettings": "관리자 수신 이메일 관리",
   "adminEmail": "알림용 관리자 이메일 주소",
   "nftMinting": "NFT 민팅",
+  "nftListing": "NFT 목록",
 
   "placementList": "플레이스먼트 목록",
   "totalPlacement": "총 플레이스먼트",

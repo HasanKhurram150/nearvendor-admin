@@ -34,11 +34,15 @@ const AppSidebar: React.FC = () => {
   const { t } = useLanguage();
 
   const navItems: NavItem[] = [
-   
     {
       icon: <TicketIcon />,
       name: t("nftMinting"),
       path: "/mint-nft",
+    },
+    {
+      icon: <ListIcon />,
+      name: t("nftListing"),
+      path: "/nfts",
     },
   ];
 

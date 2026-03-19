@@ -53,7 +53,9 @@ export const authAPI = baseAPI.injectEndpoints({
       query: () => ({
         url: ENDPOINTS?.get2Fa,
         method: "GET",
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
       }),
       transformResponse: (response: any) => {
         return response?.data as IGet2Fa;
@@ -64,7 +66,9 @@ export const authAPI = baseAPI.injectEndpoints({
         url: ENDPOINTS.verify2Fa,
         method: "POST",
         body,
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
       }),
       transformResponse: (response: any) => {
         return response?.data as IVerify2FaRes;
