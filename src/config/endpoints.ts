@@ -34,6 +34,10 @@ export const ENDPOINTS = {
   updatePackagePrice: "/packages", //GET
   getAllPackages: "/packages", //GET
   getPackageById: "/packages",
-  getAdminEmailSettings: "/settings/admin/email",
+  getNftOrderStats: "/nft/orders/stats", //GET
+  getNftOrderSales: "/nft/orders/sales", //GET
+  getNftOrders: "/nft/orders", //GET
+  getAdminConfig: "/config", //GET
+  updateNftMasterWallet: "/config/nft-master-wallet", //PUT
 };
 //----------------------------------------------------------------

@@ -7,6 +7,6 @@ export const metadata: Metadata = {
   description: "NFT order statistics and sales insights",
 };
 
-export default function Page() {
+export default function NftOrderDashboardPage() {
   return <NftOrderDashboard />;
 }

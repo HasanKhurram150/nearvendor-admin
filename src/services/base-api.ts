@@ -81,6 +81,8 @@ export const baseAPI = createApi({
     TAGS.PACKAGES,
     TAGS.EMAILSETTINGS,
     TAGS.NFT,
+    TAGS.NftOrderStats,
+    TAGS.AdminConfig,
   ],
   endpoints: () => ({}),
 });

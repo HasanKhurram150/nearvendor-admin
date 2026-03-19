@@ -19,8 +19,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    setTheme("dark");
-    setIsInitialized(true);
+    setTimeout(() => {
+      setTheme("dark");
+      setIsInitialized(true);
+    }, 0);
   }, []);
 
   useEffect(() => {

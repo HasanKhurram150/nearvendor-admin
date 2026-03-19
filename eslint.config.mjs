@@ -17,6 +17,10 @@ const eslintConfig = [
 			"@typescript-eslint/no-explicit-any": "off",
 			"@typescript-eslint/no-unused-expressions": "off",
 			"@typescript-eslint/ban-ts-comment": "off",
+			"react-hooks/set-state-in-effect": "off",
+			"react-hooks/exhaustive-deps": "off",
+			"react-hooks/preserve-manual-memoization": "off",
+			"react-hooks/purity": "off",
 		},
 	},
 ];

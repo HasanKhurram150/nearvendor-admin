@@ -17,6 +17,7 @@ import {
   ListIcon,
   PeopleIcon,
   PlacementIcon,
+  PlugInIcon,
   TicketIcon,
 } from "../icons/index";
 import { useLanguage } from "@/components/common/LanguageContext";
@@ -35,6 +36,16 @@ const AppSidebar: React.FC = () => {
 
   const navItems: NavItem[] = [
     {
+      icon: <DashboardIcon />,
+      name: t("nftOrderDashboard"),
+      path: "/",
+    },
+    {
+      icon: <ListIcon />,
+      name: t("nftOrders"),
+      path: "/nft-orders",
+    },
+    {
       icon: <TicketIcon />,
       name: t("nftMinting"),
       path: "/mint-nft",
@@ -43,6 +54,11 @@ const AppSidebar: React.FC = () => {
       icon: <ListIcon />,
       name: t("nftListing"),
       path: "/nfts",
+    },
+    {
+      icon: <PlugInIcon />,
+      name: t("settings"),
+      path: "/settings",
     },
   ];
 
@@ -191,16 +207,17 @@ const AppSidebar: React.FC = () => {
   useEffect(() => {
     // Check if the current path matches any submenu item
     let submenuMatched = false;
+    let matchedSubmenu: { type: "main" | "inventory"; index: number } | null = null;
     ["main", "inventory"].forEach((menuType) => {
       const items = menuType === "main" ? navItems : othersItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
-              setOpenSubmenu({
+              matchedSubmenu = {
                 type: menuType as "main" | "inventory",
                 index,
-              });
+              };
               submenuMatched = true;
             }
           });
@@ -209,9 +226,9 @@ const AppSidebar: React.FC = () => {
     });
 
     // If no submenu item matches, close the open submenu
-    if (!submenuMatched) {
-      setOpenSubmenu(null);
-    }
+    setTimeout(() => {
+      setOpenSubmenu(submenuMatched ? matchedSubmenu : null);
+    }, 0);
   }, [pathname, isActive]);
 
   useEffect(() => {

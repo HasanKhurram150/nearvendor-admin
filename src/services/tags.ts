@@ -15,6 +15,8 @@ export const TAGS = {
   EMAILSETTINGS: "EmailSettings",
   INVENTORY: 'Inventory',
   NFT: "Nft",
+  NftOrderStats: "NftOrderStats",
+  AdminConfig: "AdminConfig",
 };
 
 export const generateTags = (result: any, TAG: string) => {

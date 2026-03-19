@@ -10,3 +10,5 @@ export * from "./events-management-api";
 export * from "./kols-api";
 export * from "./packages-api";
 export * from "./nft-api";
+export * from "./nft-order-stats-api";
+export * from "./admin-config-api";

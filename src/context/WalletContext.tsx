@@ -135,6 +135,7 @@ function WalletContextBridge({ children }: { children: React.ReactNode }) {
       chainId,
       clearError,
       connectWallet,
+      disconnectWallet,
       error,
       isConnected,
       isConnecting,
