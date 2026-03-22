@@ -18,6 +18,7 @@ export const TAGS = {
   NftOrderStats: "NftOrderStats",
   AdminConfig: "AdminConfig",
   RewardConfigs: "RewardConfigs",
+  CUSTOMERS: "Customers",
 };
 
 export const generateTags = (result: any, TAG: string) => {

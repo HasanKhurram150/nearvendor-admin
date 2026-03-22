@@ -42,5 +42,7 @@ export const ENDPOINTS = {
   getRewardConfigs: "/rewards/configs", //GET
   updateRewardConfig: "/rewards/configs", //PATCH
   updateRewardConfigStatus: "/rewards/configs", //PATCH :id/status
+  getCustomerList: "/customer/list", //GET
+  toggleReferralTreeView: "/customer", //PUT /:accountId/referral-tree-view
 };
 //----------------------------------------------------------------
