@@ -12,3 +12,4 @@ export * from "./packages-api";
 export * from "./nft-api";
 export * from "./nft-order-stats-api";
 export * from "./admin-config-api";
+export * from "./rewards-api";

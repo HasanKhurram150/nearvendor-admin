@@ -83,6 +83,7 @@ export const baseAPI = createApi({
     TAGS.NFT,
     TAGS.NftOrderStats,
     TAGS.AdminConfig,
+    TAGS.RewardConfigs,
   ],
   endpoints: () => ({}),
 });
