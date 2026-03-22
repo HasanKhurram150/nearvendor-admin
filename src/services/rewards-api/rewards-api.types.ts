@@ -53,3 +53,53 @@ export interface IRewardConfigsResponse {
   message: string;
   data: IRewardConfig[];
 }
+
+export interface IPlatformRewardsParams {
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sort?: "asc" | "desc";
+  rewardType?: string;
+}
+
+export interface IPlatformRewardMetadata {
+  platformPoolBaseAmount: string;
+  undistributedReferralAmount: string;
+}
+
+export interface IPlatformReward {
+  id: string;
+  createdAt: string;
+  rewardType: string;
+  rewardAmount: string;
+  sourceAmount: string;
+  rewardPoolAmount: string;
+  referralPoolAmount: string;
+  platformPoolAmount: string;
+  paymentTokenAddress: string;
+  paymentTokenSymbol: string;
+  paymentTokenDecimals: number;
+  chainId: number;
+  nftOrderId: string;
+  purchaserUserId: string;
+  purchaserWalletAddress: string | null;
+  nftProcessedTx: string;
+  rewardAt: string;
+  nftId: string;
+  nftName: string;
+  nftTokenId: string;
+  metadata: IPlatformRewardMetadata;
+}
+
+export interface IPlatformRewardsMeta {
+  currentPage: number;
+  itemCount: number;
+  itemsPerPage: number;
+  totalPages: number;
+  totalItems: number;
+}
+
+export interface IPlatformRewardsResponse {
+  meta: IPlatformRewardsMeta;
+  data: IPlatformReward[];
+}

@@ -7,6 +7,8 @@ import {
   ICreateRewardConfigPayload,
   IUpdateRewardConfigPayload,
   IUpdateRewardConfigStatusPayload,
+  IPlatformRewardsParams,
+  IPlatformRewardsResponse,
 } from "./rewards-api.types";
 
 export const rewardsAPI = baseAPI.injectEndpoints({
@@ -49,6 +51,15 @@ export const rewardsAPI = baseAPI.injectEndpoints({
       transformResponse: (response: any) => response?.data as IRewardConfig,
       invalidatesTags: [TAGS.RewardConfigs],
     }),
+    getPlatformRewards: builder.query<IPlatformRewardsResponse, IPlatformRewardsParams>({
+      query: (params) => ({
+        url: ENDPOINTS.getPlatformRewards,
+        method: "GET",
+        params,
+      }),
+      transformResponse: (response: any) => response?.data as IPlatformRewardsResponse,
+      providesTags: [TAGS.PlatformRewards],
+    }),
   }),
 });
 
@@ -57,4 +68,5 @@ export const {
   useCreateRewardConfigMutation,
   useUpdateRewardConfigMutation,
   useUpdateRewardConfigStatusMutation,
+  useGetPlatformRewardsQuery,
 } = rewardsAPI;

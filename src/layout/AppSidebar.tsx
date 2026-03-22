@@ -61,6 +61,11 @@ const AppSidebar: React.FC = () => {
       path: "/rewards",
     },
     {
+      icon: <DollarLineIcon />,
+      name: t("platformRewards"),
+      path: "/rewards/platform",
+    },
+    {
       icon: <PeopleIcon />,
       name: t("customers"),
       path: "/customers",

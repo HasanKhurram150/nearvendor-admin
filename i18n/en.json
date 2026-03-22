@@ -299,5 +299,7 @@
   "totalCustomers": "Total Customers",
   "noCustomersFound": "No customers found",
   "address": "Address",
-  "createdAt": "Created At"
+  "createdAt": "Created At",
+  "platformRewards": "Platform Rewards",
+  "managePlatformRewards": "Browse all platform reward transactions"
 }
