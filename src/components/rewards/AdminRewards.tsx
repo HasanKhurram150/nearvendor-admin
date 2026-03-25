@@ -24,6 +24,7 @@ import {
 } from "./rewards-table-utils";
 
 const DEFAULT_PAGE_SIZE = 10;
+type TranslateFn = ReturnType<typeof useLanguage>["t"];
 
 const TABLE_HEADERS = [
   "nft",
@@ -113,7 +114,7 @@ function SettlementCell({
   settlementAt: string | null;
   settlementTx: string | null;
   chainId: number;
-  t: (key: string) => string;
+  t: TranslateFn;
 }) {
   return (
     <div className="flex min-w-[180px] flex-col gap-2">
