@@ -2,6 +2,9 @@ import { ENDPOINTS } from "@/config";
 import { baseAPI } from "../base-api";
 import { TAGS } from "../tags";
 import {
+  IAdminRewardsParams,
+  IAdminRewardsResponse,
+  IAdminRewardsSummary,
   IRewardConfig,
   IRewardConfigsParams,
   ICreateRewardConfigPayload,
@@ -14,6 +17,23 @@ import {
 export const rewardsAPI = baseAPI.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
+    getAdminRewards: builder.query<IAdminRewardsResponse, IAdminRewardsParams>({
+      query: (params) => ({
+        url: ENDPOINTS.getAdminRewards,
+        method: "GET",
+        params,
+      }),
+      transformResponse: (response: any) => response?.data as IAdminRewardsResponse,
+      providesTags: [TAGS.AdminRewards],
+    }),
+    getAdminRewardsSummary: builder.query<IAdminRewardsSummary, void>({
+      query: () => ({
+        url: ENDPOINTS.getAdminRewardsSummary,
+        method: "GET",
+      }),
+      transformResponse: (response: any) => response?.data as IAdminRewardsSummary,
+      providesTags: [TAGS.AdminRewards],
+    }),
     getRewardConfigs: builder.query<IRewardConfig[], IRewardConfigsParams>({
       query: (params) => ({
         url: ENDPOINTS.getRewardConfigs,
@@ -64,6 +84,8 @@ export const rewardsAPI = baseAPI.injectEndpoints({
 });
 
 export const {
+  useGetAdminRewardsQuery,
+  useGetAdminRewardsSummaryQuery,
   useGetRewardConfigsQuery,
   useCreateRewardConfigMutation,
   useUpdateRewardConfigMutation,

@@ -17,6 +17,7 @@ export const TAGS = {
   NFT: "Nft",
   NftOrderStats: "NftOrderStats",
   AdminConfig: "AdminConfig",
+  AdminRewards: "AdminRewards",
   RewardConfigs: "RewardConfigs",
   PlatformRewards: "PlatformRewards",
   CUSTOMERS: "Customers",

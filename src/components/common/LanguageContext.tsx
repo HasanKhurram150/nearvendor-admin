@@ -8,7 +8,10 @@ type Language = "en" | "ko";
 interface LanguageContextProps {
   language: Language;
   toggleLanguage: () => void;
-  t: (key: keyof Translations) => string;
+  t: (
+    key: keyof Translations,
+    params?: Record<string, string | number>,
+  ) => string;
 }
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
@@ -25,7 +28,20 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   const translations = language === "en" ? enTranslations : koTranslations;
 
-  const t = (key: keyof Translations) => translations[key] ?? key;
+  const t = (
+    key: keyof Translations,
+    params?: Record<string, string | number>,
+  ) => {
+    const template = translations[key] ?? key;
+
+    if (!params) {
+      return template;
+    }
+
+    return Object.entries(params).reduce((result, [paramKey, value]) => {
+      return result.replaceAll(`{{${paramKey}}}`, String(value));
+    }, template);
+  };
 
   return (
     <LanguageContext.Provider value={{ language, toggleLanguage, t }}>

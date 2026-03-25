@@ -62,6 +62,53 @@ export interface IPlatformRewardsParams {
   rewardType?: string;
 }
 
+export interface IAdminRewardsParams {
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sort?: "asc" | "desc";
+}
+
+export interface IAdminRewardMetadata {
+  effectivePercentageBps?: number;
+  configuredLevelPercentageBps?: number;
+  platformPoolBaseAmount?: string;
+  undistributedReferralAmount?: string;
+}
+
+export interface IAdminReward {
+  id: string;
+  createdAt: string;
+  rewardType: string;
+  beneficiaryType: string;
+  beneficiaryKey: string;
+  level: number | null;
+  rewardAmount: string;
+  sourceAmount: string;
+  rewardPoolAmount: string;
+  referralPoolAmount: string;
+  platformPoolAmount: string;
+  paymentTokenAddress: string;
+  paymentTokenSymbol: string;
+  paymentTokenDecimals: number;
+  settlementAt: string | null;
+  settlementTx: string | null;
+  isSettled: boolean;
+  chainId: number;
+  nftOrderId: string;
+  purchaserUserId: string | null;
+  beneficiaryUserId: string | null;
+  purchaserWalletAddress: string | null;
+  beneficiaryWalletAddress: string | null;
+  nftProcessedTx: string | null;
+  rewardAt: string;
+  nftId: string;
+  nftName: string;
+  nftImageUri: string;
+  nftTokenId: string;
+  metadata: IAdminRewardMetadata;
+}
+
 export interface IPlatformRewardMetadata {
   platformPoolBaseAmount: string;
   undistributedReferralAmount: string;
@@ -102,4 +149,37 @@ export interface IPlatformRewardsMeta {
 export interface IPlatformRewardsResponse {
   meta: IPlatformRewardsMeta;
   data: IPlatformReward[];
+}
+
+export interface IAdminRewardsResponse {
+  meta: IPlatformRewardsMeta;
+  data: IAdminReward[];
+}
+
+export interface IAdminRewardsSummary {
+  totalRewardCount: number;
+  totalRewardAmount: string;
+  totalUserRewardCount: number;
+  totalUserRewardAmount: string;
+  totalPlatformRewardCount: number;
+  totalPlatformRewardAmount: string;
+  totalUnsettledRewardCount: number;
+  totalUnsettledRewardAmount: string;
+  unsettledUserRewardCount: number;
+  unsettledUserRewardAmount: string;
+  unsettledPlatformRewardCount: number;
+  unsettledPlatformRewardAmount: string;
+  totalSettledRewardCount: number;
+  totalSettledRewardAmount: string;
+  settledUserRewardCount: number;
+  settledUserRewardAmount: string;
+  settledPlatformRewardCount: number;
+  settledPlatformRewardAmount: string;
+  uniquePurchasers: number;
+  uniqueBeneficiaries: number;
+  uniqueRewardOrders: number;
+  uniqueNfts: number;
+  averageRewardAmount: string;
+  latestRewardAt: string | null;
+  latestSettlementAt: string | null;
 }

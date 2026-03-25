@@ -39,6 +39,8 @@ export const ENDPOINTS = {
   getNftOrders: "/nft/orders", //GET
   getAdminConfig: "/config", //GET
   updateNftMasterWallet: "/config/nft-master-wallet", //PUT
+  getAdminRewards: "/rewards", //GET
+  getAdminRewardsSummary: "/rewards/summary", //GET
   getRewardConfigs: "/rewards/configs", //GET
   updateRewardConfig: "/rewards/configs", //PATCH
   updateRewardConfigStatus: "/rewards/configs", //PATCH :id/status
