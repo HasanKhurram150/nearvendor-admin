@@ -2,6 +2,11 @@ import { ENDPOINTS } from "@/config";
 import { baseAPI } from "../base-api";
 import { TAGS } from "../tags";
 import {
+  IAdminRewardSettlement,
+  IAdminRewardSettlementsParams,
+  IAdminRewardSettlementsResponse,
+  ICreateAdminRewardSettlementPayload,
+  ICreateAdminRewardSettlementResponse,
   IAdminRewardsParams,
   IAdminRewardsResponse,
   IAdminRewardsSummary,
@@ -26,6 +31,27 @@ export const rewardsAPI = baseAPI.injectEndpoints({
       transformResponse: (response: any) => response?.data as IAdminRewardsResponse,
       providesTags: [TAGS.AdminRewards],
     }),
+    getAdminRewardSettlements: builder.query<
+      IAdminRewardSettlementsResponse,
+      IAdminRewardSettlementsParams
+    >({
+      query: (params) => ({
+        url: ENDPOINTS.getAdminRewardSettlements,
+        method: "GET",
+        params,
+      }),
+      transformResponse: (response: any) =>
+        response?.data as IAdminRewardSettlementsResponse,
+      providesTags: [TAGS.AdminRewardSettlements],
+    }),
+    getAdminRewardSettlement: builder.query<IAdminRewardSettlement, string>({
+      query: (settlementId) => ({
+        url: `${ENDPOINTS.getAdminRewardSettlement}/${settlementId}`,
+        method: "GET",
+      }),
+      transformResponse: (response: any) => response?.data as IAdminRewardSettlement,
+      providesTags: [TAGS.AdminRewardSettlements],
+    }),
     getAdminRewardsSummary: builder.query<IAdminRewardsSummary, void>({
       query: () => ({
         url: ENDPOINTS.getAdminRewardsSummary,
@@ -33,6 +59,27 @@ export const rewardsAPI = baseAPI.injectEndpoints({
       }),
       transformResponse: (response: any) => response?.data as IAdminRewardsSummary,
       providesTags: [TAGS.AdminRewards],
+    }),
+    createAdminRewardSettlement: builder.mutation<
+      ICreateAdminRewardSettlementResponse,
+      ICreateAdminRewardSettlementPayload
+    >({
+      query: (body) => ({
+        url: ENDPOINTS.createAdminRewardSettlement,
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: any) =>
+        response?.data as ICreateAdminRewardSettlementResponse,
+      invalidatesTags: [TAGS.AdminRewards, TAGS.AdminRewardSettlements],
+    }),
+    deleteAdminRewardSettlement: builder.mutation<void, string>({
+      query: (settlementId) => ({
+        url: `${ENDPOINTS.deleteAdminRewardSettlement}/${settlementId}`,
+        method: "DELETE",
+      }),
+      transformResponse: () => undefined,
+      invalidatesTags: [TAGS.AdminRewards, TAGS.AdminRewardSettlements],
     }),
     getRewardConfigs: builder.query<IRewardConfig[], IRewardConfigsParams>({
       query: (params) => ({
@@ -85,7 +132,11 @@ export const rewardsAPI = baseAPI.injectEndpoints({
 
 export const {
   useGetAdminRewardsQuery,
+  useGetAdminRewardSettlementsQuery,
+  useLazyGetAdminRewardSettlementQuery,
   useGetAdminRewardsSummaryQuery,
+  useCreateAdminRewardSettlementMutation,
+  useDeleteAdminRewardSettlementMutation,
   useGetRewardConfigsQuery,
   useCreateRewardConfigMutation,
   useUpdateRewardConfigMutation,

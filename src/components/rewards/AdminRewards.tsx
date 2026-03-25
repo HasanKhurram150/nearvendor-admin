@@ -22,6 +22,7 @@ import {
   formatRewardType,
   truncateAddress,
 } from "./rewards-table-utils";
+import { CreateSettlementModal } from "./CreateSettlementModal";
 
 const DEFAULT_PAGE_SIZE = 10;
 type TranslateFn = ReturnType<typeof useLanguage>["t"];
@@ -143,6 +144,7 @@ export default function AdminRewards() {
   const { t } = useLanguage();
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<"asc" | "desc">("desc");
+  const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
 
   useEffect(() => {
     setPage(1);
@@ -215,30 +217,38 @@ export default function AdminRewards() {
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-        <select
-          value={sort}
-          onChange={(event) => setSort(event.target.value as "asc" | "desc")}
-          className="h-11 cursor-pointer rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#50FF56] dark:border-gray-700 dark:bg-white/[0.04] dark:text-gray-200"
-        >
-          <option value="desc">{t("newestFirst")}</option>
-          <option value="asc">{t("oldestFirst")}</option>
-        </select>
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="flex flex-wrap items-center gap-4">
+          <select
+            value={sort}
+            onChange={(event) => setSort(event.target.value as "asc" | "desc")}
+            className="h-11 cursor-pointer rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#50FF56] dark:border-gray-700 dark:bg-white/[0.04] dark:text-gray-200"
+          >
+            <option value="desc">{t("newestFirst")}</option>
+            <option value="asc">{t("oldestFirst")}</option>
+          </select>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSort("desc");
+              setPage(1);
+            }}
+          >
+            {t("resetFilters")}
+          </Button>
+          {isFetching && !isLoading && (
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <Loading size="sm" className="text-brand-500" />
+              {t("refreshing")}
+            </div>
+          )}
+        </div>
         <Button
-          variant="outline"
-          onClick={() => {
-            setSort("desc");
-            setPage(1);
-          }}
+          onClick={() => setIsSettlementModalOpen(true)}
+          disabled={(summary?.totalUnsettledRewardCount ?? 0) === 0}
         >
-          {t("resetFilters")}
+          {t("createSettlement")}
         </Button>
-        {isFetching && !isLoading && (
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <Loading size="sm" className="text-brand-500" />
-            {t("refreshing")}
-          </div>
-        )}
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white pb-6 dark:border-gray-800 dark:bg-white/[0.03]">
@@ -366,6 +376,11 @@ export default function AdminRewards() {
           </div>
         )}
       </div>
+
+      <CreateSettlementModal
+        isOpen={isSettlementModalOpen}
+        onClose={() => setIsSettlementModalOpen(false)}
+      />
     </div>
   );
 }

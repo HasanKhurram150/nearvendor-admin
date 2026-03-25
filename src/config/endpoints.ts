@@ -41,6 +41,10 @@ export const ENDPOINTS = {
   updateNftMasterWallet: "/config/nft-master-wallet", //PUT
   getAdminRewards: "/rewards", //GET
   getAdminRewardsSummary: "/rewards/summary", //GET
+  getAdminRewardSettlements: "/rewards/settlements", //GET
+  getAdminRewardSettlement: "/rewards/settlements", //GET /:id
+  createAdminRewardSettlement: "/rewards/settlements", //POST
+  deleteAdminRewardSettlement: "/rewards/settlements", //DELETE /:id
   getRewardConfigs: "/rewards/configs", //GET
   updateRewardConfig: "/rewards/configs", //PATCH
   updateRewardConfigStatus: "/rewards/configs", //PATCH :id/status

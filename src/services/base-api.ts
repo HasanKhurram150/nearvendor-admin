@@ -84,6 +84,7 @@ export const baseAPI = createApi({
     TAGS.NftOrderStats,
     TAGS.AdminConfig,
     TAGS.AdminRewards,
+    TAGS.AdminRewardSettlements,
     TAGS.RewardConfigs,
     TAGS.PlatformRewards,
     TAGS.CUSTOMERS,

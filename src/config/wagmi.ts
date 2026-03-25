@@ -1,13 +1,13 @@
 import { createConfig, http, injected } from "wagmi";
 import { defineChain } from "viem";
 
-const targetChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? "11155111");
+const targetChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? "8453");
 const targetChainName =
-  process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Sepolia Testnet";
+  process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Base";
 const targetRpcUrl =
-  process.env.NEXT_PUBLIC_RPC_URL ?? "https://ethereum-sepolia-rpc.publicnode.com";
+  process.env.NEXT_PUBLIC_RPC_URL ?? "https://base-rpc.publicnode.com";
 const targetBlockExplorerUrl =
-  process.env.NEXT_PUBLIC_BLOCK_EXPLORER_URL ?? "https://sepolia.etherscan.io";
+  process.env.NEXT_PUBLIC_BLOCK_EXPLORER_URL ?? "https://basescan.org";
 
 export const targetChain = defineChain({
   id: targetChainId,
@@ -31,7 +31,7 @@ export const targetChain = defineChain({
       url: targetBlockExplorerUrl,
     },
   },
-  testnet: true,
+  testnet: false,
 });
 
 export const wagmiConfig = createConfig({

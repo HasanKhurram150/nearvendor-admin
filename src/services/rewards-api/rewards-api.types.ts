@@ -69,6 +69,13 @@ export interface IAdminRewardsParams {
   sort?: "asc" | "desc";
 }
 
+export interface IAdminRewardSettlementsParams {
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sort?: "asc" | "desc";
+}
+
 export interface IAdminRewardMetadata {
   effectivePercentageBps?: number;
   configuredLevelPercentageBps?: number;
@@ -182,4 +189,101 @@ export interface IAdminRewardsSummary {
   averageRewardAmount: string;
   latestRewardAt: string | null;
   latestSettlementAt: string | null;
+}
+
+export interface ICreateAdminRewardSettlementPayload {
+  chainId: number;
+  paymentTokenAddress: string;
+  platformAddress: string;
+}
+
+export interface IAdminRewardSettlementContractCall {
+  settlementId: string;
+  distributorAddress: string;
+  paymentToken: string;
+  platform: string;
+  recipients: string[];
+  amounts: string[];
+  totalAmount: string;
+  calldata: string;
+  value: string;
+}
+
+export interface IAdminRewardUserDistribution {
+  amount: string;
+  amountRaw: string;
+  recipient: string;
+  rewardIds: string[];
+  beneficiaryUserId: string | null;
+}
+
+export interface IAdminRewardSettlementChain {
+  id: string;
+}
+
+export interface IAdminRewardSettlementContractArguments {
+  paymentToken: string;
+  platform: string;
+  recipients: string[];
+  amounts: string[];
+  totalAmount: string;
+}
+
+export interface IAdminRewardSettlement {
+  batchGroupId: string;
+  batchIndex: number;
+  status: string;
+  chainId: number;
+  distributorAddress: string;
+  paymentTokenAddress: string;
+  paymentTokenSymbol: string;
+  paymentTokenDecimals: number;
+  platformAddress: string;
+  recipientCount: number;
+  rewardCount: number;
+  userAmount: string;
+  platformAmount: string;
+  totalAmount: string;
+  userAmountRaw: string;
+  platformAmountRaw: string;
+  totalAmountRaw: string;
+  rewardIds: string[];
+  userRewardIds: string[];
+  platformRewardIds: string[];
+  userDistributions: IAdminRewardUserDistribution[];
+  contractArguments: IAdminRewardSettlementContractArguments;
+  calldata: string;
+  chain: IAdminRewardSettlementChain;
+  distributionId: string | null;
+  txHash: string | null;
+  blockNumber: string | null;
+  lastError: string | null;
+  submittedAt: string | null;
+  lastCheckedAt: string | null;
+  processedAt: string | null;
+  completedAt: string | null;
+  failedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  id: string;
+  attemptCount: number;
+}
+
+export interface ICreateAdminRewardSettlementResponse {
+  batchGroupId: string;
+  contractCalls: IAdminRewardSettlementContractCall[];
+  distributorAddress: string;
+  maxRecipientsPerBatch: number;
+  settlements: IAdminRewardSettlement[];
+  totalSettlements: number;
+  totalRewardCount: number;
+  totalUserAmount: string;
+  totalPlatformAmount: string;
+  totalAmount: string;
+}
+
+export interface IAdminRewardSettlementsResponse {
+  meta: IPlatformRewardsMeta;
+  data: IAdminRewardSettlement[];
 }

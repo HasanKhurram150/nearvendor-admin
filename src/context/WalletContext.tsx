@@ -37,8 +37,8 @@ interface WalletContextValue {
 
 const WalletContext = createContext<WalletContextValue | undefined>(undefined);
 
-const TARGET_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID ?? "11155111";
-const TARGET_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Sepolia Testnet";
+const TARGET_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID ?? "8453";
+const TARGET_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Base";
 const toHexChainId = (value: number) => `0x${value.toString(16)}`;
 
 const queryClient = new QueryClient();
