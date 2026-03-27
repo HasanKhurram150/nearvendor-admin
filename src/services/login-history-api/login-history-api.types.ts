@@ -1,3 +1,20 @@
+export interface ILocationRaw {
+  as?: string;
+  isp?: string;
+  lat?: number;
+  lon?: number;
+  org?: string;
+  zip?: string;
+  city?: string;
+  query?: string;
+  region?: string;
+  status?: string;
+  country?: string;
+  timezone?: string;
+  regionName?: string;
+  countryCode?: string;
+}
+
 export interface ILoginHistoryItem {
   id: string;
   createdAt: string;
@@ -24,7 +41,7 @@ export interface ILoginHistoryItem {
   deviceModel: string;
   userAgent: string;
   fingerprint: string;
-  locationRaw: Record<string, unknown>;
+  locationRaw: ILocationRaw;
 }
 
 export interface ILoginHistoryMeta {

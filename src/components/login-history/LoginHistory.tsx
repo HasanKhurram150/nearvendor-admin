@@ -249,37 +249,115 @@ const LoginHistory: React.FC = () => {
 
 /* ── Expanded Detail Panel ── */
 const ExpandedDetails: React.FC<{ item: ILoginHistoryItem }> = ({ item }) => {
-  const details: { label: string; value: string }[] = [
+  const { locationRaw } = item;
+
+  const sessionDetails = [
     { label: "User ID", value: item.userId },
-    { label: "Email", value: item.email },
-    { label: "Wallet", value: item.address },
-    { label: "IP", value: item.ip },
-    { label: "Country", value: `${item.countryName} (${item.countryCode})` },
-    { label: "Region", value: item.region },
-    { label: "City", value: item.city },
-    { label: "Timezone", value: item.timezone },
+    { label: "IP Address", value: item.ip },
+    { label: "Wallet Address", value: item.address },
+    { label: "Username / Label", value: item.userLabel },
+    { label: "Fingerprint", value: item.fingerprint, fullWidth: true },
+  ];
+
+  const locationDetails = [
+    { label: "Country", value: `${locationRaw.country} (${locationRaw.countryCode})` },
+    { label: "Region", value: `${locationRaw.regionName} (${locationRaw.region})` },
+    { label: "City", value: locationRaw.city },
+    { label: "Zip Code", value: locationRaw.zip },
+    { label: "Timezone", value: locationRaw.timezone },
+    { label: "Latitude", value: locationRaw.lat?.toString() },
+    { label: "Longitude", value: locationRaw.lon?.toString() },
+  ];
+
+  const networkDetails = [
+    { label: "ISP", value: locationRaw.isp },
+    { label: "Organization", value: locationRaw.org },
+    { label: "ASN", value: locationRaw.as },
+    { label: "Query IP", value: locationRaw.query },
+  ];
+
+  const deviceDetails = [
     { label: "Client", value: `${item.clientType} / ${item.clientName} ${item.clientVersion}` },
     { label: "OS", value: `${item.osName} ${item.osVersion} (${item.osPlatform})` },
     { label: "Device", value: `${item.deviceType} — ${item.deviceBrand} ${item.deviceModel}` },
-    { label: "User Agent", value: item.userAgent },
-    { label: "Fingerprint", value: item.fingerprint },
-    { label: "Logged In", value: dayjs(item.loggedInAt).format("DD MMM YYYY, hh:mm:ss A") },
+    { label: "User Agent", value: item.userAgent, fullWidth: true },
   ];
 
-  return (
-    <div className="bg-white/[0.02] border-t border-b border-white/[0.04] px-8 py-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
-        {details.map((d) => (
-          <div key={d.label} className="flex flex-col gap-0.5 overflow-hidden">
-            <span className="text-[11px] font-medium uppercase tracking-wider text-gray-500">
-              {d.label}
+  const renderSection = (title: string, fields: { label: string; value?: string; fullWidth?: boolean }[]) => (
+    <div className="flex flex-col gap-3">
+      <h4 className="text-[10px] font-bold uppercase tracking-[0.1em] text-brand-500/80 mb-1">
+        {title}
+      </h4>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+        {fields.map((f) => (
+          <div key={f.label} className={`flex flex-col gap-0.5 ${f.fullWidth ? "col-span-2" : ""}`}>
+            <span className="text-[10px] font-medium text-gray-500 uppercase tracking-tight">
+              {f.label}
             </span>
-            <span className="text-xs text-gray-300 truncate" title={d.value}>
-              {d.value || "—"}
+            <span className="text-xs text-gray-300 break-all" title={f.value}>
+              {f.value || "—"}
             </span>
           </div>
         ))}
       </div>
+    </div>
+  );
+
+  return (
+    <div className="bg-[#0c0c11]/60 border-t border-b border-white/[0.04] px-8 py-7">
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Information Panels */}
+        <div className="flex-1 flex flex-col gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {renderSection("Session Info", sessionDetails)}
+            {renderSection("Network Provider", networkDetails)}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {renderSection("Location Info", locationDetails)}
+            {renderSection("Device Info", deviceDetails)}
+          </div>
+        </div>
+
+        {/* Map Side */}
+        {locationRaw.lat && locationRaw.lon && (
+          <div className="w-full lg:w-[350px] xl:w-[450px] flex flex-col gap-3">
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.1em] text-brand-500/80 mb-1">
+              Geographic Location
+            </h4>
+            <LocationMap lat={locationRaw.lat} lon={locationRaw.lon} />
+            <div className="flex items-start gap-2 text-[10px] text-gray-500 italic mt-1 bg-white/[0.02] p-2 rounded-lg border border-white/[0.04]">
+              <span className="text-brand-500 mt-0.5 mt-2">ℹ</span>
+              <span>
+                Coordinates: {locationRaw.lat}, {locationRaw.lon}. Location data is based on IP geolocation and may not be exact.
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ── Location Map Component ── */
+const LocationMap: React.FC<{ lat: number; lon: number }> = ({ lat, lon }) => {
+  const offset = 0.005;
+  const bbox = `${lon - offset},${lat - offset},${lon + offset},${lat + offset}`;
+  const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
+
+  return (
+    <div className="w-full h-[280px] lg:h-full min-h-[280px] rounded-xl overflow-hidden border border-white/[0.06] bg-black/20 relative shadow-inner">
+      <iframe
+        width="100%"
+        height="100%"
+        frameBorder="0"
+        scrolling="no"
+        marginHeight={0}
+        marginWidth={0}
+        src={embedUrl}
+        className="opacity-90 grayscale-[0.2] invert-[0.05] brightness-90 contrast-125"
+        title="Session Location Map"
+      ></iframe>
+      <div className="absolute inset-0 pointer-events-none border border-white/5 rounded-xl shadow-[inset_0_0_40px_rgba(0,0,0,0.4)]"></div>
     </div>
   );
 };
