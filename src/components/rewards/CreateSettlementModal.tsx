@@ -150,7 +150,7 @@ function PreviewMetric({
   detail?: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+    <div className="dashboard-card p-4">
       <p className="text-xs text-gray-400">{label}</p>
       <p className="mt-1 text-lg font-semibold text-white">{value}</p>
       {detail ? <p className="mt-1 text-xs text-gray-400">{detail}</p> : null}
@@ -174,7 +174,7 @@ function SettlementPreviewCard({
     : Math.max(SETTLEMENT_STEPS.indexOf(normalizedStatus as (typeof SETTLEMENT_STEPS)[number]), 0);
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+    <div className="dashboard-card p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-white">Batch #{settlement.batchIndex}</p>
@@ -226,7 +226,7 @@ function SettlementPreviewCard({
         ) : null}
       </div>
 
-      <div className="mt-5 rounded-xl border border-white/10 bg-black/10 p-4">
+      <div className="mt-4 rounded-xl border border-[#1D1C1C] bg-white/[0.02] p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-sm font-semibold text-white">{t("settlementProgress")}</h3>
           <span className="text-xs text-gray-400">
@@ -246,10 +246,10 @@ function SettlementPreviewCard({
                     failed && step === "processing"
                       ? "border-red-500/50 bg-red-500/10 text-red-300"
                       : isCompleted
-                        ? "border-[#50FF56]/50 bg-[#50FF56]/10 text-[#50FF56]"
+                        ? "border-[#32AA00]/50 bg-[#32AA00]/10 text-[#32AA00]"
                         : isCurrent
                           ? "border-blue-500/50 bg-blue-500/10 text-blue-300"
-                          : "border-white/10 bg-white/[0.03] text-gray-500"
+                          : "border-[#1D1C1C] bg-white/[0.02] text-gray-500"
                   }`}
                 >
                   {index + 1}
@@ -296,9 +296,9 @@ function SettlementPreviewCard({
           </span>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/10">
+        <div className="overflow-x-auto dashboard-card bg-transparent">
           <Table aria-label="Settlement user distributions table">
-            <TableHeader className="border-b border-white/10 bg-white/[0.03]">
+            <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02]">
               <TableRow>
                 <TableCell isHeader className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400">
                   {t("recipient")}
@@ -317,7 +317,7 @@ function SettlementPreviewCard({
                 </TableCell>
               </TableRow>
             </TableHeader>
-            <TableBody className="divide-y divide-white/10">
+            <TableBody className="divide-y divide-[#1D1C1C]">
               {settlement.userDistributions.length > 0 ? (
                 settlement.userDistributions.map((distribution) => (
                   <TableRow key={`${settlement.id}-${distribution.recipient}`}>
@@ -639,11 +639,11 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
         {!isPreviewMode ? (
           <form onSubmit={handleCreatePreview} className="space-y-5">
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="dashboard-card p-4">
                 <p className="text-xs text-gray-400">{t("chainId")}</p>
                 <p className="mt-1 text-sm font-medium text-white">{DEFAULT_CHAIN_ID}</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="dashboard-card p-4">
                 <p className="text-xs text-gray-400">{t("paymentToken")}</p>
                 <p className="mt-1 text-sm font-medium text-white">{DEFAULT_PAYMENT_TOKEN_SYMBOL}</p>
                 <p className="mt-1 font-mono text-xs text-gray-400">{DEFAULT_PAYMENT_TOKEN_ADDRESS}</p>
@@ -657,7 +657,7 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
                 value={platformAddress}
                 onChange={(event) => setPlatformAddress(event.target.value)}
                 placeholder="0x..."
-                className="h-11 w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#50FF56]"
+                className="h-11 w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#32AA00]"
               />
               <p className="text-xs text-gray-500">{t("platformAddressHelp")}</p>
             </div>
@@ -673,7 +673,7 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
           </form>
         ) : (
           <div className="space-y-5">
-            <div className="rounded-xl border border-[#50FF56]/20 bg-[#50FF56]/5 p-4 text-sm text-gray-200">
+            <div className="rounded-xl border border-[#32AA00]/20 bg-[#32AA00]/5 p-4 text-sm text-gray-200">
               {t("settlementPreviewNotice")}
             </div>
 
@@ -716,7 +716,7 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
               })}
             </div>
 
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-gray-300">
+            <div className="dashboard-card p-4 text-sm text-gray-300">
               <p className="font-medium text-white">{t("walletStatus")}</p>
               <p className="mt-1 text-xs text-gray-400">
                 {walletError

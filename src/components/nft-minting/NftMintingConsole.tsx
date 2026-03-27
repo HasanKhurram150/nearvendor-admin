@@ -10,6 +10,9 @@ import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import { useWallet } from "@/context/WalletContext";
 import { useMintNftsMutation } from "@/services";
+import { cn } from "@/utils";
+
+import { PlusIcon, TrashBinIcon, TickMarkIcon, CloseLineIcon } from "@/icons";
 
 type ConsoleTab = "minting" | "governance" | "tiers" | "collection";
 type EditionType = "unique" | "limited" | "open";
@@ -308,11 +311,13 @@ function Textarea({
   onChange,
   placeholder,
   rows = 4,
+  className = "",
 }: {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder: string;
   rows?: number;
+  className?: string;
 }) {
   return (
     <textarea
@@ -320,7 +325,10 @@ function Textarea({
       onChange={onChange}
       placeholder={placeholder}
       rows={rows}
-      className="w-full rounded-xl border border-gray-300 bg-transparent px-4 py-3 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+      className={cn(
+        "w-full rounded-[14px] border border-white/10 bg-[#0C0C11]/50 px-4 py-3 text-sm text-white transition-all duration-300 placeholder:text-gray-500 focus:outline-hidden focus:border-brand-500/50 focus:ring-4 focus:ring-brand-500/10",
+        className,
+      )}
     />
   );
 }
@@ -897,448 +905,280 @@ export default function NftMintingConsole() {
       </div>
 
       {activeTab === "minting" && (
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)]">
-          <div className="space-y-6">
-            <ComponentCard
-              title="Minting Configuration"
-              desc="Stage assets, define metadata, and prepare the public mint flow."
-            >
-              <div className="grid gap-6">
-                <div>
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <Label>Asset Collection</Label>
-                    <Badge color="light">Drag, drop, or browse</Badge>
-                  </div>
-                  <div
-                    className="rounded-2xl border border-dashed border-gray-300 bg-gray-50/70 p-6 transition hover:border-brand-400 dark:border-gray-700 dark:bg-gray-900/50"
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={handleDrop}
-                  >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className="hidden"
-                      onChange={handleFileSelection}
-                    />
+        <div className="grid grid-cols-1 gap-10 xl:grid-cols-[1fr_450px]">
+          {/* Left Column - Configuration */}
+          <div className="space-y-8">
+            {/* File Upload Section */}
+            <section className="space-y-4">
+              <div>
+                <h2 className="text-xl font-semibold text-white">File Upload</h2>
+                <p className="text-sm text-white/50">Choose a file and upload securely to proceed.</p>
+              </div>
 
-                    {previewUrls.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center gap-4 py-8 text-center">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-500/10 text-brand-500">
-                          <span className="text-lg font-semibold">UP</span>
-                        </div>
-                        <div>
-                          <p className="text-base font-medium text-gray-800 dark:text-white/90">
-                            Upload artwork for the mint queue
-                          </p>
-                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            {hasMetadataCsv
-                              ? `CSV loaded: upload exactly ${requiredArtworkCount} image(s) and keep filenames aligned with image_file values.`
-                              : "Upload a CSV first so the API receives exact imageFile names for every NFT."}
-                          </p>
-                        </div>
-                        <Button onClick={() => fileInputRef.current?.click()}>
-                          Browse Assets
-                        </Button>
+              <div
+                className="group relative h-48 rounded-[20px] border border-dashed border-white/10 bg-white/[0.02] p-4 transition-all hover:bg-white/[0.04]"
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={handleDrop}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handleFileSelection}
+                />
+                <input
+                  ref={metadataCsvInputRef}
+                  type="file"
+                  accept=".csv"
+                  className="hidden"
+                  onChange={handleMetadataCsvUpload}
+                />
+
+                <div className="flex h-full gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
+                  {previewUrls.length === 0 ? (
+                    <div
+                      className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-white/40">
+                        <PlusIcon className="h-5 w-5" />
                       </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                          {previewUrls.map((url, index) => (
-                            <button
-                              key={url}
-                              type="button"
-                              onClick={() => setPreviewIndex(index)}
-                              className={`group relative overflow-hidden rounded-2xl border ${
-                                previewIndex === index
-                                  ? "border-brand-500 ring-2 ring-brand-500/30"
-                                  : "border-gray-200 dark:border-gray-800"
-                              }`}
-                            >
-                              <img
-                                src={url}
-                                alt={`NFT preview ${index + 1}`}
-                                className="aspect-square w-full object-cover"
-                              />
-                              <span className="absolute left-2 top-2 rounded-full bg-black/70 px-2 py-1 text-[11px] font-medium text-white">
-                                {index + 1}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  handleRemoveFile(index);
-                                }}
-                                className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-[11px] font-medium text-white opacity-0 transition group-hover:opacity-100"
-                              >
-                                Remove
-                              </button>
-                            </button>
-                          ))}
-                        </div>
-                        <Button
-                          variant="outline"
-                          onClick={() => fileInputRef.current?.click()}
-                          disabled={
-                            hasMetadataCsv &&
-                            files.length >= requiredArtworkCount
-                          }
-                        >
-                          Add More Assets
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <Label>Metadata and Attributes</Label>
-                    <Button variant="outline" size="sm" onClick={addAttribute}>
-                      Add Trait
-                    </Button>
-                  </div>
-                  <div className="space-y-4 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
-                    <div className="rounded-2xl border border-dashed border-brand-200 bg-brand-50/40 p-4 dark:border-brand-500/20 dark:bg-brand-500/10">
-                      <input
-                        ref={metadataCsvInputRef}
-                        type="file"
-                        accept=".csv,text/csv"
-                        className="hidden"
-                        onChange={(event) => {
-                          void handleMetadataCsvUpload(event);
-                        }}
-                      />
-                      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            Metadata CSV
-                          </p>
-                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Upload a CSV using
-                            id,name,image_file,max_supply,usd,badge and an
-                            optional description column. Rows are matched to
-                            artwork by the image_file value.
-                          </p>
-                          {metadataCsvName ? (
-                            <p className="mt-2 text-sm text-brand-700 dark:text-brand-300">
-                              {metadataCsvName} imported. Upload exactly{" "}
-                              {metadataRows.length} image(s).{" "}
-                              {matchedMetadataCount}/{metadataRows.length}{" "}
-                              row(s) currently match uploaded filenames.
-                            </p>
-                          ) : null}
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                          <Button
-                            variant="outline"
-                            onClick={() => metadataCsvInputRef.current?.click()}
-                          >
-                            {metadataCsvName
-                              ? "Replace CSV"
-                              : "Upload Metadata CSV"}
-                          </Button>
-                          {metadataCsvName ? (
-                            <Button
-                              variant="destructive"
-                              onClick={clearMetadataCsv}
-                            >
-                              Clear CSV
-                            </Button>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      {metadataRows.length > 0 ? (
-                        <div className="mt-4 overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800">
-                          <div className="grid grid-cols-[88px_minmax(0,1.2fr)_minmax(0,1fr)_120px_120px_minmax(0,1fr)] gap-3 bg-white px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-500 dark:bg-gray-900 dark:text-gray-400">
-                            <span>ID</span>
-                            <span>Name</span>
-                            <span>Image File</span>
-                            <span>Supply</span>
-                            <span>USD</span>
-                            <span>Badge</span>
-                          </div>
-                          <div className="divide-y divide-gray-200 bg-white dark:divide-gray-800 dark:bg-white/[0.02]">
-                            {metadataRows.slice(0, 5).map((row) => {
-                              const isMatched = previewUrlByFileName.has(
-                                row.imageFile.toLowerCase(),
-                              );
-
-                              return (
-                                <div
-                                  key={`${row.id}-${row.imageFile}`}
-                                  className="grid grid-cols-[88px_minmax(0,1.2fr)_minmax(0,1fr)_120px_120px_minmax(0,1fr)] gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                  <span className="font-medium text-gray-800 dark:text-white/90">
-                                    {row.id}
-                                  </span>
-                                  <span>{row.name}</span>
-                                  <span
-                                    className={
-                                      isMatched
-                                        ? "text-success-600 dark:text-success-400"
-                                        : ""
-                                    }
-                                  >
-                                    {row.imageFile}
-                                  </span>
-                                  <span>{row.maxSupply}</span>
-                                  <span>
-                                    ${Number(row.usd).toLocaleString()}
-                                  </span>
-                                  <span>{row.badge}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                          {metadataRows.length > 5 ? (
-                            <div className="border-t border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
-                              Showing 5 of {metadataRows.length} metadata rows.
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : null}
+                      <p className="text-xs text-white/40">Upload Artworks</p>
                     </div>
-
-                    <Input
-                      placeholder="NFT name"
-                      value={name}
-                      onChange={(event) => setName(event.target.value)}
-                    />
-                    <Textarea
-                      placeholder="Describe the collection, utility, and release intent"
-                      value={description}
-                      onChange={(event) => setDescription(event.target.value)}
-                    />
-                    <div className="space-y-3">
-                      {attributes.map((attribute, index) => (
+                  ) : (
+                    <>
+                      {previewUrls.map((url, index) => (
                         <div
-                          key={`${attribute.trait_type}-${index}`}
-                          className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+                          key={url}
+                          className={`group relative aspect-square h-full shrink-0 overflow-hidden rounded-xl border-2 transition-all cursor-pointer ${
+                            previewIndex === index
+                              ? "border-[#32AA00]"
+                              : "border-transparent opacity-60 hover:opacity-100"
+                          }`}
+                          onClick={() => setPreviewIndex(index)}
                         >
-                          <Input
-                            placeholder="Trait"
-                            value={attribute.trait_type}
-                            onChange={(event) =>
-                              updateAttribute(
-                                index,
-                                "trait_type",
-                                event.target.value,
-                              )
-                            }
-                          />
-                          <Input
-                            placeholder="Value"
-                            value={attribute.value}
-                            onChange={(event) =>
-                              updateAttribute(
-                                index,
-                                "value",
-                                event.target.value,
-                              )
-                            }
-                          />
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeAttribute(index)}
+                          <img src={url} alt={`NFT ${index + 1}`} className="h-full w-full object-cover" />
+                          {previewIndex === index && (
+                            <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#32AA00] text-white shadow-lg pointer-events-none">
+                              <TickMarkIcon className="h-3 w-3" />
+                            </div>
+                          )}
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleRemoveFile(index);
+                            }}
+                            className="absolute left-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white opacity-0 backdrop-blur-md transition-all hover:bg-red-500 group-hover:opacity-100 shadow-xl border border-white/20"
+                            aria-label="Remove image"
                           >
-                            Remove
-                          </Button>
+                            <CloseLineIcon className="h-3.5 w-3.5" />
+                          </button>
                         </div>
                       ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <Label>Issuance Quantity</Label>
-                    <Badge color="primary">
-                      {editionType === "unique"
-                        ? "1/1 Unique"
-                        : editionType === "open"
-                          ? "Open Edition"
-                          : `Limited ${maxSupply}`}
-                    </Badge>
-                  </div>
-                  <div className="space-y-4 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                      {(["unique", "limited", "open"] as EditionType[]).map(
-                        (type) => (
-                          <button
-                            key={type}
-                            type="button"
-                            onClick={() => setEditionType(type)}
-                            className={`rounded-xl border px-4 py-3 text-sm font-medium capitalize transition ${
-                              editionType === type
-                                ? "border-brand-500 bg-brand-500 text-white"
-                                : "border-gray-200 bg-white text-gray-700 hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
-                            }`}
-                          >
-                            {type}
-                          </button>
-                        ),
-                      )}
-                    </div>
-
-                    {editionType === "limited" && (
-                      <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
-                        <Input
-                          type="number"
-                          placeholder="Max supply"
-                          value={maxSupply}
-                          onChange={(event) => setMaxSupply(event.target.value)}
-                        />
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Fixed edition sizing gives the collection a clear
-                          scarcity model before contract integration.
-                        </p>
+                      <div
+                        className="flex aspect-square h-full shrink-0 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-white/10 bg-white/5 transition-all hover:bg-white/10"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <PlusIcon className="h-5 w-5 text-white/40" />
                       </div>
-                    )}
-
-                    {editionType === "unique" && (
-                      <div className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-300">
-                        A single asset will be minted for this artwork. This
-                        view is already ready for a 1/1 presentation.
-                      </div>
-                    )}
-
-                    {editionType === "open" && (
-                      <div className="rounded-xl border border-success-200 bg-success-50 px-4 py-3 text-sm text-success-700 dark:border-success-500/20 dark:bg-success-500/10 dark:text-success-300">
-                        Open edition mode is active in the UI. Supply
-                        enforcement still needs backend and contract wiring.
-                      </div>
-                    )}
-                  </div>
+                    </>
+                  )}
                 </div>
               </div>
-            </ComponentCard>
+            </section>
+
+            {/* Inputs Section */}
+            <div className="space-y-6">
+              {/* Metadata CSV Upload Box */}
+              <div className="relative rounded-[20px] border border-[#32AA00]/20 bg-[#121A15] p-6 shadow-theme-sm overflow-hidden group">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+                  <div className="space-y-2 max-w-2xl">
+                    <h3 className="text-base font-bold text-white tracking-tight">Metadata CSV</h3>
+                    <p className="text-sm text-white/50 leading-relaxed font-medium">
+                      Upload a CSV using id,name,image_file,max_supply,usd,badge and an optional description column. Rows are matched to artwork by the image_file value.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => metadataCsvInputRef.current?.click()}
+                    className="shrink-0 rounded-[14px] bg-[#1C2431] px-6 py-3.5 text-sm font-bold text-white transition-all hover:bg-[#252D3B] shadow-xl border border-white/5 active:scale-95 whitespace-nowrap"
+                  >
+                    {metadataCsvName ? `Metadata: ${metadataCsvName}` : "Upload Metadata CSV"}
+                  </button>
+                </div>
+                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-[#32AA00]/5 blur-[80px] rounded-full pointer-events-none" />
+              </div>
+
+              <Button
+                variant="success"
+                onClick={addAttribute}
+                className="h-9 rounded-[10px] bg-[#32AA00] px-6 text-sm hover:bg-[#32AA00]/90 font-semibold"
+              >
+                Add Trait
+              </Button>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-white">Name</Label>
+                  <Input
+                    placeholder="NFT name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    className="h-12 bg-[#0C0C11]/50 border-white/10 text-white placeholder:text-white/20"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-white">Description</Label>
+                  <Textarea
+                    placeholder="Enter your description"
+                    value={description}
+                    onChange={(event) => setDescription(event.target.value)}
+                    rows={4}
+                    className="bg-[#0C0C11]/50 border-white/10 text-white placeholder:text-white/20 rounded-[14px] resize-y"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  {attributes.map((attr, index) => (
+                    <div key={`attr-${index}`} className="flex items-end gap-4">
+                      <div className="flex-1 space-y-2">
+                        <Label className="text-sm font-semibold text-white">Trait</Label>
+                        <Input
+                          placeholder="Enter your trait"
+                          value={attr.trait_type}
+                          onChange={(e) => updateAttribute(index, "trait_type", e.target.value)}
+                          className="h-12 bg-[#0C0C11]/50 border-white/10 text-white placeholder:text-white/20"
+                        />
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <Label className="text-sm font-semibold text-white">Value</Label>
+                        <Input
+                          placeholder="Value"
+                          value={attr.value}
+                          onChange={(e) => updateAttribute(index, "value", e.target.value)}
+                          className="h-12 bg-[#0C0C11]/50 border-white/10 text-white placeholder:text-white/20"
+                        />
+                      </div>
+                      <button
+                        onClick={() => removeAttribute(index)}
+                        className="mb-2 p-2 text-white/40 transition-colors hover:text-red-500"
+                        aria-label="Remove trait"
+                      >
+                        <TrashBinIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Issuance Quantity Section */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg font-semibold text-white">Issuance Quantity</h3>
+                  {editionType === "open" && (
+                    <Badge variant="solid" className="bg-[#32AA00]/10 text-[#32AA00] border-transparent rounded-full px-4">
+                      Open Edition
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="flex gap-2 rounded-[20px] bg-white/5 p-1.5 w-fit">
+                  {(["unique", "limited", "open"] as EditionType[]).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setEditionType(type)}
+                      className={`h-11 rounded-[16px] px-8 text-sm font-medium capitalize transition-all ${
+                        editionType === type
+                          ? "bg-[#32AA00]/20 text-white border border-[#32AA00]/50 shadow-[0_0_20px_rgba(50,170,0,0.2)]"
+                          : "text-white/40 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+
+                {editionType === "open" && (
+                  <p className="text-sm text-[#32AA00]">
+                    Open edition mode is active in the UI. Supply enforcement still needs backend and contract wiring.
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-6 xl:sticky xl:top-6 xl:self-start">
-            <ComponentCard
-              title="Live Preview"
-              desc="This panel mirrors how a public mint drop can be presented before transaction wiring is added."
-              className="overflow-hidden"
-            >
-              <div className="space-y-6">
-                <div className="overflow-hidden rounded-[28px] border border-gray-200 bg-[#09090f] p-4 dark:border-gray-800">
-                  <div className="relative aspect-[3/4] overflow-hidden rounded-[24px] border border-white/10 bg-gradient-to-br from-[#111827] via-[#0f172a] to-[#020617]">
+          {/* Right Column - Preview Card */}
+          <div className="sticky top-6 self-start">
+            <div className="dashboard-card overflow-hidden !bg-[#090909]/40 p-6 space-y-8 backdrop-blur-xl border-white/5">
+              {/* Preview Content */}
+              <div className="flex flex-col gap-6">
+                <div className="flex gap-6">
+                  <div className="aspect-square h-48 overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
                     {currentPreview.url ? (
-                      <img
-                        src={currentPreview.url}
-                        alt={currentPreview.title}
-                        className="absolute inset-0 h-full w-full object-cover"
-                      />
-                    ) : null}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                    {!currentPreview.url && (
-                      <div className="absolute inset-0 flex items-center justify-center text-center text-white/50">
-                        <div>
-                          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-semibold">
-                            NFT
-                          </div>
-                          <p className="text-sm">
-                            Artwork preview appears here
-                          </p>
-                        </div>
+                      <img src={currentPreview.url} alt="Preview" className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-white/5 text-white/20">
+                        No Artwork
                       </div>
                     )}
-                    <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                      <p className="text-[11px] uppercase tracking-[0.3em] text-white/60">
-                        Public Mint Preview
+                  </div>
+                  <div className="flex flex-col justify-center gap-2">
+                    <h2 className="text-2xl font-bold text-white">{currentPreview.title || "Mixwell"}</h2>
+                    <p className="text-sm text-white/50 leading-relaxed max-w-xs">
+                      {currentPreview.description || "Infinite Sunset (She can never leave the golden hour; her armor is perpetually warm, never cooling even in the void)"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Traits Summary Grid */}
+                <div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+                  <div className="border-r border-white/10 p-4">
+                    <p className="text-xs font-semibold text-[#32AA00] uppercase tracking-wider mb-3">Traits</p>
+                    <div className="space-y-1">
+                      <p className="text-[11px] text-white/40 font-medium">Badge</p>
+                      <p className="text-sm font-semibold text-white">
+                        {attributes.find(a => a.trait_type.toLowerCase() === 'badge')?.value || "Gold Winged"}
                       </p>
-                      <h3 className="mt-2 text-2xl font-semibold">
-                        {currentPreview.title}
-                      </h3>
-                      <p className="mt-2 line-clamp-3 text-sm text-white/70">
-                        {currentPreview.description}
+                    </div>
+                  </div>
+                  <div className="p-4 flex flex-col justify-end">
+                    <div className="space-y-1">
+                      <p className="text-[11px] text-white/40 font-medium">Clothings</p>
+                      <p className="text-sm font-semibold text-white">
+                        {attributes.find(a => a.trait_type.toLowerCase() === 'clothings')?.value || "Leopard Hustle"}
                       </p>
-                      <div className="mt-4 grid grid-cols-2 gap-2">
-                        {currentPreview.attributes.map((attribute, index) => (
-                          <div
-                            key={`${attribute.trait_type}-${index}`}
-                            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2"
-                          >
-                            <p className="text-[10px] uppercase tracking-wide text-white/45">
-                              {attribute.trait_type || "Trait"}
-                            </p>
-                            <p className="text-xs font-medium text-white">
-                              {attribute.value || "Unset"}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-3 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Network
-                    </span>
-                    <span className="font-medium text-gray-800 dark:text-white/90">
-                      {mintChainLabel} ({mintChainId})
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Contract Type
-                    </span>
-                    <span className="font-medium text-gray-800 dark:text-white/90">
-                      {editionType === "unique" ? "ERC-721" : "ERC-1155"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Queued Assets
-                    </span>
-                    <span className="font-medium text-gray-800 dark:text-white/90">
-                      {previewUrls.length}
-                      {hasMetadataCsv ? ` / ${requiredArtworkCount}` : ""}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Metadata Rows
-                    </span>
-                    <span className="font-medium text-gray-800 dark:text-white/90">
-                      {metadataRows.length}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Recipient
-                    </span>
-                    <span className="font-medium text-gray-800 dark:text-white/90">
-                      {account ? shortAddress(account) : "Wallet not connected"}
-                    </span>
-                  </div>
+                {/* Network Details */}
+                <div className="space-y-4 pt-4 border-t border-white/5">
+                  {[
+                    { label: "Network", value: `${mintChainLabel} (${mintChainId})` },
+                    { label: "Contract Type", value: editionType === "unique" ? "ERC-721" : "ERC-1155" },
+                    { label: "Queued Assets", value: previewUrls.length },
+                    { label: "Recipient", value: account ? shortAddress(account) : "Wallet not connected" },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-center justify-between">
+                      <span className="text-sm text-white/40">{item.label}</span>
+                      <span className="text-sm font-medium text-white">{item.value}</span>
+                    </div>
+                  ))}
                 </div>
 
                 <Button
                   onClick={handleMintClick}
-                  disabled={
-                    isMinting ||
-                    previewUrls.length === 0 ||
-                    !hasMetadataCsv ||
-                    !hasExactArtworkCount ||
-                    !hasCompleteArtworkMapping
-                  }
-                  className="w-full"
+                  variant="success"
+                  className="w-full h-14 rounded-[16px] bg-[#32AA00] text-base font-bold shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] transition-all"
                 >
-                  {isMinting
-                    ? "Submitting Mint Request..."
-                    : previewUrls.length > 1
-                      ? `Mint Collection (${previewUrls.length})`
-                      : "Mint Asset"}
+                  Mint Assets
                 </Button>
               </div>
-            </ComponentCard>
+            </div>
           </div>
         </div>
       )}

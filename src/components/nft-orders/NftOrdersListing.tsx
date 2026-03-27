@@ -92,7 +92,7 @@ function TxLink({ label, hash, chainId }: { label: string; hash: string; chainId
         className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
       >
         {copied ? (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-[#50FF56]" viewBox="0 0 20 20" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-[#32AA00]" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
         ) : (
@@ -162,7 +162,7 @@ export default function NftOrdersListing() {
     status !== "all";
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 w-full">
       <PageBreadcrumb
         pageTitle="NFT Orders"
         info="Browse and manage all NFT purchase orders."
@@ -170,19 +170,19 @@ export default function NftOrdersListing() {
 
       {/* Summary cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Total Orders</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.totalItems ?? 0}
           </p>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Page</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.currentPage ?? 1} / {meta?.totalPages ?? 1}
           </p>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Items Per Page</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.itemsPerPage ?? DEFAULT_PAGE_SIZE}
@@ -191,7 +191,7 @@ export default function NftOrdersListing() {
       </div>
 
       {/* Filters */}
-      <div className="grid gap-4 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 dashboard-card p-5 md:grid-cols-2 xl:grid-cols-4">
         <div className="md:col-span-2 xl:col-span-4">
           <GenericSearchField
             value={searchQuery}
@@ -271,31 +271,25 @@ export default function NftOrdersListing() {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white pb-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="dashboard-card pb-6">
         <div className="max-w-full overflow-x-auto">
           <Table aria-label="NFT orders table">
-            <TableHeader className="border-b border-gray-100 bg-[#FAFAFA] dark:border-gray-800 dark:bg-[#18181887]">
+            <TableHeader className="bg-white/[0.02] border-[#1D1C1C] border-b px-[1rem]">
               <TableRow>
                 {[
                   "NFT",
                   "Status",
-                  "Qty",
-                  "Unit Price",
-                  "Total Price",
-                  "Deposited",
-                  "Token",
-                  "Chain",
-                  "Deposit Address",
-                  "Created",
-                  "Expires",
-                  "Txs",
+                  "Pricing",
+                  "Network",
+                  "Address & Txs",
+                  "Timeframe",
                 ].map((header, i) => (
                   <TableCell
                     key={header}
                     isHeader
-                    className={`px-3 py-3 text-start text-base font-medium text-[#201D1D99] dark:text-white ${
+                    className={`px-3 py-4 text-start text-base font-medium text-gray-400 ${
                       i === 0 ? "pl-6" : ""
-                    } ${i === 11 ? "pr-6" : ""}`}
+                    } ${i === 5 ? "pr-6" : ""}`}
                   >
                     {header}
                   </TableCell>
@@ -303,12 +297,12 @@ export default function NftOrdersListing() {
               </TableRow>
             </TableHeader>
 
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <TableBody className="divide-y divide-[#1D1C1C]">
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={12} className="py-10 text-center">
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#50FF56]" />
+                      <Loading size="lg" className="border-[#32AA00]" />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -352,68 +346,64 @@ export default function NftOrdersListing() {
                       </Badge>
                     </TableCell>
 
-                    {/* Qty */}
-                    <TableCell className="px-3 py-4 min-w-[5rem] text-base text-gray-800 dark:text-white/90">
-                      {order.quantity}
+                    {/* Pricing */}
+                    <TableCell className="px-3 py-4 min-w-[10rem]">
+                      <div className="flex flex-col gap-0.5">
+                        <div className="text-sm font-semibold text-[#32AA00]">
+                          {formatAmount(order.totalPrice)} {order.paymentTokenSymbol}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {order.quantity} × {formatAmount(order.unitPrice)}
+                        </div>
+                        <div className="mt-1 text-xs text-brand-400/80">
+                          Dep: {formatAmount(order.depositAmount)} {order.paymentTokenSymbol}
+                        </div>
+                      </div>
                     </TableCell>
 
-                    {/* Unit price */}
-                    <TableCell className="px-3 py-4 min-w-[9rem] text-base text-gray-800 dark:text-white/90">
-                      {formatAmount(order.unitPrice)} {order.paymentTokenSymbol}
-                    </TableCell>
-
-                    {/* Total price */}
-                    <TableCell className="px-3 py-4 min-w-[9rem] font-medium text-[#50FF56]">
-                      {formatAmount(order.totalPrice)} {order.paymentTokenSymbol}
-                    </TableCell>
-
-                    {/* Deposited */}
-                    <TableCell className="px-3 py-4 min-w-[9rem] text-base text-gray-800 dark:text-white/90">
-                      {formatAmount(order.depositAmount)} {order.paymentTokenSymbol}
-                    </TableCell>
-
-                    {/* Token */}
+                    {/* Network */}
                     <TableCell className="px-3 py-4 min-w-[7rem]">
-                      <Badge color="info">{order.paymentTokenSymbol}</Badge>
+                      <div className="flex flex-col gap-1">
+                        <Badge color="info" size="sm" variant="light">
+                          {order.paymentTokenSymbol}
+                        </Badge>
+                        <span className="text-xs text-gray-500">
+                          Chain {order.chainId}
+                        </span>
+                      </div>
                     </TableCell>
 
-                    {/* Chain */}
-                    <TableCell className="px-3 py-4 min-w-[6rem] text-base text-gray-800 dark:text-white/90">
-                      {order.chainId}
-                    </TableCell>
-
-                    {/* Deposit Address */}
-                    <TableCell className="px-3 py-4 min-w-[10rem] text-sm font-mono text-gray-600 dark:text-gray-400">
-                      <span title={order.depositAddress}>
-                        {truncateAddress(order.depositAddress)}
-                      </span>
-                    </TableCell>
-
-                    {/* Created */}
-                    <TableCell className="px-3 py-4 min-w-[10rem] text-sm text-gray-600 dark:text-gray-400">
-                      {dayjs(order.createdAt).format("DD MMM YYYY HH:mm")}
-                    </TableCell>
-
-                    {/* Expires */}
-                    <TableCell className="px-3 py-4 min-w-[10rem] text-sm text-gray-600 dark:text-gray-400">
-                      {dayjs(order.expiresAt).format("DD MMM YYYY HH:mm")}
-                    </TableCell>
-
-                    {/* Txs */}
-                    <TableCell className="px-3 py-4 pr-6 min-w-[12rem] text-xs">
+                    {/* Address & Txs */}
+                    <TableCell className="px-3 py-4 min-w-[12rem]">
                       <div className="flex flex-col gap-2">
-                        {order.deploymentTx ? (
-                          <TxLink label="Deploy" hash={order.deploymentTx} chainId={order.chainId} />
-                        ) : null}
-                        {order.processedTx ? (
-                          <TxLink label="Process" hash={order.processedTx} chainId={order.chainId} />
-                        ) : null}
-                        {order.depositTx ? (
-                          <TxLink label="Deposit" hash={order.depositTx} chainId={order.chainId} />
-                        ) : null}
-                        {!order.deploymentTx && !order.processedTx && !order.depositTx && (
-                          <span className="text-gray-400">—</span>
-                        )}
+                        <div className="text-xs font-mono text-gray-500 flex items-center gap-1 group/addr">
+                          <span title={order.depositAddress}>
+                            Addr: {truncateAddress(order.depositAddress)}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-x-3 gap-y-1">
+                          {order.deploymentTx ? (
+                            <TxLink label="D" hash={order.deploymentTx} chainId={order.chainId} />
+                          ) : null}
+                          {order.processedTx ? (
+                            <TxLink label="P" hash={order.processedTx} chainId={order.chainId} />
+                          ) : null}
+                          {order.depositTx ? (
+                            <TxLink label="R" hash={order.depositTx} chainId={order.chainId} />
+                          ) : null}
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    {/* Timeframe */}
+                    <TableCell className="px-3 py-4 pr-6 min-w-[10rem]">
+                      <div className="flex flex-col gap-0.5 whitespace-nowrap">
+                        <div className="text-sm text-gray-300">
+                          {dayjs(order.createdAt).format("DD MMM, HH:mm")}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Exp: {dayjs(order.expiresAt).format("DD MMM, HH:mm")}
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>

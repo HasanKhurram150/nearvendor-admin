@@ -4,6 +4,7 @@ import { useGetNftOrderStatsQuery, useGetNftOrderSalesQuery } from "@/services/n
 import { TimeSpan } from "@/services/nft-order-stats-api/nft-order-stats-api.types";
 import Loading from "@/components/atoms/loading/loading";
 import { useLanguage } from "@/components/common/LanguageContext";
+import Select from "@/components/form/Select";
 import { OrderStatsCards } from "./OrderStatsCards";
 import { OrderStatusBreakdown } from "./OrderStatusBreakdown";
 import { SalesChart } from "./SalesChart";
@@ -29,7 +30,7 @@ export default function NftOrderDashboard() {
   if (statsLoading || salesLoading) {
     return (
       <div className="flex justify-center py-20">
-        <Loading size="lg" className="border-[#50FF56]" />
+        <Loading size="lg" className="border-[#32AA00]" />
       </div>
     );
   }
@@ -38,24 +39,15 @@ export default function NftOrderDashboard() {
     <div className="gap-4 md:gap-6 grid grid-cols-12">
       {/* Header with time span filter */}
       <div className="col-span-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h2 className="font-Arbutus text-white text-xl">
+        <h2 className="text-white text-[22px] font-semibold tracking-tight">
           {t("nftOrderDashboard")}
         </h2>
-        <div className="flex gap-2">
-          {TIME_SPANS.map((ts) => (
-            <button
-              key={ts.value}
-              onClick={() => setTimeSpan(ts.value)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                timeSpan === ts.value
-                  ? "bg-[#50FF56] text-black"
-                  : "bg-white/[0.05] text-gray-400 hover:bg-white/[0.1] hover:text-white"
-              }`}
-            >
-              {ts.label}
-            </button>
-          ))}
-        </div>
+        <Select
+          options={TIME_SPANS}
+          defaultValue={timeSpan}
+          onChange={(value) => setTimeSpan(value as TimeSpan)}
+          className="w-[160px]"
+        />
       </div>
 
       {/* Stats Cards */}

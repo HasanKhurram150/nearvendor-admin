@@ -25,7 +25,7 @@ import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import Select from "../form/Select";
 import { useLanguage } from "../common/LanguageContext";
 import PageBreadcrumb from "../common/PageBreadCrumb";
-// import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+import Pagination from "@/components/tables/Pagination";
 
 const CategoriesManagement: React.FC = () => {
   // State management
@@ -111,7 +111,7 @@ const CategoriesManagement: React.FC = () => {
         <TableRow>
           <TableCell colSpan={columns.length} className="text-center py-8">
             <div className="flex justify-center">
-              <Loading size="lg" className="border-[#50FF56]" />
+              <Loading size="lg" className="border-[#32AA00]" />
             </div>
           </TableCell>
         </TableRow>
@@ -192,7 +192,7 @@ const CategoriesManagement: React.FC = () => {
           <GenericButton
             icon={<PlusIcon />}
             btnText={t("addNew")}
-            bgColor="#50FF56"
+            bgColor="#32AA00"
             color="#fff"
             height="2.5rem"
             width="7.188rem"
@@ -202,10 +202,10 @@ const CategoriesManagement: React.FC = () => {
         </div>
 
         {/* Categories Table */}
-        <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full  border dark:border-gray-800 pb-[1.5rem]">
+        <div className="overflow-hidden dashboard-card min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
           <div className="max-w-full overflow-x-auto">
-            <Table aria-label="Categories management table">
-              <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-4">
+            <Table hoverable aria-label="Categories management table">
+              <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02] px-4">
                 <TableRow>
                   {columns.map((col) => (
                     <TableCell
@@ -219,16 +219,21 @@ const CategoriesManagement: React.FC = () => {
                 </TableRow>
               </TableHeader>
 
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <TableBody className="divide-y divide-[#1D1C1C]">
                 {renderTableContent()}
               </TableBody>
             </Table>
           </div>
-          {/* <GenericPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={(page) => setCurrentPage(page)}
-        /> */}
+          <div className="mt-4 flex flex-col items-center justify-between gap-3 px-6 sm:flex-row">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              Showing {filteredCategories.length} categories
+            </span>
+            <Pagination
+              currentPage={1}
+              totalPages={1}
+              onPageChange={() => {}}
+            />
+          </div>
         </div>
 
         {/* Modals */}

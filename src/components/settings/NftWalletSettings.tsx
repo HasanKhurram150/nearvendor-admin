@@ -99,7 +99,7 @@ export function NftWalletSettings() {
 
       {isLoading ? (
         <div className="flex justify-center py-10">
-          <Loading size="lg" className="border-[#50FF56]" />
+          <Loading size="lg" className="border-[#32AA00]" />
         </div>
       ) : !data ? (
         <p className="text-gray-500 py-6 text-center">

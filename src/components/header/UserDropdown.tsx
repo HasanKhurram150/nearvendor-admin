@@ -1,14 +1,12 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { getLocalStorage } from "@/utils";
 import { IAdmin } from "@/services/auth-api/auth-api.types";
 import { useRouter } from "next/navigation";
 import { authActions, useDispatch } from "@/store";
-import Loading from "../atoms/loading/loading";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,39 +56,46 @@ export default function UserDropdown() {
     <div className="relative">
       <button
         onClick={toggleDropdown}
-        className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
+        className="flex items-center gap-3 text-white dropdown-toggle group pr-2"
       >
-        <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
+        <div className="relative overflow-hidden rounded-full h-11 w-11 border border-white/10 ring-2 ring-white/5 transition-all group-hover:ring-white/10">
           <Image
             width={44}
             height={44}
             src="/images/user/userProfile.png"
             alt="User"
+            className="object-cover"
           />
-        </span>
+        </div>
 
-        <span className="block mr-1 font-medium text-theme-sm">
-          {user?.name}
-        </span>
-
-        <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          width="18"
-          height="20"
-          viewBox="0 0 18 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4.3125 8.65625L9 13.3437L13.6875 8.65625"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <div className="hidden sm:flex flex-col items-start gap-0.5">
+          <div className="flex items-center gap-1.5">
+            <span className="block text-sm font-bold text-white leading-tight">
+              {user?.email || "Genesis@gmail.com"}
+            </span>
+            <svg
+              className={`text-white transition-transform duration-300 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+              width="14"
+              height="14"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5 7.5L10 12.5L15 7.5"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <span className="text-[11px] font-medium text-white/50 leading-none">
+            Administrator
+          </span>
+        </div>
       </button>
 
       <Dropdown

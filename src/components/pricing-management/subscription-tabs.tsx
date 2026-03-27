@@ -51,11 +51,11 @@ const SubscriptionTabs = ({
         {/* <h2 className="text-xl font-semibold">{activePackage.name}</h2> */}
         <p className="text-gray-600">{activePackage?.data?.description}</p>
       </div>
-      <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[30rem] w-full border dark:border-gray-800 pb-[1.5rem]">
+      <div className="grid overflow-hidden dashboard-card min-h-[30rem] w-full pb-[1.5rem]">
         <div className="overflow-x-auto">
           {/* Prices Table */}
           <Table aria-label="Calendars management table" className="w-full">
-            <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+            <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02] px-[1rem]">
               <TableRow>
                 {columns.map((col) => (
                   <TableCell
@@ -68,7 +68,7 @@ const SubscriptionTabs = ({
                 ))}
               </TableRow>
             </TableHeader>
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <TableBody className="divide-y divide-[#1D1C1C]">
               {isLoading ? (
                 <TableRow>
                   <TableCell
@@ -76,7 +76,7 @@ const SubscriptionTabs = ({
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#50FF56]" />
+                      <Loading size="lg" className="border-[#32AA00]" />
                     </div>
                   </TableCell>
                 </TableRow>

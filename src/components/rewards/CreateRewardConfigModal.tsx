@@ -40,7 +40,7 @@ function NumberInput({
           min={min}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 w-full rounded-xl border border-white/[0.1] bg-white dark:bg-white/[0.04] px-3 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-[#50FF56]"
+          className="h-10 w-full rounded-xl border border-[#1D1C1C] bg-white/[0.02] px-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#32AA00]"
         />
         {suffix && (
           <span className="text-xs text-gray-400 whitespace-nowrap">{suffix}</span>
@@ -161,7 +161,7 @@ export function CreateRewardConfigModal({ isOpen, onClose, config }: Props) {
   return (
     <GenericModal isOpen={isOpen} onClose={handleClose} maxWidth="38rem">
       <form onSubmit={handleSubmit}>
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-6">
+        <h2 className="text-lg font-semibold text-white mb-6">
           {isEditMode ? t("editRewardConfig") : t("createRewardConfig")}
         </h2>
 
@@ -176,7 +176,7 @@ export function CreateRewardConfigModal({ isOpen, onClose, config }: Props) {
               value={rewardType}
               onChange={(e) => setRewardType(e.target.value)}
               placeholder="e.g. nft_purchase"
-              className="h-10 w-full rounded-xl border border-white/[0.1] bg-white dark:bg-white/[0.04] px-3 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-[#50FF56]"
+              className="h-10 w-full rounded-xl border border-[#1D1C1C] bg-white/[0.02] px-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#32AA00]"
             />
           </div>
 
@@ -214,7 +214,7 @@ export function CreateRewardConfigModal({ isOpen, onClose, config }: Props) {
               type="button"
               onClick={() => setIsActive((v) => !v)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                isActive ? "bg-[#50FF56]" : "bg-gray-600"
+                isActive ? "bg-[#32AA00]" : "bg-gray-600"
               }`}
             >
               <span
@@ -223,7 +223,7 @@ export function CreateRewardConfigModal({ isOpen, onClose, config }: Props) {
                 }`}
               />
             </button>
-            <span className="text-sm text-gray-600 dark:text-gray-300">
+            <span className="text-sm text-gray-300">
               {isActive ? t("active") : t("inactive")}
             </span>
           </div>
@@ -241,7 +241,7 @@ export function CreateRewardConfigModal({ isOpen, onClose, config }: Props) {
                 <button
                   type="button"
                   onClick={addLevel}
-                  className="text-xs text-[#50FF56] hover:underline font-medium"
+                  className="text-xs text-[#32AA00] hover:underline font-medium"
                 >
                   + {t("addLevel")}
                 </button>
@@ -250,22 +250,22 @@ export function CreateRewardConfigModal({ isOpen, onClose, config }: Props) {
 
             <div className="flex flex-col gap-2 max-h-52 overflow-y-auto pr-1">
               {levels.map((lvl, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-3 py-2"
-                >
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#50FF56]/10 text-[#50FF56] text-xs font-bold flex-shrink-0">
+                  <div
+                    key={idx}
+                    className="flex items-center gap-3 rounded-xl border border-[#1D1C1C] bg-white/[0.02] px-3 py-2"
+                  >
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#32AA00]/10 text-[#32AA00] text-xs font-bold flex-shrink-0">
                     {idx + 1}
                   </span>
                   <div className="flex-1 flex items-center gap-2">
-                    <input
-                      type="number"
-                      min={0}
-                      value={lvl.percentageBps}
-                      onChange={(e) => updateLevel(idx, e.target.value)}
-                      placeholder="bps (e.g. 3000)"
-                      className="h-9 w-full rounded-lg border border-white/[0.1] bg-white dark:bg-white/[0.04] px-3 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-[#50FF56]"
-                    />
+                      <input
+                        type="number"
+                        min={0}
+                        value={lvl.percentageBps}
+                        onChange={(e) => updateLevel(idx, e.target.value)}
+                        placeholder="bps (e.g. 3000)"
+                        className="h-9 w-full rounded-lg border border-[#1D1C1C] bg-white/[0.02] px-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#32AA00]"
+                      />
                     <span className="text-xs text-gray-400 w-16 flex-shrink-0">
                       = {lvl.percentageBps ? (Number(lvl.percentageBps) / 100).toFixed(2) : "0.00"}%
                     </span>
@@ -287,18 +287,18 @@ export function CreateRewardConfigModal({ isOpen, onClose, config }: Props) {
 
         {/* Actions */}
         <div className="flex justify-end gap-3 mt-6">
-          <button
-            type="button"
-            onClick={handleClose}
-            disabled={isLoading}
-            className="h-10 px-5 rounded-xl border border-white/[0.1] text-sm text-gray-500 dark:text-gray-300 hover:bg-white/[0.04] transition-colors"
-          >
-            {t("cancel")}
-          </button>
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={isLoading}
+              className="h-10 px-5 rounded-xl border border-[#1D1C1C] text-sm text-gray-300 hover:bg-white/[0.04] transition-colors bg-white/[0.02]"
+            >
+              {t("cancel")}
+            </button>
           <button
             type="submit"
             disabled={isLoading || !rewardType.trim()}
-            className="h-10 px-6 rounded-xl bg-[#50FF56] text-sm font-semibold text-gray-900 hover:bg-[#3edb44] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="h-10 px-6 rounded-xl bg-[#32AA00] text-sm font-semibold text-gray-900 hover:bg-[#3edb44] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isLoading ? <Loading size="sm" /> : (isEditMode ? t("saveChanges") : t("createRewardConfig"))}
           </button>

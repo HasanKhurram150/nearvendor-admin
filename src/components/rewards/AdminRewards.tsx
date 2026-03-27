@@ -13,7 +13,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Badge from "@/components/ui/badge/Badge";
 import { useLanguage } from "@/components/common/LanguageContext";
+import Select from "@/components/form/Select";
 import { useGetAdminRewardsQuery, useGetAdminRewardsSummaryQuery } from "@/services/rewards-api";
 import {
   TxLink,
@@ -28,17 +30,12 @@ const DEFAULT_PAGE_SIZE = 10;
 type TranslateFn = ReturnType<typeof useLanguage>["t"];
 
 const TABLE_HEADERS = [
-  "nft",
-  "beneficiary",
-  "rewardType",
-  "level",
-  "rewardAmount",
-  "sourceAmount",
-  "pools",
-  "token",
-  "rewardTx",
-  "settlement",
-  "rewardedAt",
+  "NFT & Level",
+  "Beneficiary Info",
+  "Financial Details",
+  "Network & Tx",
+  "Settlement Status",
+  "Rewarded At",
 ] as const;
 
 function SummaryCard({
@@ -51,7 +48,7 @@ function SummaryCard({
   detail?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="dashboard-card p-5">
       <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
       <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">{value}</p>
       {detail ? (
@@ -94,7 +91,7 @@ function BeneficiaryCell({
 }) {
   return (
     <div className="flex min-w-[190px] flex-col gap-1">
-      <span className="inline-flex w-fit items-center rounded-full bg-[#50FF56]/10 px-2.5 py-0.5 text-xs font-medium text-[#50FF56]">
+      <span className="inline-flex w-fit items-center rounded-full bg-[#32AA00]/10 px-2.5 py-0.5 text-xs font-medium text-[#32AA00]">
         {formatBeneficiaryType(beneficiaryType)}
       </span>
       <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
@@ -122,7 +119,7 @@ function SettlementCell({
       <span
         className={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
           isSettled
-            ? "bg-[#50FF56]/10 text-[#50FF56]"
+            ? "bg-[#32AA00]/10 text-[#32AA00]"
             : "bg-amber-500/10 text-amber-400"
         }`}
       >
@@ -217,16 +214,17 @@ export default function AdminRewards() {
         />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="flex flex-wrap items-center justify-between gap-4 dashboard-card p-5">
         <div className="flex flex-wrap items-center gap-4">
-          <select
-            value={sort}
-            onChange={(event) => setSort(event.target.value as "asc" | "desc")}
-            className="h-11 cursor-pointer rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#50FF56] dark:border-gray-700 dark:bg-white/[0.04] dark:text-gray-200"
-          >
-            <option value="desc">{t("newestFirst")}</option>
-            <option value="asc">{t("oldestFirst")}</option>
-          </select>
+          <Select
+            options={[
+              { value: "desc", label: t("newestFirst") },
+              { value: "asc", label: t("oldestFirst") },
+            ]}
+            defaultValue={sort}
+            onChange={(value) => setSort(value as "asc" | "desc")}
+            className="w-[180px]"
+          />
           <Button
             variant="outline"
             onClick={() => {
@@ -251,11 +249,11 @@ export default function AdminRewards() {
         </Button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white pb-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="overflow-hidden dashboard-card pb-6">
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <div className="flex justify-center py-16">
-              <Loading size="lg" className="border-[#50FF56]" />
+              <Loading size="lg" className="border-[#32AA00]" />
             </div>
           ) : rewards.length === 0 ? (
             <div className="py-16 text-center text-gray-400">
@@ -263,7 +261,7 @@ export default function AdminRewards() {
             </div>
           ) : (
             <Table aria-label="Admin rewards table">
-              <TableHeader className="border-b border-gray-100 bg-[#FAFAFA] dark:border-gray-800 dark:bg-[#18181887]">
+              <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02]">
                 <TableRow>
                   {TABLE_HEADERS.map((header, index) => (
                     <TableCell
@@ -273,74 +271,89 @@ export default function AdminRewards() {
                         index === 0 ? "pl-6" : ""
                       } ${index === TABLE_HEADERS.length - 1 ? "pr-6" : ""}`}
                     >
-                      {t(header)}
+                      {header}
                     </TableCell>
                   ))}
                 </TableRow>
               </TableHeader>
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <TableBody className="divide-y divide-[#1D1C1C]">
                 {rewards.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="whitespace-nowrap py-3 pl-6 pr-3">
-                      <div className="flex min-w-[180px] flex-col">
-                        <span className="text-sm font-medium text-gray-800 dark:text-white">
-                          {row.nftName}
-                        </span>
-                        <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
-                          #{row.nftTokenId} • {truncateAddress(row.nftId)}
+                    {/* NFT & Level */}
+                    <TableCell className="pl-6 pr-3 py-4 min-w-[15rem]">
+                      <div className="flex flex-col gap-2 text-left">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold text-white/90 truncate max-w-[12rem]">
+                            {row.nftName}
+                          </span>
+                          <span className="text-[10px] text-gray-500 font-mono">
+                            #{row.nftTokenId} • {truncateAddress(row.nftId)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="light" color="primary" size="sm">
+                            {formatRewardType(row.rewardType)}
+                          </Badge>
+                          {row.level && (
+                            <span className="text-[10px] text-gray-500 bg-white/5 rounded px-1.5 py-0.5">
+                              Lvl {row.level}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    {/* Beneficiary Info */}
+                    <TableCell className="px-3 py-4 min-w-[14rem]">
+                      <div className="flex flex-col gap-2 text-left">
+                        <BeneficiaryCell
+                          beneficiaryType={row.beneficiaryType}
+                          beneficiaryKey={row.beneficiaryKey}
+                          beneficiaryUserId={row.beneficiaryUserId}
+                          beneficiaryWalletAddress={row.beneficiaryWalletAddress}
+                        />
+                         <div className="text-[10px] text-gray-500 bg-white/5 rounded px-2 py-1 w-fit">
+                           {row.paymentTokenSymbol} • Chain {row.chainId}
+                         </div>
+                      </div>
+                    </TableCell>
+
+                    {/* Financial Details */}
+                    <TableCell className="px-3 py-4 min-w-[16rem]">
+                      <div className="flex flex-col gap-1.5 text-left">
+                        <div className="flex justify-between items-center border-b border-white/5 pb-1">
+                          <span className="text-sm font-bold text-[#32AA00]">
+                            {formatAmount(row.rewardAmount)} {row.paymentTokenSymbol}
+                          </span>
+                          <span className="text-[10px] text-gray-500">
+                             Src: {formatAmount(row.sourceAmount)}
+                          </span>
+                        </div>
+                        <PoolsBreakdown
+                          rewardPoolAmount={row.rewardPoolAmount}
+                          referralPoolAmount={row.referralPoolAmount}
+                          platformPoolAmount={row.platformPoolAmount}
+                          symbol={row.paymentTokenSymbol}
+                        />
+                      </div>
+                    </TableCell>
+
+                    {/* Network & Tx */}
+                    <TableCell className="px-3 py-4 min-w-[12rem]">
+                      <div className="flex flex-col gap-1.5 text-left">
+                        {row.nftProcessedTx ? (
+                          <TxLink hash={row.nftProcessedTx} chainId={row.chainId} />
+                        ) : (
+                          <span className="text-gray-500 text-xs">—</span>
+                        )}
+                        <span className="text-[10px] font-mono text-gray-500">
+                          {truncateAddress(row.paymentTokenAddress)}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3">
-                      <BeneficiaryCell
-                        beneficiaryType={row.beneficiaryType}
-                        beneficiaryKey={row.beneficiaryKey}
-                        beneficiaryUserId={row.beneficiaryUserId}
-                        beneficiaryWalletAddress={row.beneficiaryWalletAddress}
-                      />
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3">
-                      <span className="inline-flex items-center rounded-full bg-[#50FF56]/10 px-2.5 py-0.5 text-xs font-medium text-[#50FF56]">
-                        {formatRewardType(row.rewardType)}
-                      </span>
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {row.level ?? "-"}
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3">
-                      <span className="text-sm font-semibold text-[#50FF56]">
-                        {formatAmount(row.rewardAmount)} {row.paymentTokenSymbol}
-                      </span>
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {formatAmount(row.sourceAmount)} {row.paymentTokenSymbol}
-                    </TableCell>
-                    <TableCell className="px-3 py-3">
-                      <PoolsBreakdown
-                        rewardPoolAmount={row.rewardPoolAmount}
-                        referralPoolAmount={row.referralPoolAmount}
-                        platformPoolAmount={row.platformPoolAmount}
-                        symbol={row.paymentTokenSymbol}
-                      />
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3">
-                      <div className="flex min-w-[140px] flex-col">
-                        <span className="text-sm font-medium text-gray-800 dark:text-white">
-                          {row.paymentTokenSymbol}
-                        </span>
-                        <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
-                          {truncateAddress(row.paymentTokenAddress)} • {row.chainId}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3">
-                      {row.nftProcessedTx ? (
-                        <TxLink hash={row.nftProcessedTx} chainId={row.chainId} />
-                      ) : (
-                        <span className="text-xs text-gray-400">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="px-3 py-3">
+
+                    {/* Settlement Status */}
+                    <TableCell className="px-3 py-4 min-w-[14rem]">
                       <SettlementCell
                         isSettled={row.isSettled}
                         settlementAt={row.settlementAt}
@@ -349,8 +362,10 @@ export default function AdminRewards() {
                         t={t}
                       />
                     </TableCell>
-                    <TableCell className="whitespace-nowrap py-3 pl-3 pr-6 text-xs text-gray-500 dark:text-gray-400">
-                      {dayjs(row.rewardAt).format("MMM D, YYYY HH:mm")}
+
+                    {/* Rewarded At */}
+                    <TableCell className="whitespace-nowrap py-4 pl-3 pr-6 text-xs text-gray-500 dark:text-gray-400">
+                      {dayjs(row.rewardAt).format("DD MMM, HH:mm")}
                     </TableCell>
                   </TableRow>
                 ))}

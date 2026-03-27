@@ -20,10 +20,10 @@ export function SalesChart({ salesData }: { salesData: INftOrderSalesData | unde
   const values = chartData.map(([, amount]) => amount);
 
   const options: ApexOptions = {
-    colors: ["#50FF56"],
+    colors: ["#32AA00"],
     chart: {
       fontFamily: "Outfit, sans-serif",
-      type: "area",
+      type: "line",
       height: 280,
       toolbar: { show: false },
       background: "transparent",
@@ -31,15 +31,6 @@ export function SalesChart({ salesData }: { salesData: INftOrderSalesData | unde
     stroke: {
       curve: "smooth",
       width: 2,
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.4,
-        opacityTo: 0.05,
-        stops: [0, 100],
-      },
     },
     dataLabels: { enabled: false },
     xaxis: {
@@ -53,7 +44,7 @@ export function SalesChart({ salesData }: { salesData: INftOrderSalesData | unde
     yaxis: {
       labels: {
         style: { colors: "#9CA3AF", fontSize: "12px" },
-        formatter: (val: number) => val.toFixed(2),
+        formatter: (val: number) => `${parseInt(val.toString(), 10)}%`,
       },
     },
     grid: {
@@ -64,7 +55,7 @@ export function SalesChart({ salesData }: { salesData: INftOrderSalesData | unde
     tooltip: {
       theme: "dark",
       y: {
-        formatter: (val: number) => `${val.toFixed(6)}`,
+        formatter: (val: number) => `${val.toFixed(2)}%`,
       },
     },
     markers: {
@@ -81,22 +72,27 @@ export function SalesChart({ salesData }: { salesData: INftOrderSalesData | unde
   ];
 
   return (
-    <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-5 md:p-6 h-full">
-      <h3 className="text-lg font-semibold text-white mb-4">{t("salesOverTime")}</h3>
-      {chartData.length > 0 ? (
-        <div className="max-w-full overflow-x-auto custom-scrollbar">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="area"
-            height={280}
-          />
-        </div>
-      ) : (
-        <div className="flex items-center justify-center h-[280px] text-gray-500">
-          {t("noSalesData")}
-        </div>
-      )}
+    <div className="dashboard-card h-full flex flex-col">
+      <div className="px-6 py-5 border-b border-[#222328]">
+        <h3 className="text-[16px] font-medium text-white">{t("salesOverTime")}</h3>
+      </div>
+      
+      <div className="p-6 flex-1">
+        {chartData.length > 0 ? (
+          <div className="max-w-full overflow-x-auto custom-scrollbar">
+            <ReactApexChart
+              options={options}
+              series={series}
+              type="line"
+              height={280}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-[280px] text-gray-500">
+            {t("noSalesData")}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

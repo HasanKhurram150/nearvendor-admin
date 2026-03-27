@@ -37,17 +37,17 @@ const Input: FC<InputProps> = ({
   registration,
 }) => {
   // Determine input styles based on state (disabled, success, error)
-  let inputClasses = `h-14 w-full rounded-xl border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${className}`;
+  let inputClasses = `h-[46px] w-full rounded-[14px] border appearance-none px-4 text-sm transition-all duration-300 placeholder:text-gray-500 focus:outline-hidden ${className}`;
 
   // Add styles for the different states
   if (disabled) {
-    inputClasses += ` text-gray-500 border-gray-300 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700`;
+    inputClasses += ` bg-white/[0.03] text-gray-500 border-white/5 cursor-not-allowed`;
   } else if (error) {
-    inputClasses += ` text-error-800 border-error-500 focus:ring-3 focus:ring-error-500/10 dark:text-error-400 dark:border-error-500`;
+    inputClasses += ` bg-error-500/[0.05] text-error-400 border-error-500/50 focus:ring-4 focus:ring-error-500/10`;
   } else if (success) {
-    inputClasses += ` text-success-500 border-success-400 focus:ring-success-500/10 focus:border-success-300 dark:text-success-400 dark:border-success-500`;
+    inputClasses += ` bg-success-500/[0.05] text-success-400 border-success-500/50 focus:ring-4 focus:ring-success-500/10`;
   } else {
-    inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800`;
+    inputClasses += ` bg-[#0C0C11]/50 text-white border-white/10 focus:border-brand-500/50 focus:ring-4 focus:ring-brand-500/10`;
   }
 
   return (

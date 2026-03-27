@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useLanguage } from "./LanguageContext";
+import Button from "../ui/button/Button";
 
 interface BreadcrumbProps {
   pageTitle: string;
@@ -90,28 +91,31 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
         )}
       </h2>
       {btnAdvertiser && (
-        <button
-          className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
+        <Button
+          className="w-[11.25rem]"
+          variant="success"
           onClick={handleAddAdvertiser}
         >
           {t("createAdvertiser")}
-        </button>
+        </Button>
       )}
       {btnCampaign && (
-        <button
-          className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
+        <Button
+          className="w-[11.25rem]"
+          variant="success"
           onClick={handleAddCampaign}
         >
           {t("createCampaign")}
-        </button>
+        </Button>
       )}
       {btnInventory && (
-        <button
-          className="flex items-center justify-center text-white btn-bg h-[2.5rem] w-[11.25rem] rounded-md"
+        <Button
+          className="w-[11.25rem]"
+          variant="success"
           onClick={handleCreateInventory}
         >
           {t("createInventory")}
-        </button>
+        </Button>
       )}
 
       <nav className="hidden">

@@ -163,7 +163,7 @@ export default function EnterAuthCodeForm() {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-7 mt-[3rem]">
-              <p className="font-Arbutus text-[#50FF56] text-[1.25rem] text-center">
+              <p className="font-Arbutus text-[#32AA00] text-[1.25rem] text-center">
                 ENTER THE 6 DIGIT CODE
               </p>
 

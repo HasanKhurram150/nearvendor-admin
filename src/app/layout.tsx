@@ -20,7 +20,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#08070D] text-white/90">
+      <body className="">
         <LanguageProvider>
           <Providers>
             <Toaster
