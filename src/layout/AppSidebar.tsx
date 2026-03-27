@@ -12,6 +12,7 @@ import {
   ListIcon,
   PeopleIcon,
   PlugInIcon,
+  TimeIcon,
   TicketIcon,
 } from "../icons/index";
 import { useLanguage } from "@/components/common/LanguageContext";
@@ -69,6 +70,11 @@ const AppSidebar: React.FC = () => {
       icon: <PeopleIcon />,
       name: t("customers"),
       path: "/customers",
+    },
+    {
+      icon: <TimeIcon />,
+      name: "Login History",
+      path: "/login-history",
     },
     {
       icon: <PlugInIcon />,
