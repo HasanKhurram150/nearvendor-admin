@@ -22,6 +22,7 @@ export const TAGS = {
   RewardConfigs: "RewardConfigs",
   PlatformRewards: "PlatformRewards",
   CUSTOMERS: "Customers",
+  LoginHistory: "LoginHistory",
 };
 
 export const generateTags = (result: any, TAG: string) => {

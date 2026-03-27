@@ -88,6 +88,7 @@ export const baseAPI = createApi({
     TAGS.RewardConfigs,
     TAGS.PlatformRewards,
     TAGS.CUSTOMERS,
+    TAGS.LoginHistory,
   ],
   endpoints: () => ({}),
 });
