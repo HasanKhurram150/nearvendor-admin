@@ -90,26 +90,26 @@ export default function NftsListing() {
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 w-full">
       <PageBreadcrumb
         pageTitle="NFT Listing"
         info="Protected inventory view for uploaded NFT metadata and asset records."
       />
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Total NFTs</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.totalItems ?? 0}
           </p>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Current Page</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.currentPage ?? 1}
           </p>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Items Per Page</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.itemsPerPage ?? DEFAULT_PAGE_SIZE}
@@ -117,7 +117,7 @@ export default function NftsListing() {
         </div>
       </div>
 
-      <div className="grid gap-4 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 dashboard-card p-5 lg:grid-cols-2 xl:grid-cols-5">
         <GenericSearchField
           value={searchQuery}
           onChange={setSearchQuery}
@@ -172,41 +172,35 @@ export default function NftsListing() {
         ) : null}
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white pb-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="dashboard-card pb-6">
         <div className="max-w-full overflow-x-auto">
           <Table aria-label="NFT listing table">
-            <TableHeader className="border-b border-gray-100 bg-[#FAFAFA] dark:border-gray-800 dark:bg-[#18181887]">
+            <TableHeader className="bg-white/[0.02] border-[#1D1C1C] border-b">
               <TableRow>
                 {[
-                  "Preview",
-                  "Token ID",
-                  "Name",
-                  "Price",
-                  "Badge",
-                  "Supply",
-                  "Status",
-                  "Chain",
-                  "Created",
-                  "Links",
+                  "NFT Information",
+                  "Pricing & Supply",
+                  "Status & Network",
+                  "Actions",
                 ].map((header, index) => (
                   <TableCell
                     key={header}
                     isHeader
-                    className={`px-3 py-3 text-start text-base font-medium text-[#201D1D99] dark:text-white ${
+                    className={`px-3 py-4 text-start text-base font-medium text-gray-400 ${
                       index === 0 ? "pl-6" : ""
-                    } ${index === 9 ? "pr-6" : ""}`}
+                    } ${index === 3 ? "pr-6" : ""}`}
                   >
                     {header}
                   </TableCell>
                 ))}
               </TableRow>
             </TableHeader>
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <TableBody className="divide-y divide-[#1D1C1C]">
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={10} className="py-10 text-center">
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#50FF56]" />
+                      <Loading size="lg" className="border-[#32AA00]" />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -225,81 +219,97 @@ export default function NftsListing() {
               ) : (
                 nfts.map((nft) => (
                   <TableRow key={nft.id}>
-                    <TableCell className="pl-6 pr-3 py-4 min-w-[7rem]">
-                      <div className="h-16 w-16 overflow-hidden rounded-xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-gray-900">
-                        {nft.imageGatewayUrl ? (
-                          <img
-                            src={nft.imageGatewayUrl}
-                            alt={nft.name}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-xs text-gray-500 dark:text-gray-400">
-                            No image
-                          </div>
-                        )}
+                    {/* NFT Information */}
+                    <TableCell className="pl-6 pr-3 py-4 min-w-[18rem]">
+                      <div className="flex items-center gap-4">
+                        <div className="h-16 w-16 overflow-hidden rounded-xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-gray-900 flex-shrink-0">
+                          {nft.imageGatewayUrl ? (
+                            <img
+                              src={nft.imageGatewayUrl}
+                              alt={nft.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center text-[10px] text-gray-500">
+                              No image
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-0.5 min-w-0 text-left">
+                          <p className="font-semibold text-white/90 truncate">{nft.name}</p>
+                          <p className="text-xs text-brand-400 font-medium">#{nft.tokenId}</p>
+                          <p className="text-[10px] text-gray-500 truncate font-mono">{nft.id}</p>
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-3 py-4 min-w-[7rem] text-base text-gray-800 dark:text-white/90">
-                      #{nft.tokenId}
-                    </TableCell>
-                    <TableCell className="px-3 py-4 min-w-[14rem] text-base text-gray-800 dark:text-white/90">
-                      <div>
-                        <p className="font-medium">{nft.name}</p>
-                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                          {nft.id}
-                        </p>
+
+                    {/* Pricing & Supply */}
+                    <TableCell className="px-3 py-4 min-w-[12rem]">
+                      <div className="flex flex-col gap-1.5 text-left">
+                        <div className="text-base font-bold text-success-500">
+                          ${currencyFormatter.format(nft.usdPrice)}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge color="warning" size="sm" variant="light">{nft.badge}</Badge>
+                          <span className="text-xs text-gray-400">
+                            Sup: {nft.maxSupply}
+                          </span>
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-3 py-4 min-w-[8rem] text-base text-gray-800 dark:text-white/90">
-                      ${currencyFormatter.format(nft.usdPrice)}
-                    </TableCell>
+
+                    {/* Status & Network */}
                     <TableCell className="px-3 py-4 min-w-[10rem]">
-                      <Badge color="warning">{nft.badge}</Badge>
+                      <div className="flex flex-col gap-1.5 text-left">
+                        <Badge 
+                          color={nft.status === "uploaded" ? "success" : nft.status === "failed" ? "error" : "light"}
+                          size="sm"
+                          variant="light"
+                          className="w-fit"
+                        >
+                          {nft.status}
+                        </Badge>
+                        <div className="text-xs text-gray-500 flex items-center gap-1 text-left">
+                          <span className="opacity-70">Chain:</span>
+                          <span className="font-medium text-gray-300">{nft.chainId}</span>
+                        </div>
+                        <div className="text-[10px] text-gray-500 text-left">
+                          {dayjs(nft.createdAt).format("DD MMM, YYYY")}
+                        </div>
+                      </div>
                     </TableCell>
-                    <TableCell className="px-3 py-4 min-w-[7rem] text-base text-gray-800 dark:text-white/90">
-                      {nft.maxSupply}
-                    </TableCell>
-                    <TableCell className="px-3 py-4 min-w-[8rem]">
-                      <Badge color={nft.status === "uploaded" ? "success" : "light"}>
-                        {nft.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="px-3 py-4 min-w-[7rem] text-base text-gray-800 dark:text-white/90">
-                      {nft.chainId}
-                    </TableCell>
-                    <TableCell className="px-3 py-4 min-w-[10rem] text-base text-gray-800 dark:text-white/90">
-                      {dayjs(nft.createdAt).format("DD MMM YYYY")}
-                    </TableCell>
-                    <TableCell className="px-3 py-4 pr-6 min-w-[12rem] text-sm">
-                      <div className="flex flex-col gap-2">
-                        <button
-                          type="button"
+
+                    {/* Actions */}
+                    <TableCell className="px-3 py-4 pr-6 min-w-[10rem]">
+                      <div className="flex flex-col gap-1 items-start text-left">
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => setSelectedNftId(nft.id)}
-                          className="text-left text-brand-500 hover:underline"
+                          className="justify-start px-0 h-auto text-brand-400 hover:bg-transparent hover:underline text-xs"
                         >
                           View details
-                        </button>
-                        <a
-                          href={nft.imageGatewayUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-brand-500 hover:underline"
-                        >
-                          View image
-                        </a>
-                        {nft.metadataGatewayUrl ? (
+                        </Button>
+                        <div className="flex gap-3 text-left">
                           <a
-                            href={nft.metadataGatewayUrl}
+                            href={nft.imageGatewayUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-brand-500 hover:underline"
+                            className="text-gray-400 hover:text-white transition-colors text-[10px] underline underline-offset-2"
                           >
-                            View metadata
+                            Image
                           </a>
-                        ) : (
-                          <span className="text-gray-500 dark:text-gray-400">No metadata URL</span>
-                        )}
+                          {nft.metadataGatewayUrl && (
+                            <a
+                              href={nft.metadataGatewayUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-400 hover:text-white transition-colors text-[10px] underline underline-offset-2"
+                            >
+                              Metadata
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>

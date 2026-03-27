@@ -10,7 +10,7 @@ import {
 // import Image from "next/image";
 import { useGetOurEventsQuery } from "@/services/events-management-api";
 import Loading from "../atoms/loading/loading";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+import Pagination from "@/components/tables/Pagination";
 import { useLanguage } from "../common/LanguageContext";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 
@@ -32,49 +32,49 @@ const Events: React.FC = () => {
   return (
     <>
       <PageBreadcrumb pageTitle={t("events")} />
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)]  border dark:border-gray-800">
+      <div className="overflow-hidden dashboard-card min-h-[calc(100vh-200px)]">
         <div className="max-w-full overflow-x-auto">
-          <Table>
+          <Table hoverable>
             {/* Table Header - Always visible */}
-            <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+            <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02] px-[1rem]">
               <TableRow>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
+                  className="py-3 px-3 font-medium text-[#201D1D99] dark:text-white text-start text-base min-w-[12rem]"
                 >
                   {t("event")}
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
+                  className="py-3 px-3 font-medium text-[#201D1D99] dark:text-white text-start text-base min-w-[12rem]"
                 >
                   {t("date")}
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
+                  className="py-3 px-3 font-medium text-[#201D1D99] dark:text-white text-start text-base min-w-[10rem]"
                 >
                   {t("time")}
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[8rem]"
+                  className="py-3 px-3 font-medium text-[#201D1D99] dark:text-white text-start text-base min-w-[8rem]"
                 >
                   {t("location")}
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[3.75rem]"
+                  className="py-3 px-3 font-medium text-[#201D1D99] dark:text-white text-start text-base min-w-[3.75rem]"
                 >
                   {t("status")}
                 </TableCell>
               </TableRow>
             </TableHeader>
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <TableBody className="divide-y divide-[#1D1C1C]">
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-10">
-                    <Loading size="lg" className="border-[#50FF56]" />
+                    <Loading size="lg" className="border-[#32AA00]" />
                   </TableCell>
                 </TableRow>
               ) : ourEvents?.length > 0 ? (
@@ -116,12 +116,21 @@ const Events: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        {!isLoading && totalPages > 1 && (
-          <GenericPagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+        {!isLoading && meta && meta.totalItems > 0 && (
+          <div className="mt-4 flex flex-col items-center justify-between gap-3 px-6 sm:flex-row">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {t("showingRecords", {
+                start: (page - 1) * DEFAULT_PAGE_SIZE + 1,
+                end: Math.min(page * DEFAULT_PAGE_SIZE, meta.totalItems),
+                total: meta.totalItems,
+              })}
+            </span>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          </div>
         )}
       </div>
     </>

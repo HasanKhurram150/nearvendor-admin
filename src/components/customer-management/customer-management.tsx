@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   Table,
   TableBody,
@@ -14,8 +14,12 @@ import {
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
-import GenericPagination from "../atoms/generic-pagination/generic-pagination";
+import Pagination from "@/components/tables/Pagination";
+import Badge from "@/components/ui/badge/Badge";
+import dayjs from "dayjs";
 import toast from "react-hot-toast";
+import { truncateAddress } from "@/components/rewards/rewards-table-utils";
+import { useState } from "react";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -57,7 +61,7 @@ const CustomerManagement: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-8 w-full">
       <PageBreadcrumb
         pageTitle={t("customers")}
         counter={true}
@@ -65,32 +69,26 @@ const CustomerManagement: React.FC = () => {
         counterValue={meta?.totalItems}
       />
 
-      <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] border dark:border-gray-800 pb-[1.5rem]">
+      <div className="overflow-hidden dashboard-card min-h-[calc(100vh-200px)] pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
-          <Table>
-            <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+          <Table hoverable>
+            <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02] px-[1rem]">
               <TableRow>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[3rem]"
+                  className="py-3 pl-6 pr-3 font-medium text-[#201D1D99] text-start text-base dark:text-white"
                 >
                   #
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[15rem]"
+                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[16rem]"
                 >
-                  {t("name")}
+                  Customer Info
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[15rem]"
-                >
-                  {t("email")}
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
+                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[14rem]"
                 >
                   {t("address")}
                 </TableCell>
@@ -102,25 +100,25 @@ const CustomerManagement: React.FC = () => {
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
+                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
                 >
-                  {t("createdAt")}
+                  Registration
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[12rem]"
+                  className="py-3 pl-3 pr-6 font-medium text-[#201D1D99] text-end text-base dark:text-white min-w-[10rem]"
                 >
-                  Referral Tree View
+                  Referral Tree
                 </TableCell>
               </TableRow>
             </TableHeader>
 
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <TableBody className="divide-y divide-[#1D1C1C]">
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8">
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#50FF56]" />
+                      <Loading size="lg" className="border-[#32AA00]" />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -136,60 +134,62 @@ const CustomerManagement: React.FC = () => {
               ) : (
                 customers?.map((customer, index) => (
                   <TableRow key={customer.accountId}>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90">
-                      {(page - 1) * DEFAULT_PAGE_SIZE + index + 1}
+                    <TableCell className="pl-6 pr-3 py-4 text-xs text-gray-500 font-mono">
+                      {((page - 1) * DEFAULT_PAGE_SIZE + index + 1).toString().padStart(2, '0')}
                     </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                      {customer.name || "—"}
+                    <TableCell className="px-3 py-4">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-semibold text-white/90">
+                          {customer.name || "—"}
+                        </span>
+                        <span className="text-xs text-gray-500 truncate max-w-[12rem]">
+                          {customer.email || "—"}
+                        </span>
+                      </div>
                     </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[15rem]">
-                      {customer.email || "—"}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem] max-w-[18rem] truncate">
-                      {customer.address || "—"}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] min-w-[10rem]">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          customer.status === "enabled"
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                        }`}
-                      >
-                        {customer.status}
+                    <TableCell className="px-3 py-4">
+                      <span className="text-xs text-gray-400 font-mono" title={customer.address ?? ""}>
+                        {truncateAddress(customer.address ?? "") || "—"}
                       </span>
                     </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] text-[#201D1D] text-base dark:text-white/90 min-w-[12rem]">
-                      {new Date(customer.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </TableCell>
-                    <TableCell className="px-3 py-[1.25rem] min-w-[12rem]">
-                      <button
-                        onClick={() =>
-                          handleToggleReferralTreeView(
-                            customer.accountId,
-                            customer.referralTreeViewEnabled,
-                          )
-                        }
-                        disabled={isToggling}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                          customer.referralTreeViewEnabled
-                            ? "bg-[#50FF56]"
-                            : "bg-gray-300 dark:bg-gray-600"
-                        } ${isToggling ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                        aria-label="Toggle referral tree view"
+                    <TableCell className="px-3 py-4">
+                      <Badge
+                        variant="light"
+                        color={customer.status === "enabled" ? "success" : "error"}
+                        size="sm"
                       >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                        {customer.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="px-3 py-4 text-xs text-gray-500">
+                      {dayjs(customer.createdAt).format("DD MMM, YYYY")}
+                    </TableCell>
+                    <TableCell className="py-4 pl-3 pr-6 text-right">
+                      <div className="flex justify-end">
+                        <button
+                          onClick={() =>
+                            handleToggleReferralTreeView(
+                              customer.accountId,
+                              customer.referralTreeViewEnabled,
+                            )
+                          }
+                          disabled={isToggling}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${
                             customer.referralTreeViewEnabled
-                              ? "translate-x-6"
-                              : "translate-x-1"
-                          }`}
-                        />
-                      </button>
+                              ? "bg-[#32AA00]"
+                              : "bg-white/5"
+                          } ${isToggling ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                          aria-label="Toggle referral tree view"
+                        >
+                          <span
+                            className={`inline-block h-3 w-3 transform rounded-full bg-white shadow transition-transform ${
+                              customer.referralTreeViewEnabled
+                                ? "translate-x-5"
+                                : "translate-x-1"
+                            }`}
+                          />
+                        </button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -198,15 +198,24 @@ const CustomerManagement: React.FC = () => {
           </Table>
         </div>
 
-        {!isLoading && totalPages > 1 && (
-          <GenericPagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+        {!isLoading && meta && meta.totalItems > 0 && (
+          <div className="mt-4 flex flex-col items-center justify-between gap-3 px-6 sm:flex-row">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {t("showingRecords", {
+                start: (page - 1) * DEFAULT_PAGE_SIZE + 1,
+                end: Math.min(page * DEFAULT_PAGE_SIZE, meta.totalItems),
+                total: meta.totalItems,
+              })}
+            </span>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

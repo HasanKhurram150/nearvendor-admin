@@ -189,7 +189,7 @@ const EventsManagement: React.FC = () => {
         <TableRow>
           <TableCell colSpan={columns.length} className="py-8 text-center">
             <div className="flex justify-center">
-              <Loading size="lg" className="border-[#50FF56]" />
+              <Loading size="lg" className="border-[#32AA00]" />
             </div>
           </TableCell>
         </TableRow>
@@ -332,9 +332,9 @@ const EventsManagement: React.FC = () => {
             <GenericButton
               icon={<UploadWhiteIcon />}
               btnText={t("uploadCSV")}
-              bgColor="#50FF56"
+              bgColor="#32AA00"
               color="#fff"
-              borderColor="#50FF56"
+              borderColor="#32AA00"
               height="2.5rem"
               width="8.688rem"
               handleClick={handleOpenUploadModal}
@@ -355,10 +355,10 @@ const EventsManagement: React.FC = () => {
         </div>
 
         {/* Events Table */}
-        <div className="grid bg-white dark:bg-white/[0.03] pb-[1.5rem] border dark:border-gray-800 rounded-2xl w-full min-h-[calc(100vh-200px)] overflow-hidden">
+        <div className="grid dashboard-card pb-[1.5rem] w-full min-h-[calc(100vh-200px)] overflow-hidden">
           <div className="overflow-x-auto">
             <Table aria-label="Events management table" className="w-full">
-              <TableHeader className="bg-[#FAFAFA] dark:bg-[#18181887] border-gray-100 dark:border-gray-800 border-b">
+              <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02]">
                 <TableRow>
                   {columns.map((col, index) => (
                     <TableCell
@@ -374,7 +374,7 @@ const EventsManagement: React.FC = () => {
                 </TableRow>
               </TableHeader>
 
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <TableBody className="divide-y divide-[#1D1C1C]">
                 {renderTableContent()}
               </TableBody>
             </Table>

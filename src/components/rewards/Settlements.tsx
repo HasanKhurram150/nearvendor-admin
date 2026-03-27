@@ -14,7 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Badge from "@/components/ui/badge/Badge";
 import { useLanguage } from "@/components/common/LanguageContext";
+import Select from "@/components/form/Select";
 import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import {
   useDeleteAdminRewardSettlementMutation,
@@ -26,15 +28,12 @@ import { CreateSettlementModal } from "./CreateSettlementModal";
 const DEFAULT_PAGE_SIZE = 10;
 
 const TABLE_HEADERS = [
-  "batchGroup",
-  "status",
-  "settlementParticipants",
-  "settlementAmounts",
-  "token",
-  "userDistributions",
-  "settlementTx",
-  "createdAt",
-  "actions",
+  "Batch & Status",
+  "Network & Participants",
+  "Settlement Details",
+  "Distribution Preview",
+  "Tx & Timeline",
+  "Actions",
 ] as const;
 
 function SummaryCard({
@@ -47,7 +46,7 @@ function SummaryCard({
   detail?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="dashboard-card p-5">
       <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
       <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">{value}</p>
       {detail ? <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{detail}</p> : null}
@@ -59,7 +58,7 @@ function SettlementStatusBadge({ status }: { status: string }) {
   const normalizedStatus = status.toLowerCase();
   const classes =
     normalizedStatus === "completed"
-      ? "bg-[#50FF56]/10 text-[#50FF56]"
+      ? "bg-[#32AA00]/10 text-[#32AA00]"
       : normalizedStatus === "failed"
         ? "bg-red-500/10 text-red-400"
         : normalizedStatus === "submitted" || normalizedStatus === "processing"
@@ -152,7 +151,7 @@ export default function Settlements() {
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 w-full">
       <PageBreadcrumb pageTitle={t("settlements")} info={t("manageSettlements")} />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -166,16 +165,17 @@ export default function Settlements() {
         <SummaryCard label={t("completed")} value={String(completedCount)} detail={t("onCurrentPage")} />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="flex flex-wrap items-center justify-between gap-4 dashboard-card p-5">
         <div className="flex flex-wrap items-center gap-4">
-          <select
-            value={sort}
-            onChange={(event) => setSort(event.target.value as "asc" | "desc")}
-            className="h-11 cursor-pointer rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#50FF56] dark:border-gray-700 dark:bg-white/[0.04] dark:text-gray-200"
-          >
-            <option value="desc">{t("newestFirst")}</option>
-            <option value="asc">{t("oldestFirst")}</option>
-          </select>
+          <Select
+            options={[
+              { value: "desc", label: t("newestFirst") },
+              { value: "asc", label: t("oldestFirst") },
+            ]}
+            defaultValue={sort}
+            onChange={(value) => setSort(value as "asc" | "desc")}
+            className="w-[180px]"
+          />
           <Button
             variant="outline"
             onClick={() => {
@@ -196,17 +196,17 @@ export default function Settlements() {
         <Button onClick={() => setIsSettlementModalOpen(true)}>{t("createSettlement")}</Button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white pb-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="overflow-hidden dashboard-card pb-6">
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <div className="flex justify-center py-16">
-              <Loading size="lg" className="border-[#50FF56]" />
+              <Loading size="lg" className="border-[#32AA00]" />
             </div>
           ) : settlements.length === 0 ? (
             <div className="py-16 text-center text-gray-400">{t("noSettlementsFound")}</div>
           ) : (
             <Table aria-label="Settlements table">
-              <TableHeader className="border-b border-gray-100 bg-[#FAFAFA] dark:border-gray-800 dark:bg-[#18181887]">
+              <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02]">
                 <TableRow>
                   {TABLE_HEADERS.map((header, index) => (
                     <TableCell
@@ -216,12 +216,12 @@ export default function Settlements() {
                         index === 0 ? "pl-6" : ""
                       } ${index === TABLE_HEADERS.length - 1 ? "pr-6" : ""}`}
                     >
-                      {t(header)}
+                      {header}
                     </TableCell>
                   ))}
                 </TableRow>
               </TableHeader>
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <TableBody className="divide-y divide-[#1D1C1C]">
                 {settlements.map((settlement) => {
                   const canDelete =
                     !settlement.txHash &&
@@ -230,62 +230,67 @@ export default function Settlements() {
                     !settlement.processedAt;
 
                   return (
-                  <TableRow key={settlement.id}>
-                    <TableCell className="whitespace-nowrap py-3 pl-6 pr-3">
-                      <div className="flex min-w-[220px] flex-col gap-1">
-                        <span className="text-sm font-medium text-gray-800 dark:text-white">
-                          {truncateAddress(settlement.batchGroupId)}
-                        </span>
-                        <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
-                          {settlement.id}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {t("batchLabel", { index: settlement.batchIndex })}
-                        </span>
+                    <TableRow key={settlement.id}>
+                    {/* Batch & Status */}
+                    <TableCell className="whitespace-nowrap py-4 pl-6 pr-3 min-w-[16rem]">
+                      <div className="flex flex-col gap-2 text-left">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold text-white/90">
+                            Batch: {truncateAddress(settlement.batchGroupId)}
+                          </span>
+                          <span className="text-[10px] text-gray-500 font-mono">
+                            ID: {settlement.id}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <SettlementStatusBadge status={settlement.status} />
+                          <span className="text-[10px] text-gray-500">
+                             #{settlement.batchIndex} • {settlement.attemptCount} att
+                          </span>
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3">
-                      <div className="flex min-w-[140px] flex-col gap-2">
-                        <SettlementStatusBadge status={settlement.status} />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {t("attemptCount", { count: settlement.attemptCount })}
-                        </span>
+
+                    {/* Network & Participants */}
+                    <TableCell className="px-3 py-4 min-w-[14rem]">
+                      <div className="flex flex-col gap-2 text-left">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-white/90">
+                            {settlement.paymentTokenSymbol}
+                          </span>
+                          <span className="text-[10px] text-gray-500 font-mono">
+                            {truncateAddress(settlement.paymentTokenAddress)}
+                          </span>
+                          <span className="text-[10px] text-gray-400">
+                            Chain {settlement.chainId}
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-gray-500 bg-white/5 rounded px-2 py-1 w-fit">
+                          {settlement.recipientCount} Recipients • {settlement.rewardCount} Rewards
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-3 py-3">
-                      <div className="flex min-w-[220px] flex-col gap-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span>
-                          {t("distributor")}: {truncateAddress(settlement.distributorAddress)}
-                        </span>
-                        <span>
-                          {t("platformAddress")}: {truncateAddress(settlement.platformAddress)}
-                        </span>
-                        <span>
-                          {t("recipientsLabel")}: {settlement.recipientCount} • {t("rewardIds")}: {settlement.rewardCount}
-                        </span>
+
+                    {/* Settlement Details */}
+                    <TableCell className="px-3 py-4 min-w-[15rem]">
+                      <div className="flex flex-col gap-1.5 text-left text-xs">
+                        <div className="flex justify-between gap-4 border-b border-white/5 pb-1">
+                          <span className="text-gray-500">User Total:</span>
+                          <span className="text-gray-300 font-medium">{formatAmount(settlement.userAmount)} {settlement.paymentTokenSymbol}</span>
+                        </div>
+                        <div className="flex justify-between gap-4 border-b border-white/5 pb-1">
+                          <span className="text-gray-500">Platform:</span>
+                          <span className="text-gray-300 font-medium">{formatAmount(settlement.platformAmount)} {settlement.paymentTokenSymbol}</span>
+                        </div>
+                        <div className="flex justify-between gap-4 pt-0.5">
+                          <span className="text-gray-400 font-semibold">Total:</span>
+                          <span className="text-success-500 font-bold">{formatAmount(settlement.totalAmount)} {settlement.paymentTokenSymbol}</span>
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-3 py-3">
-                      <div className="flex min-w-[180px] flex-col gap-1 text-xs text-gray-500 dark:text-gray-400">
-                        <span>{t("totalUserAmount")}: {formatAmount(settlement.userAmount)} {settlement.paymentTokenSymbol}</span>
-                        <span>{t("totalPlatformAmount")}: {formatAmount(settlement.platformAmount)} {settlement.paymentTokenSymbol}</span>
-                        <span className="font-medium text-gray-700 dark:text-gray-300">{t("totalAmount")}: {formatAmount(settlement.totalAmount)} {settlement.paymentTokenSymbol}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3">
-                      <div className="flex min-w-[140px] flex-col">
-                        <span className="text-sm font-medium text-gray-800 dark:text-white">
-                          {settlement.paymentTokenSymbol}
-                        </span>
-                        <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
-                          {truncateAddress(settlement.paymentTokenAddress)}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {settlement.chainId}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-3 py-3">
+
+                    {/* Distribution Preview */}
+                    <TableCell className="px-3 py-4 min-w-[14rem]">
                       <DistributionCell
                         recipients={settlement.userDistributions.map((distribution) => ({
                           recipient: distribution.recipient,
@@ -295,44 +300,39 @@ export default function Settlements() {
                         symbol={settlement.paymentTokenSymbol}
                       />
                     </TableCell>
-                    <TableCell className="px-3 py-3">
-                      <div className="flex min-w-[180px] flex-col gap-2">
+
+                    {/* Tx & Timeline */}
+                    <TableCell className="px-3 py-4 min-w-[14rem]">
+                      <div className="flex flex-col gap-2 text-left">
                         {settlement.txHash ? (
                           <TxLink hash={settlement.txHash} chainId={settlement.chainId} />
                         ) : (
-                          <span className="text-xs text-gray-400">{t("settlementPending")}</span>
+                          <Badge variant="light" color="light" size="sm" className="w-fit">Pending</Badge>
                         )}
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {settlement.submittedAt
-                            ? `${t("submittedAt")}: ${dayjs(settlement.submittedAt).format("MMM D, YYYY HH:mm")}`
-                            : `${t("submittedAt")}: -`}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {settlement.completedAt
-                            ? `${t("completedAt")}: ${dayjs(settlement.completedAt).format("MMM D, YYYY HH:mm")}`
-                            : settlement.failedAt
-                              ? `${t("failedAt")}: ${dayjs(settlement.failedAt).format("MMM D, YYYY HH:mm")}`
-                              : `${t("lastCheckedAt")}: ${settlement.lastCheckedAt ? dayjs(settlement.lastCheckedAt).format("MMM D, YYYY HH:mm") : "-"}`}
-                        </span>
+                        <div className="flex flex-col text-[10px] text-gray-500">
+                          <span>Created: {dayjs(settlement.createdAt).format("DD MMM, HH:mm")}</span>
+                          {settlement.completedAt && (
+                            <span className="text-success-500/80">Done: {dayjs(settlement.completedAt).format("DD MMM, HH:mm")}</span>
+                          )}
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap py-3 pl-3 pr-6 text-xs text-gray-500 dark:text-gray-400">
-                      {dayjs(settlement.createdAt).format("MMM D, YYYY HH:mm")}
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap px-3 py-3 pr-6">
+
+                    {/* Actions */}
+                    <TableCell className="px-3 py-4 pr-6 min-w-[8rem] text-right">
                       <Button
-                        variant="destructive"
+                        variant="ghost"
                         size="sm"
-                        type="button"
                         onClick={() => void handleDeleteSettlement(settlement.id)}
                         disabled={!canDelete || deletingSettlementId === settlement.id}
+                        className="text-red-400 hover:text-red-500 hover:bg-red-500/5 px-2"
                       >
-                        {deletingSettlementId === settlement.id ? <Loading size="sm" /> : t("deleteSettlement")}
+                        {deletingSettlementId === settlement.id ? <Loading size="sm" /> : "Delete"}
                       </Button>
                     </TableCell>
                   </TableRow>
-                  );
-                })}
+                );
+              })}
               </TableBody>
             </Table>
           )}

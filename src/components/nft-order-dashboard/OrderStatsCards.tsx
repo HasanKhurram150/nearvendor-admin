@@ -56,10 +56,10 @@ export function OrderStatsCards({ stats }: { stats: INftOrderStats | undefined }
       {cards.map((card) => (
         <div
           key={card.label}
-          className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 md:p-5"
+          className="dashboard-card p-5 md:p-6 flex flex-col justify-center"
         >
-          <span className="text-sm text-gray-400">{card.label}</span>
-          <h4 className="mt-2 font-bold text-white text-2xl">
+          <span className="text-[14px] font-medium text-gray-400 tracking-wide">{card.label}</span>
+          <h4 className="mt-3 font-bold text-white text-[24px]">
             {card.value}
           </h4>
         </div>

@@ -10,6 +10,9 @@ import { PencilIcon } from "@/icons";
 import { useUpdateRewardConfigStatusMutation } from "@/services/rewards-api";
 import toast from "react-hot-toast";
 import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import Input from "../form/input/InputField";
+import Select from "../form/Select";
+import Button from "../ui/button/Button";
 
 function bpsToPercent(bps: number): string {
   return (bps / 100).toFixed(2).replace(/\.00$/, "") + "%";
@@ -26,9 +29,9 @@ interface StatCardProps {
 
 function StatCard({ label, value }: StatCardProps) {
   return (
-    <div className="flex flex-col gap-1 rounded-xl bg-white/[0.04] p-4 border border-white/[0.08]">
-      <span className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
-      <span className="text-lg font-semibold text-gray-800 dark:text-white">{value}</span>
+    <div className="flex flex-col gap-1 rounded-xl bg-white/[0.02] p-4 border border-[#1D1C1C]">
+      <span className="text-xs text-gray-500">{label}</span>
+      <span className="text-lg font-semibold text-white">{value}</span>
     </div>
   );
 }
@@ -47,26 +50,26 @@ function LevelsTable({ levels }: LevelsTableProps) {
   return (
     <div className="overflow-x-auto mt-4">
       <table className="w-full text-sm text-left">
-        <thead>
-          <tr className="border-b border-white/[0.08] text-gray-500 dark:text-gray-400">
-            <th className="py-2 pr-6 font-medium">{t("level")}</th>
-            <th className="py-2 font-medium">{t("percentageBps")} (bps)</th>
-            <th className="py-2 pl-6 font-medium">{t("percentage")}</th>
+        <thead className="bg-white/[0.02] border-b border-[#1D1C1C]">
+          <tr className="text-gray-500">
+            <th className="py-2.5 px-4 font-medium">{t("level")}</th>
+            <th className="py-2.5 px-4 font-medium">{t("percentageBps")} (bps)</th>
+            <th className="py-2.5 px-4 font-medium">{t("percentage")}</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-[#1D1C1C]">
           {levels.map((lvl) => (
             <tr
               key={lvl.id}
-              className="border-b border-white/[0.04] last:border-0 text-gray-700 dark:text-gray-200"
+              className="text-gray-300"
             >
-              <td className="py-2 pr-6 font-medium">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#50FF56]/10 text-[#50FF56] text-xs font-bold">
+              <td className="py-2.5 px-4 font-medium">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#32AA00]/10 text-[#32AA00] text-xs font-bold">
                   {lvl.level}
                 </span>
               </td>
-              <td className="py-2">{lvl.percentageBps.toLocaleString()}</td>
-              <td className="py-2 pl-6 font-semibold text-[#50FF56]">
+              <td className="py-2.5 px-4">{lvl.percentageBps.toLocaleString()}</td>
+              <td className="py-2.5 px-4 font-semibold text-[#32AA00]">
                 {bpsToPercent(lvl.percentageBps)}
               </td>
             </tr>
@@ -99,13 +102,13 @@ function RewardConfigCard({ config, onEdit }: RewardConfigCardProps) {
   };
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-white/[0.06] p-6">
+    <div className="dashboard-card p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h3 className="text-base font-semibold text-gray-800 dark:text-white">
+          <h3 className="text-base font-semibold text-white">
             {formatRewardType(config.rewardType)}
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-mono">
+          <p className="text-xs text-gray-500 mt-0.5 font-mono">
             {config.rewardType}
           </p>
         </div>
@@ -118,7 +121,7 @@ function RewardConfigCard({ config, onEdit }: RewardConfigCardProps) {
           >
             <span
               className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                config.isActive ? "bg-[#50FF56]" : "bg-gray-600"
+                config.isActive ? "bg-[#32AA00]" : "bg-gray-600"
               }`}
             >
               <span
@@ -128,7 +131,7 @@ function RewardConfigCard({ config, onEdit }: RewardConfigCardProps) {
               />
             </span>
             <span className={`text-xs font-medium ${
-              config.isActive ? "text-[#50FF56]" : "text-gray-400"
+              config.isActive ? "text-[#32AA00]" : "text-gray-400"
             }`}>
               {config.isActive ? t("active") : t("inactive")}
             </span>
@@ -136,7 +139,7 @@ function RewardConfigCard({ config, onEdit }: RewardConfigCardProps) {
           <button
             onClick={() => onEdit(config)}
             title={t("editRewardConfig")}
-            className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.1] text-gray-400 hover:text-white hover:border-white/[0.3] transition-colors"
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-[#1D1C1C] text-gray-400 hover:text-white hover:border-white/[0.3] transition-colors bg-white/[0.02]"
           >
             <PencilIcon />
           </button>
@@ -163,7 +166,7 @@ function RewardConfigCard({ config, onEdit }: RewardConfigCardProps) {
       </div>
 
       <div>
-        <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+        <h4 className="text-sm font-semibold text-gray-300 mb-1">
           {t("rewardLevels")}
         </h4>
         <LevelsTable levels={config.levels} />
@@ -194,40 +197,40 @@ export default function RewardsConfig() {
       {/* Filters + Create button */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div className="flex flex-wrap gap-3">
-          <input
-            type="text"
+          <Input
             value={rewardType}
             onChange={(e) => setRewardType(e.target.value)}
             placeholder={t("filterByRewardType")}
-            className="h-10 rounded-xl border border-white/[0.1] bg-white dark:bg-white/[0.04] px-4 text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#50FF56] w-56"
+            className="w-56"
           />
-          <select
-            value={isActive}
-            onChange={(e) => setIsActive(e.target.value as "" | "true" | "false")}
-            className="h-10 rounded-xl border border-white/[0.1] bg-white dark:bg-white/[0.04] px-4 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-[#50FF56] cursor-pointer"
-          >
-            <option value="">{t("allStatuses")}</option>
-            <option value="true">{t("active")}</option>
-            <option value="false">{t("inactive")}</option>
-          </select>
+          <Select
+            options={[
+              { value: "", label: t("allStatuses") },
+              { value: "true", label: t("active") },
+              { value: "false", label: t("inactive") },
+            ]}
+            defaultValue={isActive}
+            onChange={(val) => setIsActive(val as "" | "true" | "false")}
+            className="w-[180px]"
+          />
         </div>
-        <button
+        <Button
           onClick={() => setIsCreateModalOpen(true)}
-          className="h-10 px-5 rounded-xl bg-[#50FF56] text-sm font-semibold text-gray-900 hover:bg-[#3edb44] transition-colors"
+          variant="success"
         >
           + {t("createRewardConfig")}
-        </button>
+        </Button>
       </div>
       {isLoading ? (
         <div className="flex justify-center py-16">
-          <Loading size="lg" className="border-[#50FF56]" />
+          <Loading size="lg" className="border-[#32AA00]" />
         </div>
       ) : isError ? (
         <div className="rounded-2xl bg-white dark:bg-white/[0.03] p-8 text-center text-gray-400">
           {t("failedToLoad")}
         </div>
       ) : !configs?.length ? (
-        <div className="rounded-2xl bg-white dark:bg-white/[0.03] p-8 text-center text-gray-400">
+        <div className="dashboard-card p-8 text-center text-gray-400">
           {t("noRewardConfigsFound")}
         </div>
       ) : (

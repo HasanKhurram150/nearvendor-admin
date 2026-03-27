@@ -26,7 +26,7 @@ export function TopSellingNfts({ nfts }: { nfts: ITopSellingNft[] | undefined })
   const { t } = useLanguage();
 
   return (
-    <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-5 md:p-6">
+    <div className="dashboard-card p-5 md:p-6">
       <h3 className="text-lg font-semibold text-white mb-5">{t("topSellingNfts")}</h3>
 
       {!nfts || nfts.length === 0 ? (
@@ -34,9 +34,9 @@ export function TopSellingNfts({ nfts }: { nfts: ITopSellingNft[] | undefined })
       ) : (
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full min-w-[700px]">
-            <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="pb-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <thead className="bg-white/[0.02] border-b border-[#1D1C1C]">
+              <tr>
+                <th className="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t("nftName")}
                 </th>
                 <th className="pb-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -54,22 +54,22 @@ export function TopSellingNfts({ nfts }: { nfts: ITopSellingNft[] | undefined })
                 <th className="pb-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t("uniqueBuyers")}
                 </th>
-                <th className="pb-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="py-3 px-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t("lastSold")}
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-[#1D1C1C]">
               {nfts.map((nft) => (
                 <tr
                   key={nft.nftId}
-                  className="border-b border-white/[0.04] last:border-0"
+                  className=""
                 >
                   <td className="py-3.5 text-white font-medium">{nft.nftName}</td>
                   <td className="py-3.5 text-gray-400">#{nft.nftTokenId}</td>
                   <td className="py-3.5 text-right text-gray-300">{nft.completedOrders}</td>
                   <td className="py-3.5 text-right text-gray-300">{nft.quantitySold}</td>
-                  <td className="py-3.5 text-right text-[#50FF56] font-medium">
+                  <td className="py-3.5 text-right text-[#32AA00] font-medium">
                     {formatAmount(nft.totalAmountSold)}
                   </td>
                   <td className="py-3.5 text-right text-gray-300">{nft.uniqueBuyers}</td>

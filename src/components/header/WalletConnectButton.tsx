@@ -41,15 +41,14 @@ export default function WalletConnectButton() {
       : shortenAddress(account);
 
   return (
-    <Button
-      variant={account && isCorrectNetwork ? "outline" : "primary"}
+    <button
       onClick={() => {
         void handleClick();
       }}
       disabled={isConnecting}
-      className="min-w-[148px]"
+      className="bg-[#32AA00] hover:bg-[#32AA00]/90 text-white font-bold py-3 px-6 rounded-[18px] transition-all min-w-[160px] shadow-[0_4px_20px_rgba(50,170,0,0.3)] active:scale-95"
     >
       {label}
-    </Button>
+    </button>
   );
 }

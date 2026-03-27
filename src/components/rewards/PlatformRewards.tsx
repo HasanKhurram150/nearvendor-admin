@@ -12,9 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Badge from "@/components/ui/badge/Badge";
 import { useGetPlatformRewardsQuery } from "@/services/rewards-api";
 import { useDebounce } from "@/hooks/useDebounce";
 import Input from "@/components/form/input/InputField";
+import Select from "@/components/form/Select";
 import Button from "@/components/ui/button/Button";
 import { TxLink, formatAmount, formatRewardType, truncateAddress } from "./rewards-table-utils";
 
@@ -22,18 +24,12 @@ const DEFAULT_PAGE_SIZE = 10;
 const DEBOUNCE_DELAY = 400;
 
 const TABLE_HEADERS = [
-  "NFT",
-  "Reward Type",
-  "Reward Amount",
-  "Source Amount",
-  "Platform Pool",
-  "Referral Pool",
-  "Reward Pool",
-  "Token",
-  "Chain",
-  "Tx Hash",
-  "Rewarded At",
-  "Undistributed Referral",
+  "NFT & Type",
+  "Reward Details",
+  "Pools Breakdown",
+  "Network",
+  "Tx & Time",
+  "Referral Info",
 ];
 
 export default function PlatformRewards() {
@@ -73,19 +69,19 @@ export default function PlatformRewards() {
 
       {/* Summary cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Total Records</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.totalItems ?? 0}
           </p>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Page</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.currentPage ?? 1} / {meta?.totalPages ?? 1}
           </p>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dashboard-card p-5">
           <p className="text-sm text-gray-500 dark:text-gray-400">Items Per Page</p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.itemsPerPage ?? DEFAULT_PAGE_SIZE}
@@ -94,20 +90,21 @@ export default function PlatformRewards() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="flex flex-wrap items-center gap-4 dashboard-card p-5">
         <Input
           placeholder="Filter by reward type (e.g. nft_purchase)"
           value={rewardType}
           onChange={(e) => setRewardType(e.target.value)}
         />
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value as "asc" | "desc")}
-          className="h-11 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-white/[0.04] px-4 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-[#50FF56] cursor-pointer"
-        >
-          <option value="desc">Newest First</option>
-          <option value="asc">Oldest First</option>
-        </select>
+        <Select
+          options={[
+            { value: "desc", label: "Newest First" },
+            { value: "asc", label: "Oldest First" },
+          ]}
+          defaultValue={sort}
+          onChange={(value) => setSort(value as "asc" | "desc")}
+          className="w-[180px]"
+        />
         <Button
           variant="outline"
           onClick={() => {
@@ -127,11 +124,11 @@ export default function PlatformRewards() {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white pb-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="overflow-hidden dashboard-card pb-6">
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <div className="flex justify-center py-16">
-              <Loading size="lg" className="border-[#50FF56]" />
+              <Loading size="lg" className="border-[#32AA00]" />
             </div>
           ) : rewards.length === 0 ? (
             <div className="py-16 text-center text-gray-400">
@@ -139,7 +136,7 @@ export default function PlatformRewards() {
             </div>
           ) : (
             <Table aria-label="Platform rewards table">
-              <TableHeader className="border-b border-gray-100 bg-[#FAFAFA] dark:border-gray-800 dark:bg-[#18181887]">
+              <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02]">
                 <TableRow>
                   {TABLE_HEADERS.map((header, i) => (
                     <TableCell
@@ -154,79 +151,93 @@ export default function PlatformRewards() {
                   ))}
                 </TableRow>
               </TableHeader>
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <TableBody className="divide-y divide-[#1D1C1C]">
                 {rewards.map((row) => (
                   <TableRow key={row.id}>
-                    {/* NFT */}
-                    <TableCell className="pl-6 pr-3 py-3 whitespace-nowrap">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-gray-800 dark:text-white">
-                          {row.nftName}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
-                          #{row.nftTokenId}
-                        </span>
+                    {/* NFT & Type */}
+                    <TableCell className="pl-6 pr-3 py-4 min-w-[14rem]">
+                      <div className="flex flex-col gap-1.5 text-left">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold text-white/90 truncate max-w-[10rem]">
+                            {row.nftName}
+                          </span>
+                          <span className="text-[10px] text-gray-500 font-mono">
+                            #{row.nftTokenId}
+                          </span>
+                        </div>
+                        <Badge variant="light" color="primary" size="sm" className="w-fit">
+                          {formatRewardType(row.rewardType)}
+                        </Badge>
                       </div>
                     </TableCell>
-                    {/* Reward Type */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap">
-                      <span className="inline-flex items-center rounded-full bg-[#50FF56]/10 px-2.5 py-0.5 text-xs font-medium text-[#50FF56]">
-                        {formatRewardType(row.rewardType)}
-                      </span>
+
+                    {/* Reward Details */}
+                    <TableCell className="px-3 py-4 min-w-[12rem]">
+                      <div className="flex flex-col gap-1 text-left">
+                        <div className="text-sm font-bold text-[#32AA00]">
+                          Rew: {formatAmount(row.rewardAmount)} {row.paymentTokenSymbol}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Src: {formatAmount(row.sourceAmount)} {row.paymentTokenSymbol}
+                        </div>
+                      </div>
                     </TableCell>
-                    {/* Reward Amount */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap">
-                      <span className="text-sm font-semibold text-[#50FF56]">
-                        {formatAmount(row.rewardAmount)} {row.paymentTokenSymbol}
-                      </span>
+
+                    {/* Pools Breakdown */}
+                    <TableCell className="px-3 py-4 min-w-[15rem]">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-left">
+                        <div className="flex justify-between gap-2 border-b border-white/5 pb-0.5">
+                          <span className="text-gray-500">Platform:</span>
+                          <span className="text-gray-300 font-medium">{formatAmount(row.platformPoolAmount)}</span>
+                        </div>
+                        <div className="flex justify-between gap-2 border-b border-white/5 pb-0.5">
+                          <span className="text-gray-500">Referral:</span>
+                          <span className="text-gray-300 font-medium">{formatAmount(row.referralPoolAmount)}</span>
+                        </div>
+                        <div className="flex justify-between gap-2">
+                          <span className="text-gray-500">Reward Pool:</span>
+                          <span className="text-gray-300 font-medium">{formatAmount(row.rewardPoolAmount)}</span>
+                        </div>
+                      </div>
                     </TableCell>
-                    {/* Source Amount */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                      {formatAmount(row.sourceAmount)} {row.paymentTokenSymbol}
-                    </TableCell>
-                    {/* Platform Pool */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                      {formatAmount(row.platformPoolAmount)} {row.paymentTokenSymbol}
-                    </TableCell>
-                    {/* Referral Pool */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                      {formatAmount(row.referralPoolAmount)} {row.paymentTokenSymbol}
-                    </TableCell>
-                    {/* Reward Pool */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                      {formatAmount(row.rewardPoolAmount)} {row.paymentTokenSymbol}
-                    </TableCell>
-                    {/* Token */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-gray-800 dark:text-white">
+
+                    {/* Network */}
+                    <TableCell className="px-3 py-4 min-w-[10rem]">
+                      <div className="flex flex-col gap-1 text-left">
+                        <div className="text-sm font-medium text-white/90">
                           {row.paymentTokenSymbol}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+                        </div>
+                        <div className="text-[10px] text-gray-500 font-mono">
                           {truncateAddress(row.paymentTokenAddress)}
-                        </span>
+                        </div>
+                        <div className="text-[10px] text-gray-400">
+                           Chain {row.chainId}
+                        </div>
                       </div>
                     </TableCell>
-                    {/* Chain */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                      {row.chainId}
+
+                    {/* Tx & Time */}
+                    <TableCell className="px-3 py-4 min-w-[12rem]">
+                      <div className="flex flex-col gap-1.5 text-left">
+                        {row.nftProcessedTx ? (
+                          <TxLink hash={row.nftProcessedTx} chainId={row.chainId} />
+                        ) : (
+                          <span className="text-gray-500">—</span>
+                        )}
+                        <div className="text-[10px] text-gray-500">
+                          {dayjs(row.rewardAt).format("DD MMM, HH:mm")}
+                        </div>
+                      </div>
                     </TableCell>
-                    {/* Tx Hash */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap">
-                      {row.nftProcessedTx ? (
-                        <TxLink hash={row.nftProcessedTx} chainId={row.chainId} />
-                      ) : (
-                        <span className="text-gray-400 text-xs">—</span>
-                      )}
-                    </TableCell>
-                    {/* Rewarded At */}
-                    <TableCell className="px-3 py-3 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
-                      {dayjs(row.rewardAt).format("MMM D, YYYY HH:mm")}
-                    </TableCell>
-                    {/* Undistributed Referral */}
-                    <TableCell className="pr-6 pl-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                      {formatAmount(row.metadata.undistributedReferralAmount)}{" "}
-                      {row.paymentTokenSymbol}
+
+                    {/* Referral Info */}
+                    <TableCell className="pr-6 pl-3 py-4 min-w-[10rem]">
+                      <div className="flex flex-col text-left">
+                        <span className="text-xs text-gray-500 opacity-70">Undistributed:</span>
+                        <span className="text-sm font-medium text-amber-500/80">
+                          {formatAmount(row.metadata.undistributedReferralAmount)} {row.paymentTokenSymbol}
+                        </span>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

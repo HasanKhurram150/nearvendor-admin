@@ -29,7 +29,7 @@ export function SalesBreakdown({
   const { t } = useLanguage();
 
   return (
-    <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-5 md:p-6 h-full">
+    <div className="dashboard-card p-5 md:p-6 h-full">
       <h3 className="text-lg font-semibold text-white mb-5">{title}</h3>
 
       {!data || data.length === 0 ? (
@@ -39,7 +39,7 @@ export function SalesBreakdown({
           {data.map((item) => (
             <div
               key={item.key}
-              className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.04]"
+              className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-[#1D1C1C]"
             >
               <div>
                 <span className="text-white font-medium">{item.label}</span>
@@ -52,7 +52,7 @@ export function SalesBreakdown({
                   </span>
                 </div>
               </div>
-              <span className="text-[#50FF56] font-semibold">
+              <span className="text-[#32AA00] font-semibold">
                 {formatAmount(item.totalAmountSold)}
               </span>
             </div>

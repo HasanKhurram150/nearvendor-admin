@@ -135,7 +135,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
   };
 
   if (isEventLoading) {
-    return <Loading size="lg" className="border-[#50FF56]" />;
+    return <Loading size="lg" className="border-[#32AA00]" />;
   }
 
   if (isError) {
@@ -273,7 +273,7 @@ export const EditEventModal = ({ onClose, eventId }: EditEventModalProps) => {
             />
             <GenericButton
               btnText={isUpdateLoading ? "" : t("update")}
-              bgColor="#50FF56"
+              bgColor="#32AA00"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"

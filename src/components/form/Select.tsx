@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ChevronDownIcon } from "@/icons";
 
 interface Option {
   value: string;
@@ -11,6 +12,7 @@ interface SelectProps {
   onChange: (value: string) => void;
   className?: string;
   defaultValue?: string;
+  size?: "sm" | "md";
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -19,6 +21,7 @@ const Select: React.FC<SelectProps> = ({
   onChange,
   className = "",
   defaultValue = "",
+  size = "md",
 }) => {
   // Manage the selected value
   const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
@@ -29,35 +32,38 @@ const Select: React.FC<SelectProps> = ({
     onChange(value); // Trigger parent handler
   };
 
+  const sizeClasses = size === "sm" ? "h-9 text-xs" : "h-[46px] text-sm";
+
   return (
-    <select
-      className={`h-11 w-full appearance-none rounded-lg border border-gray-300  px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${
-        selectedValue
-          ? "text-gray-800 dark:text-white/90"
-          : "text-gray-400 dark:text-gray-400"
-      } ${className}`}
-      value={selectedValue}
-      onChange={handleChange}
-    >
-      {/* Placeholder option */}
-      <option
-        value=""
-        disabled
-        className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
+    <div className={`relative ${className}`}>
+      <select
+        className={`${sizeClasses} w-full appearance-none rounded-[14px] border border-white/10 bg-[#0C0C11]/50 pl-4 pr-10 text-white transition-all duration-300 focus:border-brand-500/50 focus:outline-hidden focus:ring-4 focus:ring-brand-500/10 cursor-pointer`}
+        value={selectedValue}
+        onChange={handleChange}
       >
-        {placeholder}
-      </option>
-      {/* Map over options */}
-      {options.map((option) => (
+        {/* Placeholder option */}
         <option
-          key={option.value}
-          value={option.value}
-          className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
+          value=""
+          disabled
+          className="text-gray-700 dark:bg-[#0C0C11] dark:text-gray-400"
         >
-          {option.label}
+          {placeholder}
         </option>
-      ))}
-    </select>
+        {/* Map over options */}
+        {options.map((option) => (
+          <option
+            key={option.value}
+            value={option.value}
+            className="text-gray-700 dark:bg-[#0C0C11] dark:text-white"
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+        <ChevronDownIcon className={size === "sm" ? "h-4 w-4 text-white/50" : "h-5 w-5 text-white/50"} />
+      </div>
+    </div>
   );
 };
 

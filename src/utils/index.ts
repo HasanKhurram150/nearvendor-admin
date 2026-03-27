@@ -7,3 +7,4 @@ export * from "./getDayOfWeek";
 export * from "./getDateMonth";
 export * from "./isToday";
 export * from "./format-number"
+export * from "./cn";

@@ -1,15 +1,15 @@
 import React, { ReactNode } from "react";
 
 interface ButtonProps {
-  children: ReactNode; // Button text or content
-  size?: "sm" | "md"; // Button size
-  variant?: "primary" | "outline" | "success" | "destructive"; // Button variant
-  startIcon?: ReactNode; // Icon before the text
-  endIcon?: ReactNode; // Icon after the text
-  onClick?: () => void; // Click handler
-  disabled?: boolean; // Disabled state
-  className?: string; // Disabled state
-  type?: "button" | "submit" | "reset"; // Button type for forms
+  children: ReactNode;
+  size?: "sm" | "md";
+  variant?: "primary" | "outline" | "success" | "destructive" | "ghost";
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  className?: string;
+  type?: "button" | "submit" | "reset";
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -25,35 +25,37 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   // Size Classes
   const sizeClasses = {
-    sm: "px-4 py-3 text-sm",
-    md: "px-5 py-3.5 text-sm",
+    sm: "px-3 py-2 text-xs rounded-[10px] h-9",
+    md: "px-5 py-3 text-sm rounded-[14px] h-[46px]",
   };
 
   // Variant Classes
   const variantClasses = {
     primary:
-      "bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300",
+      "bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-500/50",
     outline:
-      "bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300",
+      "bg-white/[0.05] text-gray-700 border border-gray-300 hover:bg-gray-100 dark:text-gray-300 dark:border-white/10 dark:bg-[#1C1C24] dark:hover:bg-[#252532] dark:hover:text-white",
     success:
-      "bg-green-500 text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
+      "bg-[#32AA00] text-gray-900 shadow-theme-xs hover:bg-[#3edb44] disabled:bg-[#32AA00]/50",
     destructive:
-      "bg-red-500 text-white shadow-theme-xs hover:bg-red-600 disabled:bg-red-300",
+      "bg-red-500 text-white shadow-theme-xs hover:bg-red-600 disabled:bg-red-500/50",
+    ghost:
+      "bg-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.05] dark:hover:text-white",
   };
 
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center font-medium gap-2 rounded-lg transition ${className} ${
+      className={`inline-flex items-center gap-2 font-semibold transition-all duration-300 active:scale-[0.98] ${
         sizeClasses[size]
       } ${variantClasses[variant]} ${
-        disabled ? "cursor-not-allowed opacity-50" : ""
-      }`}
+        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+      } ${className}`}
       onClick={onClick}
       disabled={disabled}
     >
       {startIcon && <span className="flex items-center">{startIcon}</span>}
-      {children}
+      <span className="truncate">{children}</span>
       {endIcon && <span className="flex items-center">{endIcon}</span>}
     </button>
   );

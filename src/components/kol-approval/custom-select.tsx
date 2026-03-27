@@ -258,16 +258,10 @@
 
 // export default CustomSelect;
 
-import React, { useState } from "react";
-import { BlueIcon, GoldenIcon, SilverIcon } from "@/icons";
-import { IKolBadge } from "@/services/kols-api/kols-api.types"; // ensure correct path
+import React from "react";
+import { IKolBadge } from "@/services/kols-api/kols-api.types";
 import { useLanguage } from "../common/LanguageContext";
-
-type Option = {
-  label: string;
-  value: IKolBadge;
-  icon: any;
-};
+import Select from "../form/Select";
 
 type CustomSelectProps = {
   onSelect: (value: IKolBadge) => void;
@@ -276,47 +270,22 @@ type CustomSelectProps = {
 
 const CustomSelect: React.FC<CustomSelectProps> = ({ onSelect, disabled }) => {
   const { t } = useLanguage();
-  const options: Option[] = [
-    {
-      label: t("golden"),
-      value: "golden",
-      icon: <GoldenIcon />,
-    },
-    {
-      label: t("blue"),
-      value: "blue",
-      icon: <BlueIcon />,
-    },
-    {
-      label: t("silver"),
-      value: "silver",
-      icon: <SilverIcon />,
-    },
-  ];
-  const [selected, setSelected] = useState<Option>(options[0]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOption = options.find((opt) => opt.value === e.target.value);
-    if (selectedOption) {
-      setSelected(selectedOption);
-      onSelect(selectedOption.value);
-    }
-  };
+  const options = [
+    { label: t("golden"), value: "golden" },
+    { label: t("blue"), value: "blue" },
+    { label: t("silver"), value: "silver" },
+  ];
 
   return (
-    <div className="w-full space-y-2">
-      <select
-        className="w-full p-2 border rounded-md text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        value={selected.value}
-        onChange={handleChange}
-        disabled={disabled}
-      >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+    <div className="w-full">
+      <Select
+        options={options}
+        placeholder={t("badges")}
+        onChange={(val) => onSelect(val as IKolBadge)}
+        size="sm"
+        className="w-full"
+      />
     </div>
   );
 };

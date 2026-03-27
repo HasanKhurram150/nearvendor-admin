@@ -74,18 +74,18 @@ const CalendarsManagement: React.FC = () => {
           {/* <GenericButton
           icon={<PlusIcon />}
           btnText="Add Calendar"
-          bgColor="#50FF56"
+          bgColor="#32AA00"
           color="#fff"
           height="2.5rem"
           width="8.063rem"
           handleClick={handleOpenAddCalendarModal}
         /> */}
         </div>
-        <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full border dark:border-gray-800 pb-[1.5rem]">
+        <div className="grid overflow-hidden dashboard-card min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
           <div className="overflow-x-auto">
             <Table aria-label="Calendars management table" className="w-full">
               {/* Table Header */}
-              <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+              <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02] px-[1rem]">
                 <TableRow>
                   {columns.map((col) => (
                     <TableCell
@@ -101,12 +101,12 @@ const CalendarsManagement: React.FC = () => {
 
               {/* Table Body */}
 
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <TableBody className="divide-y divide-[#1D1C1C]">
                 {isLoading ? (
                   <TableRow>
                     <TableCell className="text-center py-8">
                       <div className="flex justify-center">
-                        <Loading size="lg" className="border-[#50FF56]" />
+                        <Loading size="lg" className="border-[#32AA00]" />
                       </div>
                     </TableCell>
                   </TableRow>

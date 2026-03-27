@@ -33,11 +33,11 @@ const PlacementList: React.FC = () => {
         counterValue={placements?.length}
       />
       {/* <div className="overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] border dark:border-gray-800 pb-[1.5rem]"> */}
-      <div className="grid overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] min-h-[calc(100vh-200px)] w-full border dark:border-gray-800 pb-[1.5rem]">
+      <div className="grid overflow-hidden dashboard-card min-h-[calc(100vh-200px)] w-full pb-[1.5rem]">
         <div className="max-w-full overflow-x-auto">
           <Table>
             {/* Table Header - Always visible */}
-            <TableHeader className="dark:bg-[#18181887] bg-[#FAFAFA] border-gray-100 dark:border-gray-800 border-b px-[1rem]">
+            <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02] px-[1rem]">
               <TableRow>
                 {columns.map((col) => (
                   <TableCell
@@ -52,7 +52,7 @@ const PlacementList: React.FC = () => {
             </TableHeader>
 
             {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <TableBody className="divide-y divide-[#1D1C1C]">
               {isLoading ? (
                 <TableRow>
                   <TableCell
@@ -60,7 +60,7 @@ const PlacementList: React.FC = () => {
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#50FF56]" />
+                      <Loading size="lg" className="border-[#32AA00]" />
                     </div>
                   </TableCell>
                 </TableRow>
