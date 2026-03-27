@@ -25,7 +25,7 @@ const DEFAULT_PAGE_SIZE = 10;
 const DEBOUNCE_DELAY = 400;
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 0,
+  maximumFractionDigits: 2,
 });
 
 export default function NftsListing() {
@@ -50,7 +50,13 @@ export default function NftsListing() {
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearchQuery, minUsdPrice, maxUsdPrice, debouncedOwnerWalletAddress, status]);
+  }, [
+    debouncedSearchQuery,
+    minUsdPrice,
+    maxUsdPrice,
+    debouncedOwnerWalletAddress,
+    status,
+  ]);
 
   const { data, isLoading, isFetching } = useGetNftsQuery({
     page,
@@ -77,7 +83,8 @@ export default function NftsListing() {
   const currentPage = meta?.currentPage ?? page;
   const totalItems = meta?.totalItems ?? 0;
   const itemsPerPage = meta?.itemsPerPage ?? DEFAULT_PAGE_SIZE;
-  const rangeStart = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const rangeStart =
+    totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
   const rangeEnd = totalItems === 0 ? 0 : rangeStart + nfts.length - 1;
 
   const clearFilters = () => {
@@ -104,13 +111,17 @@ export default function NftsListing() {
           </p>
         </div>
         <div className="dashboard-card p-5">
-          <p className="text-sm text-gray-500 dark:text-gray-400">Current Page</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Current Page
+          </p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.currentPage ?? 1}
           </p>
         </div>
         <div className="dashboard-card p-5">
-          <p className="text-sm text-gray-500 dark:text-gray-400">Items Per Page</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Items Per Page
+          </p>
           <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             {meta?.itemsPerPage ?? DEFAULT_PAGE_SIZE}
           </p>
@@ -206,7 +217,10 @@ export default function NftsListing() {
                 </TableRow>
               ) : nfts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="py-10 text-center text-lg text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    colSpan={10}
+                    className="py-10 text-center text-lg text-gray-500 dark:text-gray-400"
+                  >
                     {debouncedSearchQuery ||
                     minUsdPrice ||
                     maxUsdPrice ||
@@ -236,9 +250,15 @@ export default function NftsListing() {
                           )}
                         </div>
                         <div className="flex flex-col gap-0.5 min-w-0 text-left">
-                          <p className="font-semibold text-white/90 truncate">{nft.name}</p>
-                          <p className="text-xs text-brand-400 font-medium">#{nft.tokenId}</p>
-                          <p className="text-[10px] text-gray-500 truncate font-mono">{nft.id}</p>
+                          <p className="font-semibold text-white/90 truncate">
+                            {nft.name}
+                          </p>
+                          <p className="text-xs text-brand-400 font-medium">
+                            #{nft.tokenId}
+                          </p>
+                          <p className="text-[10px] text-gray-500 truncate font-mono">
+                            {nft.id}
+                          </p>
                         </div>
                       </div>
                     </TableCell>
@@ -250,9 +270,8 @@ export default function NftsListing() {
                           ${currencyFormatter.format(nft.usdPrice)}
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge color="warning" size="sm" variant="light">{nft.badge}</Badge>
                           <span className="text-xs text-gray-400">
-                            Sup: {nft.maxSupply}
+                           Max Supply: {nft.maxSupply ?? "Unlimited"}
                           </span>
                         </div>
                       </div>
@@ -261,8 +280,14 @@ export default function NftsListing() {
                     {/* Status & Network */}
                     <TableCell className="px-3 py-4 min-w-[10rem]">
                       <div className="flex flex-col gap-1.5 text-left">
-                        <Badge 
-                          color={nft.status === "uploaded" ? "success" : nft.status === "failed" ? "error" : "light"}
+                        <Badge
+                          color={
+                            nft.status === "uploaded"
+                              ? "success"
+                              : nft.status === "failed"
+                                ? "error"
+                                : "light"
+                          }
                           size="sm"
                           variant="light"
                           className="w-fit"
@@ -271,7 +296,9 @@ export default function NftsListing() {
                         </Badge>
                         <div className="text-xs text-gray-500 flex items-center gap-1 text-left">
                           <span className="opacity-70">Chain:</span>
-                          <span className="font-medium text-gray-300">{nft.chainId}</span>
+                          <span className="font-medium text-gray-300">
+                            {nft.chainId}
+                          </span>
                         </div>
                         <div className="text-[10px] text-gray-500 text-left">
                           {dayjs(nft.createdAt).format("DD MMM, YYYY")}

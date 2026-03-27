@@ -17,7 +17,7 @@ import {
 } from "@/services/nft-api";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 0,
+  maximumFractionDigits: 2,
 });
 
 export default function NftDetailModal({
@@ -179,13 +179,13 @@ export default function NftDetailModal({
             Unable to load NFT detail.
           </div>
         ) : isEditing ? (
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="grid gap-6 ">
             <div className="space-y-4 rounded-2xl border border-white/10 bg-black/20 p-5">
               <div className="grid gap-4 md:grid-cols-2">
-                <div>
+                {/* <div>
                   <Label className="text-white">Token ID</Label>
                   <Input value={formState.tokenId} onChange={(event) => updateField("tokenId", event.target.value)} />
-                </div>
+                </div> */}
                 <div>
                   <Label className="text-white">Name</Label>
                   <Input value={formState.name} onChange={(event) => updateField("name", event.target.value)} />
@@ -202,19 +202,27 @@ export default function NftDetailModal({
                   <Label className="text-white">Quantity</Label>
                   <Input type="number" value={formState.quantity} onChange={(event) => updateField("quantity", event.target.value)} />
                 </div>
-                <div>
+                {/* <div>
                   <Label className="text-white">Status</Label>
                   <Input value={formState.status} onChange={(event) => updateField("status", event.target.value)} />
-                </div>
+                </div> */}
               </div>
 
               <div>
                 <Label className="text-white">Description</Label>
                 <TextArea value={formState.description} onChange={(value) => updateField("description", value)} rows={4} />
               </div>
+                <div className="flex flex-wrap gap-3">
+                <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isUpdating}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSave} disabled={isUpdating}>
+                  {isUpdating ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
             </div>
 
-            <div className="space-y-4 rounded-2xl border border-white/10 bg-black/20 p-5">
+            {/* <div className="space-y-4 rounded-2xl border border-white/10 bg-black/20 p-5">
               <div className="grid gap-4">
                 <div>
                   <Label className="text-white">Owner Wallet Address</Label>
@@ -254,15 +262,8 @@ export default function NftDetailModal({
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-3">
-                <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isUpdating}>
-                  Cancel
-                </Button>
-                <Button onClick={handleSave} disabled={isUpdating}>
-                  {isUpdating ? "Saving..." : "Save Changes"}
-                </Button>
-              </div>
-            </div>
+            
+            </div> */}
           </div>
         ) : (
           <div className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
@@ -281,7 +282,7 @@ export default function NftDetailModal({
                 )}
               </div>
 
-              <div className="grid gap-3">
+              {/* <div className="grid gap-3">
                 {[
                   { label: "Image URI", value: nft.imageUri },
                   { label: "Metadata URI", value: nft.metadataUri },
@@ -298,7 +299,7 @@ export default function NftDetailModal({
                     <p className="mt-2 break-all text-sm text-white/90">{item.value}</p>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </div>
 
             <div className="space-y-6">
@@ -309,7 +310,7 @@ export default function NftDetailModal({
                   { label: "Badge", value: nft.badge },
                   { label: "Max Supply", value: nft.maxSupply },
                   { label: "Chain ID", value: nft.chainId },
-                  { label: "Block Number", value: nft.blockNumber ?? "Pending" },
+               
                   {
                     label: "Created At",
                     value: dayjs(nft.createdAt).format("DD MMM YYYY, HH:mm"),

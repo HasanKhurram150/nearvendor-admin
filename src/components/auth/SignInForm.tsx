@@ -75,13 +75,15 @@ const SignInForm = () => {
           }),
         );
 
-        router.push("/mint-nft");
+        router.push("/");
         toast.success("Login successful!");
       } catch (error) {
         const apiError = error as ApiErrorResponse;
         const errorMessage =
           apiError?.data?.message ||
-          (error instanceof Error ? error.message : "Login failed. Please try again.");
+          (error instanceof Error
+            ? error.message
+            : "Login failed. Please try again.");
         toast.error(errorMessage);
       }
     },
@@ -104,7 +106,7 @@ const SignInForm = () => {
       <div className="w-full relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0C0C11]/80 p-10 backdrop-blur-xl shadow-2xl xl:p-14 group transition-all duration-500 hover:border-white/20">
         {/* Subtle glow effect */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-brand-500/5 blur-[80px] rounded-full pointer-events-none" />
-        
+
         <div className="relative z-10">
           <div className="mb-10 text-center">
             <h1 className="mb-3 text-3xl font-bold tracking-tight text-white lg:text-4xl">
@@ -168,7 +170,7 @@ const SignInForm = () => {
               >
                 {isLoading ? <Loading /> : "Sign in"}
               </Button>
-              
+
               <div className="text-center">
                 <Link
                   href="/reset-password"

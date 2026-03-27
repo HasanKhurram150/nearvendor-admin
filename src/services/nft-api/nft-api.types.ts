@@ -28,7 +28,7 @@ export interface INftItem {
   name: string;
   usdPrice: number;
   badge: string;
-  maxSupply: number;
+  maxSupply: number|null;
   imageUri: string;
   metadataUri: string;
   imageGatewayUrl: string;
