@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import Loading from "@/components/atoms/loading/loading";
+import Button from "@/components/ui/button/Button";
 import { useVerify2FaMutation } from "@/services/auth-api";
 import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
 import { authActions, useDispatch } from "@/store";
@@ -134,41 +135,35 @@ export default function EnterAuthCodeForm() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center bg-[#08070d] w-full">
-      <div className="flex flex-col justify-center items-center mx-auto w-full max-w-[33.75rem]">
-        <>
-           <Image
-                          className="dark:hidden"
-                          src="/images/logo/logo.svg"
-                          alt="Logo"
-                          width={57}
-                          height={65}
-                        />
-                        <Image
-                          className="hidden dark:block"
-                          src="/images/logo/logo.svg"
-                          alt="Logo"
-                          width={57}
-                          height={65}
-                        />
-        </>
-        <div className="bg-transparent dark:bg-gray-900 mt-[3.125rem] p-[1.875rem] border border-[#46464666] rounded-[1.875rem] w-full">
-          <div className="mb-5 sm:mb-8 text-center">
-            <h1 className="mb-2 font-semibold text-[#fff] dark:text-white/90 text-lg sm:text-2xl">
-              Enter Authentication Code
+    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="mb-12">
+        <Image
+          src="/images/logo/main-logo.svg"
+          alt="Logo"
+          width={140}
+          height={160}
+          className="drop-shadow-[0_0_15px_rgba(50,170,0,0.3)]"
+          priority
+        />
+      </div>
+
+      <div className="w-full relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0C0C11]/80 p-10 backdrop-blur-xl shadow-2xl xl:p-14 group transition-all duration-500 hover:border-white/20">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-brand-500/5 blur-[80px] rounded-full pointer-events-none" />
+        
+        <div className="relative z-10">
+          <div className="mb-10 text-center">
+            <h1 className="mb-3 text-3xl font-bold tracking-tight text-white lg:text-4xl">
+              Two-Factor <span className="text-brand-500 italic uppercase">Auth</span>
             </h1>
-            <p className="mx-auto max-w-[20rem] text-gray-500 dark:text-gray-400 text-sm">
-              Authenticator app should be installed on your device to use 2FA.
+            <p className="mx-auto max-w-[280px] text-base font-medium text-white/40 leading-relaxed">
+              Enter the 6-digit code from your authenticator app to continue.
             </p>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="space-y-7 mt-[3rem]">
-              <p className="font-Arbutus text-[#32AA00] text-[1.25rem] text-center">
-                ENTER THE 6 DIGIT CODE
-              </p>
 
-              <div className="flex flex-col items-center gap-4">
-                <div className="flex gap-3 mb-[6rem]">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="space-y-10">
+              <div className="flex flex-col items-center gap-8">
+                <div className="flex gap-2 sm:gap-4">
                   {otp.map((digit, index) => (
                     <input
                       key={index}
@@ -182,28 +177,38 @@ export default function EnterAuthCodeForm() {
                       onChange={(e) => handleChange(e.target.value, index)}
                       onKeyDown={(e) => handleKeyDown(e, index)}
                       onPaste={handlePaste}
-                      // className="border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-[3.5rem] h-[3.75rem] text-xl text-center"
                       className={getInputClassName(index)}
                     />
                   ))}
                 </div>
                 {errors.code && (
-                  <p className="-mt-8 mb-4 text-error-500 text-sm text-center">
+                  <p className="text-error-500 text-sm font-medium">
                     {errors.code.message}
                   </p>
                 )}
-                {/* Button */}
-                <button
-                  disabled={isLoading}
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  className="relative w-full h-14 rounded-2xl bg-[#32AA00] text-white font-bold text-lg shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] hover:bg-[#32AA00]/90 active:scale-[0.98] transition-all overflow-hidden group/btn"
                   type="submit"
-                  // onClick={handleAccountCreated}
-                  className="rounded-2xl w-full h-[3.25rem] text-white text-base btn-bg"
+                  disabled={isLoading}
                 >
-                  {isLoading ? <Loading /> : "Confirm"}
-                </button>
+                  {isLoading ? <Loading /> : "Verify & Continue"}
+                </Button>
               </div>
             </div>
           </form>
+
+          <div className="mt-10 text-center">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="text-sm font-bold text-white/40 hover:text-white transition-colors"
+            >
+              Lost access? Contact support
+            </button>
+          </div>
         </div>
       </div>
     </div>

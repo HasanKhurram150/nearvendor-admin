@@ -22,121 +22,115 @@ const CreateNewPasswordForm = () => {
   };
 
   return (
-    <div className="bg-[#08070d] flex flex-col items-center justify-center w-full">
-      <div className="flex flex-col items-center justify-center w-full max-w-[33.75rem] mx-auto">
-        <>
-           <Image
-                          className="dark:hidden"
-                          src="/images/logo/logo.svg"
-                          alt="Logo"
-                          width={57}
-                          height={65}
-                        />
-                        <Image
-                          className="hidden dark:block"
-                          src="/images/logo/logo.svg"
-                          alt="Logo"
-                          width={57}
-                          height={65}
-                        />
-        </>
-        {!passwordSuccess ? 
-        <div className="w-full mt-[3.125rem] p-[1.875rem] bg-transparent dark:bg-gray-900 rounded-[1.875rem] border border-[#46464666]">
-          <div className="mb-5 text-center sm:mb-8">
-            <h1 className="mb-2 text-title-sm sm:text-title-md font-semibold text-[#201D1D] dark:text-white/90">
-            Create new Password
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-            Create your new password to continue.
-            </p>
-          </div>
+    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="mb-12">
+        <Image
+          src="/images/logo/main-logo.svg"
+          alt="Logo"
+          width={140}
+          height={160}
+          className="drop-shadow-[0_0_15px_rgba(50,170,0,0.3)]"
+          priority
+        />
+      </div>
 
-          <form>
-            <div className="space-y-6">
-            <div>
-                <Label>
-                 Create New Password <span className="text-error-500">*</span>
-                </Label>
-                <div className="relative">
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your new password"
-                  />
-                  <span
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute top-1/2 right-4 -translate-y-1/2 z-30 cursor-pointer"
-                  >
-                    {showPassword ? (
-                      <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                    ) : (
-                      <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                    )}
-                  </span>
-                </div>
+      <div className="w-full relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0C0C11]/80 p-10 backdrop-blur-xl shadow-2xl xl:p-14 group transition-all duration-500 hover:border-white/20">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-brand-500/5 blur-[80px] rounded-full pointer-events-none" />
+        
+        <div className="relative z-10">
+          {!passwordSuccess ? (
+            <>
+              <div className="mb-10 text-center">
+                <h1 className="mb-3 text-3xl font-bold tracking-tight text-white lg:text-4xl">
+                  New <span className="text-brand-500 italic uppercase">Password</span>
+                </h1>
+                <p className="text-base font-medium text-white/40">
+                  Secure your account by creating a new strong password.
+                </p>
               </div>
 
-              <div>
-                <Label>
-                Confirm New Password <span className="text-error-500">*</span>
-                </Label>
-                <div className="relative">
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Confirm your new password"
-                  />
-                  <span
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute top-1/2 right-4 -translate-y-1/2 z-30 cursor-pointer"
-                  >
-                    {showPassword ? (
-                      <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                    ) : (
-                      <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center justify-between">
-                <Button className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base" size="sm" onClick={handlePasswordSuccess}>
-                  Create New Password
-                </Button>
-              
-              </div>
-            </div>
-          </form>
-        </div> : 
-         <div className="w-full mt-[3.125rem] p-[1.875rem] bg-transparent dark:bg-gray-900 rounded-[1.875rem] border border-[#46464666]">
-          
-          <form>
-                    <div className="space-y-7">
-                      <Image
-                        src="/images/logo/check-mark.webp"
-                        alt="check-mark"
-                        width={95}
-                        height={95}
-                        className="block mx-auto mb-[1.5rem]"
+              <form onSubmit={(e) => { e.preventDefault(); handlePasswordSuccess(); }} className="space-y-6">
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-white/70 ml-1">
+                      New Password <span className="text-brand-500">*</span>
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter new password"
+                        className="h-14 rounded-2xl bg-[#08070D]/60 border-white/5 text-white placeholder:text-white/20 focus:border-brand-500/50 transition-all text-base pr-12 px-5"
                       />
-                      <div className="mb-5 sm:mb-8 text-center">
-                    <h1 className="mb-2 text-lg sm:text-2xl font-semibold text-[#201D1D] dark:text-white/90">
-                    Password Reset Successfully
-                    </h1>
-                    <p className="mx-auto max-w-[25rem] text-base text-gray-500 dark:text-gray-400">
-                    Your new password has been created successfully.
-                    You can now login again.
-                    </p>
-                  </div>
-                      {/* Button */}
-                      <div>
-                        <button className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base" onClick={handleGoLogin}>
-                        Go to Login
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute top-1/2 right-4 -translate-y-1/2 p-2 text-white/20 hover:text-white transition-colors"
+                      >
+                        {showPassword ? (
+                          <EyeIcon className="h-5 w-5 fill-current" />
+                        ) : (
+                          <EyeCloseIcon className="h-5 w-5 fill-current" />
+                        )}
+                      </button>
                     </div>
-                </form>
-                 
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-white/70 ml-1">
+                      Confirm Password <span className="text-brand-500">*</span>
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Confirm new password"
+                        className="h-14 rounded-2xl bg-[#08070D]/60 border-white/5 text-white placeholder:text-white/20 focus:border-brand-500/50 transition-all text-base pr-12 px-5"
+                      />
+                    </div>
+                  </div>
                 </div>
-        }
+
+                <div className="pt-2">
+                  <Button
+                    className="relative w-full h-14 rounded-2xl bg-[#32AA00] text-white font-bold text-lg shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] hover:bg-[#32AA00]/90 active:scale-[0.98] transition-all overflow-hidden group/btn"
+                    type="submit"
+                  >
+                    Update Password
+                  </Button>
+                </div>
+              </form>
+            </>
+          ) : (
+            <div className="text-center py-4">
+              <div className="mb-8 flex justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-brand-500/20 blur-2xl rounded-full" />
+                  <Image
+                    src="/images/logo/check-mark.webp"
+                    alt="Success"
+                    width={100}
+                    height={100}
+                    className="relative z-10"
+                  />
+                </div>
+              </div>
+              
+              <h2 className="mb-4 text-3xl font-bold tracking-tight text-white italic uppercase">
+                Success <span className="text-brand-500 not-italic">Updated</span>
+              </h2>
+              <p className="mb-10 text-base font-medium text-white/40 leading-relaxed">
+                Your password has been reset successfully. <br />
+                You can now use your new credentials to login.
+              </p>
+
+              <Button
+                className="w-full h-14 rounded-2xl bg-[#32AA00] text-white font-bold text-lg shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] transition-all"
+                onClick={handleGoLogin}
+              >
+                Return to Login
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
