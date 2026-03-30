@@ -92,7 +92,7 @@ function TxLink({ label, hash, chainId }: { label: string; hash: string; chainId
         className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
       >
         {copied ? (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-[#32AA00]" viewBox="0 0 20 20" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-[#FFFF00]" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
         ) : (
@@ -302,7 +302,7 @@ export default function NftOrdersListing() {
                 <TableRow>
                   <TableCell colSpan={12} className="py-10 text-center">
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#32AA00]" />
+                      <Loading size="lg" className="border-[#FFFF00]" />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -349,7 +349,7 @@ export default function NftOrdersListing() {
                     {/* Pricing */}
                     <TableCell className="px-3 py-4 min-w-[10rem]">
                       <div className="flex flex-col gap-0.5">
-                        <div className="text-sm font-semibold text-[#32AA00]">
+                        <div className="text-sm font-semibold text-[#FFFF00]">
                           {formatAmount(order.totalPrice)} {order.paymentTokenSymbol}
                         </div>
                         <div className="text-xs text-gray-500">

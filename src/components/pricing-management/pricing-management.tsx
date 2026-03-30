@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { GenericModal } from "../atoms/generic-modal";
 import { EditPricingModal } from "./edit-pricing-modal";
 import SubscriptionTabs from "./subscription-tabs";
-import { IPrice } from "@/services/packages-api/packages-api.types";
-import { useGetAllPackagesQuery } from "@/services/packages-api";
+// import { IPrice } from "@/services/packages-api/packages-api.types";
+// import { useGetAllPackagesQuery } from "@/services/packages-api";
+type IPrice = any;
 import { usePackageColumns } from "./columns";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { useLanguage } from "../common/LanguageContext";
@@ -17,7 +18,9 @@ const PricingManagement: React.FC = () => {
     null,
   );
 
-  const { data: packages = [], isLoading } = useGetAllPackagesQuery();
+  // const { data: packages = [], isLoading } = useGetAllPackagesQuery();
+  const packages: any[] = [];
+  const isLoading = false;
 
   const handleOpenEditPricingModal = (price: IPrice, packageId: string) => {
     setSelectedPrice(price);

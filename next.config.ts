@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
       "example.com",
       "images.lumacdn.com",
       "cdn.lu.ma",
+      "res.cloudinary.com",
       "images.unsplash.com",
     ],
     remotePatterns: [
@@ -31,6 +32,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "cdn.lu.ma",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
       },
     ],
   },

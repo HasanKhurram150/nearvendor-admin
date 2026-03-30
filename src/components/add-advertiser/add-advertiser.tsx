@@ -8,8 +8,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Loading from "../atoms/loading/loading";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
-import { useAddAdvertiserMutation } from "@/services/advertiser-api";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
+// import { useAddAdvertiserMutation } from "@/services/advertiser-api";
 import { useLanguage } from "../common/LanguageContext";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 
@@ -28,7 +28,11 @@ const validationSchema = Yup.object().shape({
 const AddAdvertiser: React.FC = () => {
   const { t } = useLanguage();
   const router = useRouter();
-  const [mutate, { isLoading }] = useAddAdvertiserMutation();
+  // const [mutate, { isLoading }] = useAddAdvertiserMutation();
+  const [mutate, { isLoading }] = [
+    async (...args: any[]) => ({ unwrap: () => {} }),
+    { isLoading: false },
+  ];
 
   const {
     register,

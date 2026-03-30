@@ -18,11 +18,13 @@ import {
   YoutubeIcon,
 } from "@/icons";
 import CustomDropdown from "./custom-select";
-import {
-  useGetKolRequestsQuery,
-  useUpdateKolRequestStatusMutation,
-} from "@/services/kols-api";
-import { IKolBadge, IKolStatus } from "@/services/kols-api/kols-api.types";
+// import {
+//   useGetKolRequestsQuery,
+//   useUpdateKolRequestStatusMutation,
+// } from "@/services/kols-api";
+// import { IKolBadge, IKolStatus } from "@/services/kols-api/kols-api.types";
+type IKolBadge = any;
+type IKolStatus = any;
 import Badge from "../ui/badge/Badge";
 import Button from "../ui/button/Button";
 import toast from "react-hot-toast";
@@ -51,20 +53,24 @@ const KOLApproval: React.FC = () => {
     "all" | "approved" | "rejected" | "pending"
   >("all");
 
-  const { data, isLoading, refetch } = useGetKolRequestsQuery({
-    page,
-    pageSize: DEFAULT_PAGE_SIZE,
-    status: filterStatus === "all" ? undefined : filterStatus,
-    sortBy: "createdAt",
-    sort: "desc",
-  });
+  // const { data, isLoading, refetch } = useGetKolRequestsQuery({
+  //   page,
+  //   pageSize: DEFAULT_PAGE_SIZE,
+  //   status: filterStatus === "all" ? undefined : filterStatus,
+  //   sortBy: "createdAt",
+  //   sort: "desc",
+  // });
+  const data: any = null;
+  const isLoading = false;
+  const refetch = () => {};
 
   const kolRequests = data?.data; // Array of events
   const meta = data?.meta; // Pagination meta data
 
   const totalPages = meta?.totalPages || 1;
 
-  const [updateKolStatus] = useUpdateKolRequestStatusMutation();
+  // const [updateKolStatus] = useUpdateKolRequestStatusMutation();
+  const updateKolStatus = async (...args: any[]) => ({ unwrap: () => {} });
 
   const handleBadgeSelect = (kolId: string, badge: IKolBadge) => {
     setSelectedBadges((prev) => ({
@@ -164,7 +170,7 @@ const KOLApproval: React.FC = () => {
                     colSpan={6}
                     className="text-center py-10 text-gray-500 dark:text-gray-400"
                   >
-                    <Loading size="lg" className="border-[#32AA00]" />
+                    <Loading size="lg" className="border-[#FFFF00]" />
                   </TableCell>
                 </TableRow>
               ) : kolRequests?.length === 0 ? (

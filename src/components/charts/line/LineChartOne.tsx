@@ -16,7 +16,7 @@ export default function LineChartOne() {
       position: "top",
       horizontalAlign: "left",
     },
-    colors: ["#32AA00", "#A7FFAB"], // Define line colors
+    colors: ["#FFFF00", "#3B82F6"], // Yellow for Sales, Soft Blue for Revenue
     chart: {
       fontFamily: "Outfit, sans-serif",
       height: 310,

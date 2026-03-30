@@ -8,8 +8,8 @@ import { AddCategoryIcon } from "@/icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import GenericButton from "../atoms/generic-button/generic-button";
-import { useCreateCategoryMutation } from "@/services/categories-api";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+// import { useCreateCategoryMutation } from "@/services/categories-api";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
 import Select from "../form/Select";
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
@@ -35,7 +35,11 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   onClose,
 }) => {
   const { t } = useLanguage();
-  const [createCategory, { isLoading }] = useCreateCategoryMutation();
+  // const [createCategory, { isLoading }] = useCreateCategoryMutation();
+  const [createCategory, { isLoading }] = [
+    async (...args: any[]) => ({ unwrap: () => {} }),
+    { isLoading: false },
+  ];
 
   const {
     register,
@@ -141,7 +145,7 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
             <GenericButton
               btnText={isLoading ? "" : t("save")}
               icon={isLoading && <Loading size="sm" />}
-              bgColor="#32AA00"
+              bgColor="#FFFF00"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"

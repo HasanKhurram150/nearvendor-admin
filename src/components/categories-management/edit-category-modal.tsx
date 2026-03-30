@@ -8,9 +8,10 @@ import { AddCategoryIcon } from "@/icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import GenericButton from "../atoms/generic-button/generic-button";
-import { useUpdateCategoryMutation } from "@/services/categories-api";
-import { ICategory } from "@/services/categories-api/categories-api.types";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+// import { useUpdateCategoryMutation } from "@/services/categories-api";
+// import { ICategory } from "@/services/categories-api/categories-api.types";
+type ICategory = any;
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
 import Select from "../form/Select";
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
@@ -30,7 +31,11 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
   category,
 }) => {
   const { t } = useLanguage();
-  const [updateCategory, { isLoading }] = useUpdateCategoryMutation();
+  // const [updateCategory, { isLoading }] = useUpdateCategoryMutation();
+  const [updateCategory, { isLoading }] = [
+    async (...args: any[]) => ({ unwrap: () => {} }),
+    { isLoading: false },
+  ];
 
   const {
     handleSubmit,
@@ -95,7 +100,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
             <Label htmlFor="name">{t("name")}</Label>
             <Input
               id="name"
-              placeholder={("enterCategoryName")}
+              placeholder={"enterCategoryName"}
               registration={register("name")}
               error={errors.name?.message}
             />
@@ -137,7 +142,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
             <GenericButton
               btnText={isLoading ? "" : t("update")}
               icon={isLoading && <Loading size="sm" />}
-              bgColor="#32AA00"
+              bgColor="#FFFF00"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"

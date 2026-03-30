@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import dynamic from "next/dynamic";
-import { INftOrderSalesData } from "@/services/nft-order-stats-api/nft-order-stats-api.types";
 import { useLanguage } from "@/components/common/LanguageContext";
 import type { ApexOptions } from "apexcharts";
 
@@ -9,7 +8,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export function SalesChart({ salesData }: { salesData: INftOrderSalesData | undefined }) {
+export function SalesChart({ salesData }: { salesData: [number, number][] | undefined }) {
   const { t } = useLanguage();
 
   const chartData = salesData ?? [];
@@ -17,20 +16,29 @@ export function SalesChart({ salesData }: { salesData: INftOrderSalesData | unde
   const categories = chartData.map(([ts]) =>
     new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric" })
   );
-  const values = chartData.map(([, amount]) => amount);
+  const values = chartData.map(([, count]) => count);
 
   const options: ApexOptions = {
-    colors: ["#32AA00"],
+    colors: ["#FFFF00"],
     chart: {
       fontFamily: "Outfit, sans-serif",
-      type: "line",
+      type: "area",
       height: 280,
       toolbar: { show: false },
       background: "transparent",
     },
+    fill: {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.4,
+        opacityTo: 0.1,
+        stops: [0, 90, 100],
+      },
+    },
     stroke: {
       curve: "smooth",
-      width: 2,
+      width: 3,
     },
     dataLabels: { enabled: false },
     xaxis: {
@@ -38,58 +46,61 @@ export function SalesChart({ salesData }: { salesData: INftOrderSalesData | unde
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: {
-        style: { colors: "#9CA3AF", fontSize: "12px" },
+        style: { colors: "#9CA3AF", fontSize: "11px" },
       },
     },
     yaxis: {
       labels: {
-        style: { colors: "#9CA3AF", fontSize: "12px" },
-        formatter: (val: number) => `${parseInt(val.toString(), 10)}%`,
+        style: { colors: "#9CA3AF", fontSize: "11px" },
+        formatter: (val: number) => Math.floor(val).toString(),
       },
     },
     grid: {
-      borderColor: "rgba(255,255,255,0.06)",
+      borderColor: "rgba(255,255,255,0.04)",
       xaxis: { lines: { show: false } },
       yaxis: { lines: { show: true } },
     },
     tooltip: {
       theme: "dark",
       y: {
-        formatter: (val: number) => `${val.toFixed(2)}%`,
+        formatter: (val: number) => `${Math.floor(val)} Users`,
       },
     },
     markers: {
-      size: 0,
+      size: 4,
+      colors: ["#FFFF00"],
+      strokeColors: "#000",
+      strokeWidth: 2,
       hover: { size: 6 },
     },
   };
 
   const series = [
     {
-      name: t("salesAmount"),
+      name: "New Users",
       data: values,
     },
   ];
 
   return (
-    <div className="dashboard-card h-full flex flex-col">
+    <div className="dashboard-card h-full flex flex-col border border-white/4">
       <div className="px-6 py-5 border-b border-[#222328]">
-        <h3 className="text-[16px] font-medium text-white">{t("salesOverTime")}</h3>
+        <h3 className="text-[16px] font-medium text-white">User Registration Growth</h3>
       </div>
       
       <div className="p-6 flex-1">
         {chartData.length > 0 ? (
-          <div className="max-w-full overflow-x-auto custom-scrollbar">
+          <div className="max-w-full overflow-x-auto">
             <ReactApexChart
               options={options}
               series={series}
-              type="line"
+              type="area"
               height={280}
             />
           </div>
         ) : (
-          <div className="flex items-center justify-center h-[280px] text-gray-500">
-            {t("noSalesData")}
+          <div className="flex items-center justify-center h-[280px] text-gray-600 italic text-sm">
+            No registration data available for this period
           </div>
         )}
       </div>

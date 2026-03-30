@@ -16,7 +16,7 @@ import {
 import Badge from "@/components/ui/badge/Badge";
 import { useLanguage } from "@/components/common/LanguageContext";
 import Select from "@/components/form/Select";
-import { useGetAdminRewardsQuery, useGetAdminRewardsSummaryQuery } from "@/services/rewards-api";
+// import { useGetAdminRewardsQuery, useGetAdminRewardsSummaryQuery } from "@/services/rewards-api";
 import {
   TxLink,
   formatAmount,
@@ -91,7 +91,7 @@ function BeneficiaryCell({
 }) {
   return (
     <div className="flex min-w-[190px] flex-col gap-1">
-      <span className="inline-flex w-fit items-center rounded-full bg-[#32AA00]/10 px-2.5 py-0.5 text-xs font-medium text-[#32AA00]">
+      <span className="inline-flex w-fit items-center rounded-full bg-[#FFFF00]/10 px-2.5 py-0.5 text-xs font-medium text-[#FFFF00]">
         {formatBeneficiaryType(beneficiaryType)}
       </span>
       <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
@@ -119,7 +119,7 @@ function SettlementCell({
       <span
         className={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
           isSettled
-            ? "bg-[#32AA00]/10 text-[#32AA00]"
+            ? "bg-[#FFFF00]/10 text-[#FFFF00]"
             : "bg-amber-500/10 text-amber-400"
         }`}
       >
@@ -147,13 +147,18 @@ export default function AdminRewards() {
     setPage(1);
   }, [sort]);
 
-  const { data, isLoading, isFetching } = useGetAdminRewardsQuery({
-    page,
-    pageSize: DEFAULT_PAGE_SIZE,
-    sortBy: "createdAt",
-    sort,
-  });
-  const { data: summary, isLoading: isSummaryLoading } = useGetAdminRewardsSummaryQuery();
+  // const { data, isLoading, isFetching } = useGetAdminRewardsQuery({
+  //   page,
+  //   pageSize: DEFAULT_PAGE_SIZE,
+  //   sortBy: "createdAt",
+  //   sort,
+  // });
+  // const { data: summary, isLoading: isSummaryLoading } = useGetAdminRewardsSummaryQuery();
+  const data: any = null;
+  const isLoading = false;
+  const isFetching = false;
+  const summary: any = null;
+  const isSummaryLoading = false;
 
   const rewards = data?.data ?? [];
   const meta = data?.meta;
@@ -253,7 +258,7 @@ export default function AdminRewards() {
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <div className="flex justify-center py-16">
-              <Loading size="lg" className="border-[#32AA00]" />
+              <Loading size="lg" className="border-[#FFFF00]" />
             </div>
           ) : rewards.length === 0 ? (
             <div className="py-16 text-center text-gray-400">
@@ -322,7 +327,7 @@ export default function AdminRewards() {
                     <TableCell className="px-3 py-4 min-w-[16rem]">
                       <div className="flex flex-col gap-1.5 text-left">
                         <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                          <span className="text-sm font-bold text-[#32AA00]">
+                          <span className="text-sm font-bold text-[#FFFF00]">
                             {formatAmount(row.rewardAmount)} {row.paymentTokenSymbol}
                           </span>
                           <span className="text-[10px] text-gray-500">

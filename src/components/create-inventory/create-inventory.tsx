@@ -12,13 +12,13 @@ import Input from "../form/input/InputField";
 import { WeekdayCheckboxes } from "./week-days";
 import FileUpload from "./file-upload";
 import SearchableDropdown from "../common/searchable-dropdown";
-import {
-  useAddInventoryMutation,
-  useGetAllInventoryQuery,
-} from "@/services/inventory-api";
-import { useGetCampaignsQuery } from "@/services/campaign-api";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
-import { useGetAllPlacementsQuery } from "@/services";
+// import {
+//   useAddInventoryMutation,
+//   useGetAllInventoryQuery,
+// } from "@/services/inventory-api";
+// import { useGetCampaignsQuery } from "@/services/campaign-api";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
+// import { useGetAllPlacementsQuery } from "@/services";
 import DatePicker from "../date-picker/date-picker";
 import TimePicker from "../time-picker/time-picker";
 import dayjs, { Dayjs } from "dayjs";
@@ -65,19 +65,29 @@ const CreateInventory: React.FC = () => {
   const { t } = useLanguage();
   const [budgetCap, setSetBudget] = useState(0);
   const router = useRouter();
-  const { data: placements, isLoading: isFetchingPlacements } =
-    useGetAllPlacementsQuery();
-  const { data: inventory, isLoading: inventoryLoading } =
-    useGetAllInventoryQuery({
-      page: 1,
-      limit: 200,
-    });
-  const { data: campaigns, isLoading: isFetchingCampaigns } =
-    useGetCampaignsQuery({
-      page: 1,
-      limit: 10,
-    });
-  const [mutate, { isLoading }] = useAddInventoryMutation();
+  // const { data: placements, isLoading: isFetchingPlacements } =
+  //   useGetAllPlacementsQuery();
+  // const { data: inventory, isLoading: inventoryLoading } =
+  //   useGetAllInventoryQuery({
+  //     page: 1,
+  //     limit: 200,
+  //   });
+  // const { data: campaigns, isLoading: isFetchingCampaigns } =
+  //   useGetCampaignsQuery({
+  //     page: 1,
+  //     limit: 10,
+  //   });
+  // const [mutate, { isLoading }] = useAddInventoryMutation();
+  const placements: any[] = [];
+  const isFetchingPlacements = false;
+  const inventory: any = { data: [] };
+  const inventoryLoading = false;
+  const campaigns: any = { data: [] };
+  const isFetchingCampaigns = false;
+  const [mutate, { isLoading }] = [
+    async (...args: any[]) => ({ unwrap: () => {} }),
+    { isLoading: false },
+  ];
   const validationSchema = Yup.object().shape({
     placementId: Yup.object()
       .shape({

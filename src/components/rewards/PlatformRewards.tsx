@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Badge from "@/components/ui/badge/Badge";
-import { useGetPlatformRewardsQuery } from "@/services/rewards-api";
+// import { useGetPlatformRewardsQuery } from "@/services/rewards-api";
 import { useDebounce } from "@/hooks/useDebounce";
 import Input from "@/components/form/input/InputField";
 import Select from "@/components/form/Select";
@@ -43,13 +43,16 @@ export default function PlatformRewards() {
     setPage(1);
   }, [debouncedRewardType, sort]);
 
-  const { data, isLoading, isFetching } = useGetPlatformRewardsQuery({
-    page,
-    pageSize: DEFAULT_PAGE_SIZE,
-    sortBy: "createdAt",
-    sort,
-    rewardType: debouncedRewardType || undefined,
-  });
+  // const { data, isLoading, isFetching } = useGetPlatformRewardsQuery({
+  //   page,
+  //   pageSize: DEFAULT_PAGE_SIZE,
+  //   sortBy: "createdAt",
+  //   sort,
+  //   rewardType: debouncedRewardType || undefined,
+  // });
+  const data: any = null;
+  const isLoading = false;
+  const isFetching = false;
 
   const rewards = data?.data ?? [];
   const meta = data?.meta;
@@ -128,7 +131,7 @@ export default function PlatformRewards() {
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <div className="flex justify-center py-16">
-              <Loading size="lg" className="border-[#32AA00]" />
+              <Loading size="lg" className="border-[#FFFF00]" />
             </div>
           ) : rewards.length === 0 ? (
             <div className="py-16 text-center text-gray-400">
@@ -174,7 +177,7 @@ export default function PlatformRewards() {
                     {/* Reward Details */}
                     <TableCell className="px-3 py-4 min-w-[12rem]">
                       <div className="flex flex-col gap-1 text-left">
-                        <div className="text-sm font-bold text-[#32AA00]">
+                        <div className="text-sm font-bold text-[#FFFF00]">
                           Rew: {formatAmount(row.rewardAmount)} {row.paymentTokenSymbol}
                         </div>
                         <div className="text-xs text-gray-500">

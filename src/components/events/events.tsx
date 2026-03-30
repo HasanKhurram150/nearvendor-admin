@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "../ui/table";
 // import Image from "next/image";
-import { useGetOurEventsQuery } from "@/services/events-management-api";
+// import { useGetOurEventsQuery } from "@/services/events-management-api";
 import Loading from "../atoms/loading/loading";
 import Pagination from "@/components/tables/Pagination";
 import { useLanguage } from "../common/LanguageContext";
@@ -19,10 +19,12 @@ const DEFAULT_PAGE_SIZE = 10;
 const Events: React.FC = () => {
   const { t } = useLanguage();
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useGetOurEventsQuery({
-    page,
-    pageSize: DEFAULT_PAGE_SIZE,
-  });
+  // const { data, isLoading } = useGetOurEventsQuery({
+  //   page,
+  //   pageSize: DEFAULT_PAGE_SIZE,
+  // });
+  const data: any = null;
+  const isLoading = false;
 
   const ourEvents = data?.data || []; // Array of events
   const meta = data?.meta; // Pagination meta data
@@ -74,7 +76,7 @@ const Events: React.FC = () => {
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-10">
-                    <Loading size="lg" className="border-[#32AA00]" />
+                    <Loading size="lg" className="border-[#FFFF00]" />
                   </TableCell>
                 </TableRow>
               ) : ourEvents?.length > 0 ? (

@@ -12,7 +12,7 @@ import { useAddCampaignMutation, useGetAllAdvertiserQuery } from "@/services";
 import Select from "../form/Select";
 import { useRouter } from "next/navigation";
 import Loading from "../atoms/loading/loading";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
 import { useLanguage } from "../common/LanguageContext";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 

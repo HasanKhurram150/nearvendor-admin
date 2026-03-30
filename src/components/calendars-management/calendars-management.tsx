@@ -74,7 +74,7 @@ const CalendarsManagement: React.FC = () => {
           {/* <GenericButton
           icon={<PlusIcon />}
           btnText="Add Calendar"
-          bgColor="#32AA00"
+          bgColor="#FFFF00"
           color="#fff"
           height="2.5rem"
           width="8.063rem"
@@ -106,7 +106,7 @@ const CalendarsManagement: React.FC = () => {
                   <TableRow>
                     <TableCell className="text-center py-8">
                       <div className="flex justify-center">
-                        <Loading size="lg" className="border-[#32AA00]" />
+                        <Loading size="lg" className="border-[#FFFF00]" />
                       </div>
                     </TableCell>
                   </TableRow>

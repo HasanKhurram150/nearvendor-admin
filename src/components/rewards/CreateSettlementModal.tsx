@@ -17,25 +17,34 @@ import {
 } from "@/components/ui/table";
 import { useWallet } from "@/context/WalletContext";
 import { useLanguage } from "@/components/common/LanguageContext";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
-import {
-  IAdminRewardSettlement,
-  ICreateAdminRewardSettlementResponse,
-  useCreateAdminRewardSettlementMutation,
-  useDeleteAdminRewardSettlementMutation,
-  useLazyGetAdminRewardSettlementQuery,
-} from "@/services/rewards-api";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
+// import {
+//   IAdminRewardSettlement,
+//   ICreateAdminRewardSettlementResponse,
+//   useCreateAdminRewardSettlementMutation,
+//   useDeleteAdminRewardSettlementMutation,
+//   useLazyGetAdminRewardSettlementQuery,
+// } from "@/services/rewards-api";
+type IAdminRewardSettlement = any;
+type ICreateAdminRewardSettlementResponse = any;
 import { TxLink, formatAmount, truncateAddress } from "./rewards-table-utils";
 import { erc20Abi } from "./erc20-abi";
 import { rewardDistributorAbi } from "./reward-distributor-abi";
 
 const DEFAULT_CHAIN_ID = 8453;
-const DEFAULT_PAYMENT_TOKEN_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+const DEFAULT_PAYMENT_TOKEN_ADDRESS =
+  "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 const DEFAULT_PAYMENT_TOKEN_SYMBOL = "USDC";
 const POLL_INTERVAL_MS = 5000;
 const MAX_STATUS_POLL_ATTEMPTS = 18;
 
-const SETTLEMENT_STEPS = ["draft", "pending", "submitted", "processing", "completed"] as const;
+const SETTLEMENT_STEPS = [
+  "draft",
+  "pending",
+  "submitted",
+  "processing",
+  "completed",
+] as const;
 
 interface Props {
   isOpen: boolean;
@@ -107,7 +116,9 @@ function buildPreviewFromSettlements(
     ...preview,
     settlements,
     contractCalls: preview.contractCalls.filter((contractCall) =>
-      settlements.some((settlement) => settlement.id === contractCall.settlementId),
+      settlements.some(
+        (settlement) => settlement.id === contractCall.settlementId,
+      ),
     ),
     totalSettlements: settlements.length,
     totalRewardCount: settlements.reduce(
@@ -133,7 +144,8 @@ function buildAllowanceRequirements(settlements: IAdminRewardSettlement[]) {
     requirements.set(requirementKey, {
       paymentToken,
       spender,
-      requiredAmount: (currentRequirement?.requiredAmount ?? BigInt(0)) + requiredAmount,
+      requiredAmount:
+        (currentRequirement?.requiredAmount ?? BigInt(0)) + requiredAmount,
     });
   }
 
@@ -171,14 +183,23 @@ function SettlementPreviewCard({
   const failed = normalizedStatus === "failed";
   const activeStepIndex = failed
     ? SETTLEMENT_STEPS.indexOf("processing")
-    : Math.max(SETTLEMENT_STEPS.indexOf(normalizedStatus as (typeof SETTLEMENT_STEPS)[number]), 0);
+    : Math.max(
+        SETTLEMENT_STEPS.indexOf(
+          normalizedStatus as (typeof SETTLEMENT_STEPS)[number],
+        ),
+        0,
+      );
 
   return (
     <div className="dashboard-card p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-white">Batch #{settlement.batchIndex}</p>
-          <p className="mt-1 font-mono text-xs text-gray-400">{settlement.id}</p>
+          <p className="text-sm font-semibold text-white">
+            Batch #{settlement.batchIndex}
+          </p>
+          <p className="mt-1 font-mono text-xs text-gray-400">
+            {settlement.id}
+          </p>
         </div>
         <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400">
           {settlement.status}
@@ -210,13 +231,16 @@ function SettlementPreviewCard({
 
       <div className="mt-4 space-y-2 text-xs text-gray-400">
         <div>
-          <span className="font-medium text-gray-300">Distributor:</span> {settlement.distributorAddress}
+          <span className="font-medium text-gray-300">Distributor:</span>{" "}
+          {settlement.distributorAddress}
         </div>
         <div>
-          <span className="font-medium text-gray-300">Payment Token:</span> {settlement.paymentTokenAddress}
+          <span className="font-medium text-gray-300">Payment Token:</span>{" "}
+          {settlement.paymentTokenAddress}
         </div>
         <div>
-          <span className="font-medium text-gray-300">Platform:</span> {settlement.platformAddress}
+          <span className="font-medium text-gray-300">Platform:</span>{" "}
+          {settlement.platformAddress}
         </div>
         {settlement.txHash ? (
           <div className="flex items-center gap-2">
@@ -228,25 +252,33 @@ function SettlementPreviewCard({
 
       <div className="mt-4 rounded-xl border border-[#1D1C1C] bg-white/[0.02] p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold text-white">{t("settlementProgress")}</h3>
+          <h3 className="text-sm font-semibold text-white">
+            {t("settlementProgress")}
+          </h3>
           <span className="text-xs text-gray-400">
-            {t("status")}: <span className="text-gray-200">{settlement.status}</span>
+            {t("status")}:{" "}
+            <span className="text-gray-200">{settlement.status}</span>
           </span>
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-5">
           {SETTLEMENT_STEPS.map((step, index) => {
             const isCompleted = !failed && index <= activeStepIndex;
-            const isCurrent = (failed && step === "processing") || (!failed && index === activeStepIndex);
+            const isCurrent =
+              (failed && step === "processing") ||
+              (!failed && index === activeStepIndex);
             const isUpcoming = !isCompleted && !isCurrent;
 
             return (
-              <div key={step} className="flex items-center gap-3 md:flex-col md:items-start">
+              <div
+                key={step}
+                className="flex items-center gap-3 md:flex-col md:items-start"
+              >
                 <div
                   className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold ${
                     failed && step === "processing"
                       ? "border-red-500/50 bg-red-500/10 text-red-300"
                       : isCompleted
-                        ? "border-[#32AA00]/50 bg-[#32AA00]/10 text-[#32AA00]"
+                        ? "border-[#FFFF00]/50 bg-[#FFFF00]/10 text-[#FFFF00]"
                         : isCurrent
                           ? "border-blue-500/50 bg-blue-500/10 text-blue-300"
                           : "border-[#1D1C1C] bg-white/[0.02] text-gray-500"
@@ -255,8 +287,16 @@ function SettlementPreviewCard({
                   {index + 1}
                 </div>
                 <div>
-                  <p className={`text-xs font-medium ${isUpcoming ? "text-gray-500" : "text-gray-200"}`}>
-                    {t(`settlementStatus${step.charAt(0).toUpperCase()}${step.slice(1)}` as keyof ReturnType<typeof useLanguage>["t"] extends never ? never : any)}
+                  <p
+                    className={`text-xs font-medium ${isUpcoming ? "text-gray-500" : "text-gray-200"}`}
+                  >
+                    {t(
+                      `settlementStatus${step.charAt(0).toUpperCase()}${step.slice(1)}` as keyof ReturnType<
+                        typeof useLanguage
+                      >["t"] extends never
+                        ? never
+                        : any,
+                    )}
                   </p>
                   {step === "submitted" && settlement.submittedAt ? (
                     <p className="mt-1 text-[11px] text-gray-500">
@@ -290,7 +330,9 @@ function SettlementPreviewCard({
 
       <div className="mt-5">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold text-white">{t("userDistributions")}</h3>
+          <h3 className="text-sm font-semibold text-white">
+            {t("userDistributions")}
+          </h3>
           <span className="text-xs text-gray-400">
             {settlement.userDistributions.length} {t("recipientsLabel")}
           </span>
@@ -300,19 +342,34 @@ function SettlementPreviewCard({
           <Table aria-label="Settlement user distributions table">
             <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02]">
               <TableRow>
-                <TableCell isHeader className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400">
+                <TableCell
+                  isHeader
+                  className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400"
+                >
                   {t("recipient")}
                 </TableCell>
-                <TableCell isHeader className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400">
+                <TableCell
+                  isHeader
+                  className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400"
+                >
                   {t("beneficiaryUserId")}
                 </TableCell>
-                <TableCell isHeader className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400">
+                <TableCell
+                  isHeader
+                  className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400"
+                >
                   {t("rewardIds")}
                 </TableCell>
-                <TableCell isHeader className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400">
+                <TableCell
+                  isHeader
+                  className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400"
+                >
                   {t("amount")}
                 </TableCell>
-                <TableCell isHeader className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400">
+                <TableCell
+                  isHeader
+                  className="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-400"
+                >
                   {t("rawAmount")}
                 </TableCell>
               </TableRow>
@@ -322,7 +379,10 @@ function SettlementPreviewCard({
                 settlement.userDistributions.map((distribution) => (
                   <TableRow key={`${settlement.id}-${distribution.recipient}`}>
                     <TableCell className="whitespace-nowrap px-4 py-3 text-sm text-gray-200">
-                      <div className="font-mono text-xs text-gray-300" title={distribution.recipient}>
+                      <div
+                        className="font-mono text-xs text-gray-300"
+                        title={distribution.recipient}
+                      >
                         {truncateAddress(distribution.recipient)}
                       </div>
                     </TableCell>
@@ -332,12 +392,16 @@ function SettlementPreviewCard({
                       </span>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-sm text-gray-200">
-                      <div className="max-w-[280px] font-mono text-xs text-gray-300" title={distribution.rewardIds.join(", ")}>
+                      <div
+                        className="max-w-[280px] font-mono text-xs text-gray-300"
+                        title={distribution.rewardIds.join(", ")}
+                      >
                         {distribution.rewardIds.join(", ")}
                       </div>
                     </TableCell>
                     <TableCell className="whitespace-nowrap px-4 py-3 text-sm text-gray-200">
-                      {formatAmount(distribution.amount)} {settlement.paymentTokenSymbol}
+                      {formatAmount(distribution.amount)}{" "}
+                      {settlement.paymentTokenSymbol}
                     </TableCell>
                     <TableCell className="whitespace-nowrap px-4 py-3 font-mono text-xs text-gray-300">
                       {distribution.amountRaw}
@@ -346,7 +410,10 @@ function SettlementPreviewCard({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="px-4 py-6 text-center text-sm text-gray-400">
+                  <TableCell
+                    colSpan={5}
+                    className="px-4 py-6 text-center text-sm text-gray-400"
+                  >
                     {t("noUserDistributions")}
                   </TableCell>
                 </TableRow>
@@ -359,7 +426,11 @@ function SettlementPreviewCard({
   );
 }
 
-export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress }: Props) {
+export function CreateSettlementModal({
+  isOpen,
+  onClose,
+  defaultPlatformAddress,
+}: Props) {
   const { t } = useLanguage();
   const {
     account,
@@ -370,14 +441,24 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
     switchNetwork,
     targetChainName,
   } = useWallet();
-  const [platformAddress, setPlatformAddress] = useState(defaultPlatformAddress ?? "");
-  const [preview, setPreview] = useState<ICreateAdminRewardSettlementResponse | null>(null);
-  const [executionResults, setExecutionResults] = useState<ExecutionResult[]>([]);
+  const [platformAddress, setPlatformAddress] = useState(
+    defaultPlatformAddress ?? "",
+  );
+  const [preview, setPreview] =
+    useState<ICreateAdminRewardSettlementResponse | null>(null);
+  const [executionResults, setExecutionResults] = useState<ExecutionResult[]>(
+    [],
+  );
   const [isExecuting, setIsExecuting] = useState(false);
-  const [createSettlement, { isLoading: isCreatingPreview }] = useCreateAdminRewardSettlementMutation();
-  const [deleteSettlement, { isLoading: isDeletingSettlements }] =
-    useDeleteAdminRewardSettlementMutation();
-  const [getSettlement] = useLazyGetAdminRewardSettlementQuery();
+  // const [createSettlement, { isLoading: isCreatingPreview }] = useCreateAdminRewardSettlementMutation();
+  // const [deleteSettlement, { isLoading: isDeletingSettlements }] =
+  //   useDeleteAdminRewardSettlementMutation();
+  // const [getSettlement] = useLazyGetAdminRewardSettlementQuery();
+  const createSettlement = async (...args: any[]) => ({ unwrap: () => {} });
+  const deleteSettlement = async (...args: any[]) => ({ unwrap: () => {} });
+  const getSettlement = async (...args: any[]) => ({ unwrap: () => {} });
+  const isCreatingPreview = false;
+  const isDeletingSettlements = false;
   const { writeContractAsync } = useWriteContract();
   const publicClient = usePublicClient({ chainId: DEFAULT_CHAIN_ID });
 
@@ -395,7 +476,9 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
   const canCreatePreview = isAddress(platformAddress);
   const canExecute = !!preview && !isBusy && preview.settlements.length > 0;
   const createdHashes = useMemo(() => {
-    return new Map(executionResults.map((item) => [item.settlementId, item.txHash]));
+    return new Map(
+      executionResults.map((item) => [item.settlementId, item.txHash]),
+    );
   }, [executionResults]);
   const hasSubmittedTransactions = createdHashes.size > 0;
 
@@ -449,7 +532,9 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
     try {
       setIsExecuting(true);
       const hashes: ExecutionResult[] = [];
-      const allowanceRequirements = buildAllowanceRequirements(preview.settlements);
+      const allowanceRequirements = buildAllowanceRequirements(
+        preview.settlements,
+      );
       const simulatedRequests: Array<{
         settlementId: string;
         request: unknown;
@@ -476,11 +561,16 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
           account: getAddress(account),
           address: requirement.paymentToken as `0x${string}`,
           functionName: "approve",
-          args: [requirement.spender as `0x${string}`, requirement.requiredAmount],
+          args: [
+            requirement.spender as `0x${string}`,
+            requirement.requiredAmount,
+          ],
         });
 
         const approvalHash = await writeContractAsync(
-          approvalSimulation.request as Parameters<typeof writeContractAsync>[0],
+          approvalSimulation.request as Parameters<
+            typeof writeContractAsync
+          >[0],
         );
 
         await publicClient.waitForTransactionReceipt({ hash: approvalHash });
@@ -507,8 +597,12 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
           args: [
             getAddress(settlement.contractArguments.paymentToken),
             getAddress(settlement.contractArguments.platform),
-            settlement.contractArguments.recipients.map((recipient) => getAddress(recipient)),
-            settlement.contractArguments.amounts.map((amount) => BigInt(amount)),
+            settlement.contractArguments.recipients.map((recipient) =>
+              getAddress(recipient),
+            ),
+            settlement.contractArguments.amounts.map((amount) =>
+              BigInt(amount),
+            ),
             BigInt(settlement.contractArguments.totalAmount),
           ],
           value: BigInt(contractCall.value || "0"),
@@ -538,9 +632,16 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
 
       void (async () => {
         for (const settlementId of hashes.map((item) => item.settlementId)) {
-          for (let attempt = 0; attempt < MAX_STATUS_POLL_ATTEMPTS; attempt += 1) {
+          for (
+            let attempt = 0;
+            attempt < MAX_STATUS_POLL_ATTEMPTS;
+            attempt += 1
+          ) {
             try {
-              const latestSettlement = await getSettlement(settlementId, false).unwrap();
+              const latestSettlement = await getSettlement(
+                settlementId,
+                false,
+              ).unwrap();
 
               setPreview((currentPreview) => {
                 if (!currentPreview) {
@@ -564,7 +665,10 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
         }
       })();
     } catch (error) {
-      const message = error instanceof Error ? error.message : t("settlementSimulationFailed");
+      const message =
+        error instanceof Error
+          ? error.message
+          : t("settlementSimulationFailed");
       toast.error(message);
     } finally {
       setIsExecuting(false);
@@ -585,12 +689,18 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
     }
 
     const currentPreview = preview;
-    const settlementIds = currentPreview.settlements.map((settlement) => settlement.id);
+    const settlementIds = currentPreview.settlements.map(
+      (settlement) => settlement.id,
+    );
     const results = await Promise.allSettled(
-      settlementIds.map((settlementId) => deleteSettlement(settlementId).unwrap()),
+      settlementIds.map((settlementId) =>
+        deleteSettlement(settlementId).unwrap(),
+      ),
     );
 
-    const failedResults = results.filter((result) => result.status === "rejected");
+    const failedResults = results.filter(
+      (result) => result.status === "rejected",
+    );
 
     if (failedResults.length === 0) {
       setPreview(null);
@@ -608,7 +718,9 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
         (settlement) => !successfulIds.includes(settlement.id),
       );
 
-      setPreview(buildPreviewFromSettlements(currentPreview, remainingSettlements));
+      setPreview(
+        buildPreviewFromSettlements(currentPreview, remainingSettlements),
+      );
     }
 
     const firstError = failedResults[0];
@@ -632,8 +744,12 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
     <GenericModal isOpen={isOpen} onClose={handleClose} maxWidth="56rem">
       <div className="max-h-[80vh] space-y-6 overflow-y-auto pr-2">
         <div>
-          <h2 className="text-lg font-semibold text-white">{t("createSettlement")}</h2>
-          <p className="mt-1 text-sm text-gray-400">{t("createSettlementDescription")}</p>
+          <h2 className="text-lg font-semibold text-white">
+            {t("createSettlement")}
+          </h2>
+          <p className="mt-1 text-sm text-gray-400">
+            {t("createSettlementDescription")}
+          </p>
         </div>
 
         {!isPreviewMode ? (
@@ -641,39 +757,58 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="dashboard-card p-4">
                 <p className="text-xs text-gray-400">{t("chainId")}</p>
-                <p className="mt-1 text-sm font-medium text-white">{DEFAULT_CHAIN_ID}</p>
+                <p className="mt-1 text-sm font-medium text-white">
+                  {DEFAULT_CHAIN_ID}
+                </p>
               </div>
               <div className="dashboard-card p-4">
                 <p className="text-xs text-gray-400">{t("paymentToken")}</p>
-                <p className="mt-1 text-sm font-medium text-white">{DEFAULT_PAYMENT_TOKEN_SYMBOL}</p>
-                <p className="mt-1 font-mono text-xs text-gray-400">{DEFAULT_PAYMENT_TOKEN_ADDRESS}</p>
+                <p className="mt-1 text-sm font-medium text-white">
+                  {DEFAULT_PAYMENT_TOKEN_SYMBOL}
+                </p>
+                <p className="mt-1 font-mono text-xs text-gray-400">
+                  {DEFAULT_PAYMENT_TOKEN_ADDRESS}
+                </p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-medium text-gray-400">{t("platformAddress")}</label>
+              <label className="text-xs font-medium text-gray-400">
+                {t("platformAddress")}
+              </label>
               <input
                 type="text"
                 value={platformAddress}
                 onChange={(event) => setPlatformAddress(event.target.value)}
                 placeholder="0x..."
-                className="h-11 w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#32AA00]"
+                className="h-11 w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#FFFF00]"
               />
-              <p className="text-xs text-gray-500">{t("platformAddressHelp")}</p>
+              <p className="text-xs text-gray-500">
+                {t("platformAddressHelp")}
+              </p>
             </div>
 
             <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={handleClose} type="button" disabled={isBusy}>
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                type="button"
+                disabled={isBusy}
+              >
                 {t("cancel")}
               </Button>
               <Button type="submit" disabled={!canCreatePreview || isBusy}>
-                {isCreatingPreview ? <Loading size="sm" /> : t("previewSettlement")}
+                {isCreatingPreview ? (
+                  <Loading size="sm" />
+                ) : (
+                  t("previewSettlement")
+                )}
               </Button>
             </div>
           </form>
         ) : (
           <div className="space-y-5">
-            <div className="rounded-xl border border-[#32AA00]/20 bg-[#32AA00]/5 p-4 text-sm text-gray-200">
+            <div className="rounded-xl border border-[#FFFF00]/20 bg-[#FFFF00]/5 p-4 text-sm text-gray-200">
               {t("settlementPreviewNotice")}
             </div>
 
@@ -737,13 +872,25 @@ export function CreateSettlementModal({ isOpen, onClose, defaultPlatformAddress 
                   type="button"
                   disabled={isBusy}
                 >
-                  {isDeletingSettlements ? <Loading size="sm" /> : t("deleteSettlements")}
+                  {isDeletingSettlements ? (
+                    <Loading size="sm" />
+                  ) : (
+                    t("deleteSettlements")
+                  )}
                 </Button>
               ) : null}
-              <Button variant="outline" onClick={handleClose} type="button" disabled={isBusy}>
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                type="button"
+                disabled={isBusy}
+              >
                 {t("close")}
               </Button>
-              <Button onClick={() => void handleExecute()} disabled={!canExecute || isConnecting}>
+              <Button
+                onClick={() => void handleExecute()}
+                disabled={!canExecute || isConnecting}
+              >
                 {isBusy ? <Loading size="sm" /> : primaryButtonLabel}
               </Button>
             </div>

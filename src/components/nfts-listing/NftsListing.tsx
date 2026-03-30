@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetNftsQuery } from "@/services/nft-api";
+// import { useGetNftsQuery } from "@/services/nft-api";
 import { useDebounce } from "@/hooks/useDebounce";
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -58,23 +58,26 @@ export default function NftsListing() {
     status,
   ]);
 
-  const { data, isLoading, isFetching } = useGetNftsQuery({
-    page,
-    pageSize: DEFAULT_PAGE_SIZE,
-    sortBy: "createdAt",
-    sort: "desc",
-    search: debouncedSearchQuery || undefined,
-    minUsdPrice:
-      typeof parsedMinUsdPrice === "number" && !Number.isNaN(parsedMinUsdPrice)
-        ? parsedMinUsdPrice
-        : undefined,
-    maxUsdPrice:
-      typeof parsedMaxUsdPrice === "number" && !Number.isNaN(parsedMaxUsdPrice)
-        ? parsedMaxUsdPrice
-        : undefined,
-    ownerWalletAddress: debouncedOwnerWalletAddress || undefined,
-    status: status === "all" ? undefined : status,
-  });
+  // const { data, isLoading, isFetching } = useGetNftsQuery({
+  //   page,
+  //   pageSize: DEFAULT_PAGE_SIZE,
+  //   sortBy: "createdAt",
+  //   sort: "desc",
+  //   search: debouncedSearchQuery || undefined,
+  //   minUsdPrice:
+  //     typeof parsedMinUsdPrice === "number" && !Number.isNaN(parsedMinUsdPrice)
+  //       ? parsedMinUsdPrice
+  //       : undefined,
+  //   maxUsdPrice:
+  //     typeof parsedMaxUsdPrice === "number" && !Number.isNaN(parsedMaxUsdPrice)
+  //       ? parsedMaxUsdPrice
+  //       : undefined,
+  //   ownerWalletAddress: debouncedOwnerWalletAddress || undefined,
+  //   status: status === "all" ? undefined : status,
+  // });
+  const data: any = null;
+  const isLoading = false;
+  const isFetching = false;
 
   const nfts = data?.data ?? [];
   const meta = data?.meta;
@@ -211,7 +214,7 @@ export default function NftsListing() {
                 <TableRow>
                   <TableCell colSpan={10} className="py-10 text-center">
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#32AA00]" />
+                      <Loading size="lg" className="border-[#FFFF00]" />
                     </div>
                   </TableCell>
                 </TableRow>

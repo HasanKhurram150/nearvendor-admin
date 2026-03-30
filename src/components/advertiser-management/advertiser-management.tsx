@@ -66,7 +66,7 @@ const AdvertiserManagement: React.FC = () => {
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#32AA00]" />
+                      <Loading size="lg" className="border-[#FFFF00]" />
                     </div>
                   </TableCell>
                 </TableRow>

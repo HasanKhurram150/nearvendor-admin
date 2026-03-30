@@ -19,35 +19,35 @@ function formatAmount(value: string | undefined): string {
   });
 }
 
-export function OrderStatsCards({ stats }: { stats: INftOrderStats | undefined }) {
+export function OrderStatsCards({ stats }: { stats: any }) {
   const { t } = useLanguage();
 
   if (!stats) return null;
 
-  const cards: StatCard[] = [
+  const cards = [
     {
-      label: t("totalOrders"),
-      value: stats.totalOrders,
+      label: "Total Users",
+      value: stats.totalUsers,
     },
     {
-      label: t("completedOrders"),
-      value: stats.completedOrders,
+      label: "Active Users",
+      value: stats.activeUsers,
     },
     {
-      label: t("totalAmountSold"),
-      value: formatAmount(stats.totalAmountSold),
+      label: "Total Vendors",
+      value: stats.totalVendors,
     },
     {
-      label: t("totalQuantitySold"),
-      value: stats.totalQuantitySold,
+      label: "Pending Apps",
+      value: stats.pendingVendors,
     },
     {
-      label: t("uniqueBuyers"),
-      value: stats.uniqueBuyers,
+      label: "Buyers",
+      value: stats.roleDistribution.buyers,
     },
     {
-      label: t("completionRate"),
-      value: `${stats.completionRate}%`,
+      label: "Vendors",
+      value: stats.roleDistribution.vendors,
     },
   ];
 
@@ -56,10 +56,10 @@ export function OrderStatsCards({ stats }: { stats: INftOrderStats | undefined }
       {cards.map((card) => (
         <div
           key={card.label}
-          className="dashboard-card p-5 md:p-6 flex flex-col justify-center"
+          className="dashboard-card p-5 md:p-6 flex flex-col justify-center border border-white/[0.04]"
         >
-          <span className="text-[14px] font-medium text-gray-400 tracking-wide">{card.label}</span>
-          <h4 className="mt-3 font-bold text-white text-[24px]">
+          <span className="text-[12px] font-medium text-gray-500 uppercase tracking-wider">{card.label}</span>
+          <h4 className="mt-3 font-bold text-white text-[28px]">
             {card.value}
           </h4>
         </div>

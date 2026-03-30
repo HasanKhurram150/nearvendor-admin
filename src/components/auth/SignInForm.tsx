@@ -3,16 +3,14 @@
 import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
+import * as Yup from "yup";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
-import { useRouter } from "next/navigation";
-import * as Yup from "yup";
-import { useLoginMutation } from "@/services/auth-api";
+import { useAuthStore } from "@/store/auth-store";
 import { useForm } from "react-hook-form";
-import { ApiErrorResponse, ILogin } from "@/services/auth-api/auth-api.types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import Loading from "../atoms/loading/loading";
@@ -21,27 +19,15 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Please enter a valid email")
     .required("Email is required"),
-  password: Yup.string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters"),
+  password: Yup.string().required("Password is required"),
 });
 
 type FormData = Yup.InferType<typeof validationSchema>;
 
-interface LoginTokenPayload {
-  uuid?: string;
-  email?: string;
-  tokenType?: string;
-  iat?: number;
-  exp?: number;
-  sub?: string;
-}
-
 const SignInForm = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-
-  const [login, { isLoading }] = useLoginMutation();
+  const { login: storeLogin, isLoading } = useAuthStore();
 
   const {
     register,
@@ -54,58 +40,36 @@ const SignInForm = () => {
   const onSubmit = useCallback(
     async (formData: FormData) => {
       try {
-        const response = await login(formData).unwrap();
-        const token = response?.token;
+        const result = await storeLogin(formData.email, formData.password);
 
-        if (!token) {
-          throw new Error("Login succeeded but no token was returned.");
+        if (result.success) {
+          router.push("/");
+          toast.success("Login successful!");
+        } else {
+          toast.error(result.error || "Login failed");
         }
-
-        const decoded = jwtDecode<LoginTokenPayload>(token);
-        const email = decoded.email ?? formData.email;
-        const fallbackName = email.includes("@") ? email.split("@")[0] : email;
-
-        localStorage.setItem("authToken", token);
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            uuid: decoded.uuid ?? "",
-            email,
-            name: fallbackName,
-          }),
-        );
-
-        router.push("/");
-        toast.success("Login successful!");
       } catch (error) {
-        const apiError = error as ApiErrorResponse;
-        const errorMessage =
-          apiError?.data?.message ||
-          (error instanceof Error
-            ? error.message
-            : "Login failed. Please try again.");
-        toast.error(errorMessage);
+        toast.error("An unexpected error occurred");
       }
     },
-    [login, router],
+    [storeLogin, router],
   );
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="mb-12 animate-in fade-in zoom-in duration-1000">
-        <Image
-          src="/images/logo/main-logo.svg"
-          alt="Logo"
-          width={140}
-          height={160}
-          className="drop-shadow-[0_0_15px_rgba(50,170,0,0.3)]"
-          priority
-        />
-      </div>
-
-      <div className="w-full relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0C0C11]/80 p-10 backdrop-blur-xl shadow-2xl xl:p-14 group transition-all duration-500 hover:border-white/20">
+      <div className="w-full relative overflow-hidden rounded-[32px] border border-white/10 bg-[#11192E]/80 p-10 backdrop-blur-xl shadow-2xl xl:p-14 group transition-all duration-500 hover:border-white/20">
+        <div className="mb-12 animate-in fade-in zoom-in duration-1000 flex items-center justify-center">
+          <Image
+            src="/images/logo/near-vendor-logo.svg"
+            alt="Logo"
+            width={96}
+            height={96}
+            // className="drop-shadow-[0_0_15px_rgba(50,170,0,0.3)]"
+            priority
+          />
+        </div>
         {/* Subtle glow effect */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-brand-500/5 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-accent/5 blur-[80px] rounded-full pointer-events-none" />
 
         <div className="relative z-10">
           <div className="mb-10 text-center">
@@ -121,12 +85,12 @@ const SignInForm = () => {
             <div className="space-y-5">
               <div className="space-y-2">
                 <Label className="text-sm font-semibold text-white/70 ml-1">
-                  Email Address <span className="text-brand-500">*</span>
+                  Email <span className="text-brand-500">*</span>
                 </Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="admin@example.com"
                   registration={register("email")}
                   error={errors.email?.message}
                   className="h-14 rounded-2xl bg-[#08070D]/60 border-white/5 text-white placeholder:text-white/20 focus:border-brand-500/50 transition-all text-base px-5"
@@ -164,7 +128,7 @@ const SignInForm = () => {
 
             <div className="pt-2 space-y-6">
               <Button
-                className="relative w-full h-14 rounded-2xl bg-[#32AA00] text-white font-bold text-lg shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] hover:bg-[#32AA00]/90 active:scale-[0.98] transition-all overflow-hidden group/btn"
+                className="relative w-full h-14 rounded-2xl bg-brand-500 text-gray-950 font-bold text-lg shadow-[0_4px_20px_rgba(255,255,0,0.2)] hover:shadow-[0_4px_25px_rgba(255,255,0,0.3)] hover:bg-brand-400 active:scale-[0.98] transition-all overflow-hidden group/btn"
                 type="submit"
                 disabled={isLoading}
               >

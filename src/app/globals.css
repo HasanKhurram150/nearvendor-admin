@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Alexandria:wght@100..900&display=swap");
 
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -42,24 +42,25 @@ body {
   --color-current: currentColor;
   --color-transparent: transparent;
   --color-white: #ffffff;
-  --color-black: #101828;
+  --color-black: #0f172a;
 
-  --color-brand-25: #f4fff4;
-  --color-brand-50: #e7ffe8;
-  --color-brand-100: #ccffce;
-  --color-brand-200: #a7ffab;
-  --color-brand-300: #7cff81;
-  --color-brand-400: #63ff68;
-  --color-brand-500: #32AA00;
-  --color-brand-600: #34e63b;
-  --color-brand-700: #23bf29;
-  --color-brand-800: #1d9822;
-  --color-brand-900: #1b781f;
-  --color-brand-950: #0b420d;
+  --color-brand-25: #fefef2;
+  --color-brand-50: #fefce8;
+  --color-brand-100: #fef9c3;
+  --color-brand-200: #fef08a;
+  --color-brand-300: #fde047;
+  --color-brand-400: #facc15;
+  --color-brand-500: #ffff00;
+  --color-brand-600: #eab308;
+  --color-brand-700: #ca8a04;
+  --color-brand-800: #a16207;
+  --color-brand-900: #854d0e;
+  --color-brand-950: #422006;
 
-  --color-primary: "#BF00FF"
+  --color-accent: #3b82f6;
+  --color-primary: #ffff00;
 
-    --color-blue-light-25: #f5fbff;
+  --color-blue-light-25: #f5fbff;
   --color-blue-light-50: #f0f9ff;
   --color-blue-light-100: #e0f2fe;
   --color-blue-light-200: #b9e6fe;
@@ -184,7 +185,6 @@ body {
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
   *,
   ::after,
   ::before,
@@ -199,12 +199,25 @@ body {
   }
 
   body {
-    @apply z-1 relative bg-[#08070D] font-outfit font-normal text-white/90 overflow-x-hidden;
-    background-image: 
-      radial-gradient(circle at 50% -10%, rgba(50, 170, 0, 0.12), transparent 70%),
-      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 100% 100%, 30px 30px, 30px 30px;
+    @apply z-1 relative bg-[#0F172A] font-outfit font-normal text-[#F8FAFC]/90 overflow-x-hidden;
+    background-image:
+      radial-gradient(
+        circle at 50% -10%,
+        rgba(59, 130, 246, 0.15),
+        transparent 70%
+      ),
+      radial-gradient(
+        circle at 85% 20%,
+        rgba(255, 255, 0, 0.03),
+        transparent 40%
+      ),
+      linear-gradient(rgba(248, 250, 252, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(248, 250, 252, 0.015) 1px, transparent 1px);
+    background-size:
+      100% 100%,
+      100% 100%,
+      40px 40px,
+      40px 40px;
     background-attachment: fixed;
   }
 }
@@ -214,7 +227,7 @@ body {
 }
 
 @utility menu-item-active {
-  @apply bg-brand-500 dark:bg-brand-500 rounded-[10px] text-white dark:text-white;
+  @apply bg-brand-500 dark:bg-brand-500 rounded-[10px] text-gray-950 dark:text-gray-950;
 }
 
 @utility dashboard-card {
@@ -226,15 +239,36 @@ body {
 }
 
 @utility menu-item-icon {
-  @apply text-gray-500 dark:text-gray-400 group-hover:text-gray-700;
+  @apply text-gray-950 dark:text-gray-950 group-hover:text-gray-950;
 }
 
 @utility menu-item-icon-active {
-  @apply text-white dark:text-white;
+  @apply text-gray-950 dark:text-gray-950;
+
+  & svg {
+    color: #0c111d;
+  }
+
+  & svg path {
+    stroke: #0c111d;
+    fill: #0c111d;
+  }
+
+  & svg rect {
+    stroke: #0c111d;
+  }
+
+  & svg circle {
+    stroke: #0c111d;
+  }
 }
 
 @utility menu-item-icon-inactive {
-  @apply text-gray-300 dark:group-hover:text-gray-300 dark:text-gray-400 group-hover:text-gray-700;
+  @apply text-gray-400 dark:group-hover:text-gray-300 dark:text-gray-400 group-hover:text-gray-600;
+}
+
+@utility menu-item-text {
+  @apply font-medium text-[13px] text-inherit;
 }
 
 @utility menu-item-arrow {
@@ -274,7 +308,6 @@ body {
 }
 
 @utility no-scrollbar {
-
   /* Chrome, Safari and Opera */
   &::-webkit-scrollbar {
     display: none;
@@ -304,10 +337,7 @@ body {
   background-color: #344054;
 }
 
-
-
 @layer utilities {
-
   /* For Remove Date Icon */
   input[type="date"]::-webkit-inner-spin-button,
   input[type="time"]::-webkit-inner-spin-button,
@@ -408,7 +438,7 @@ body {
   @apply !text-gray-400;
 }
 
-.flatpickr-months>.flatpickr-month {
+.flatpickr-months > .flatpickr-month {
   background: none !important;
 }
 
@@ -419,7 +449,9 @@ body {
   font-weight: 500;
 }
 
-.flatpickr-month .flatpickr-current-month .flatpickr-monthDropdown-months:focus {
+.flatpickr-month
+  .flatpickr-current-month
+  .flatpickr-monthDropdown-months:focus {
   outline: none !important;
   border: 0 !important;
 }
@@ -457,7 +489,9 @@ span.flatpickr-weekday,
 }
 
 .flatpickr-day.inRange {
-  box-shadow: -5px 0 0 #f9fafb, 5px 0 0 #f9fafb !important;
+  box-shadow:
+    -5px 0 0 #f9fafb,
+    5px 0 0 #f9fafb !important;
   @apply dark:!shadow-datepicker;
 }
 
@@ -501,14 +535,14 @@ span.flatpickr-weekday,
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-  background: #32AA00;
+  background: #ffff00;
   @apply !bg-brand-500 hover:!bg-brand-500 !border-brand-500 hover:!border-brand-500;
 }
 
-.flatpickr-day.selected.startRange+.endRange:not(:nth-child(7n + 1)),
-.flatpickr-day.startRange.startRange+.endRange:not(:nth-child(7n + 1)),
-.flatpickr-day.endRange.startRange+.endRange:not(:nth-child(7n + 1)) {
-  box-shadow: -10px 0 0 #32AA00;
+.flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
+.flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
+.flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
+  box-shadow: -10px 0 0 #ffff00;
 }
 
 .flatpickr-months .flatpickr-prev-month svg,
@@ -535,7 +569,7 @@ span.flatpickr-weekday,
   @apply min-w-[718px];
 }
 
-.fc .fc-scrollgrid-section>* {
+.fc .fc-scrollgrid-section > * {
   border-right-width: 0;
   border-bottom-width: 0;
 }
@@ -594,7 +628,9 @@ span.flatpickr-weekday,
   @apply bg-transparent focus:!shadow-none !px-5 !py-2 !border-0 rounded-md !w-auto !h-auto font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 text-sm;
 }
 
-.fc-header-toolbar.fc-toolbar .fc-toolbar-chunk:last-child .fc-button.fc-button-active {
+.fc-header-toolbar.fc-toolbar
+  .fc-toolbar-chunk:last-child
+  .fc-button.fc-button-active {
   @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
 }
 
@@ -807,19 +843,19 @@ span.flatpickr-weekday,
   @apply !hidden;
 }
 
-.form-check-input:checked~span {
+.form-check-input:checked ~ span {
   @apply bg-brand-500 border-[6px] border-brand-500 dark:border-brand-500;
 }
 
-.taskCheckbox:checked~.box span {
+.taskCheckbox:checked ~ .box span {
   @apply bg-brand-500 opacity-100;
 }
 
-.taskCheckbox:checked~p {
+.taskCheckbox:checked ~ p {
   @apply text-gray-400 line-through;
 }
 
-.taskCheckbox:checked~.box {
+.taskCheckbox:checked ~ .box {
   @apply bg-brand-500 border-brand-500 dark:border-brand-500;
 }
 
@@ -830,25 +866,24 @@ span.flatpickr-weekday,
 
 .task {
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.1),
+  box-shadow:
+    0 1px 3px 0 rgba(16, 24, 40, 0.1),
     0 1px 2px 0 rgba(16, 24, 40, 0.06);
   opacity: 0.8;
   cursor: grabbing;
   /* Changes the cursor to indicate dragging */
 }
 
-
 .text-color {
   color: #fff;
 }
 
 .btn-disabled-bg {
-  background-color: #32AA00;
+  background-color: #ffff00;
 }
 
 .btn-bg {
-  background-color: #32AA00;
-
+  background-color: #ffff00;
 }
 
 .menu-item svg path {

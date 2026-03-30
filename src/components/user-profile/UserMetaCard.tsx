@@ -6,7 +6,8 @@ import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Image from "next/image";
-import { IAdmin } from "@/services/auth-api/auth-api.types";
+// import { IAdmin } from "@/services/auth-api/auth-api.types";
+type IAdmin = any;
 import { CloseModalIcon, EditIcon } from "@/icons";
 
 export default function UserMetaCard() {

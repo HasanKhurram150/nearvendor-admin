@@ -10,11 +10,12 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import TextArea from "@/components/form/input/TextArea";
 import toast from "react-hot-toast";
-import {
-  INftTraitInput,
-  useGetNftByIdQuery,
-  useUpdateNftMutation,
-} from "@/services/nft-api";
+// import {
+//   INftTraitInput,
+//   useGetNftByIdQuery,
+//   useUpdateNftMutation,
+// } from "@/services/nft-api";
+type INftTraitInput = any;
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
@@ -45,15 +46,20 @@ export default function NftDetailModal({
     status: "uploaded",
   });
   const [traits, setTraits] = useState<INftTraitInput[]>([]);
-  const {
-    data: nft,
-    isLoading,
-    isFetching,
-    isError,
-  } = useGetNftByIdQuery(nftId as string, {
-    skip: !nftId || !isOpen,
-  });
-  const [updateNft, { isLoading: isUpdating }] = useUpdateNftMutation();
+  // const {
+  //   data: nft,
+  //   isLoading,
+  //   isFetching,
+  //   isError,
+  // } = useGetNftByIdQuery(nftId as string, {
+  //   skip: !nftId || !isOpen,
+  // });
+  // const [updateNft, { isLoading: isUpdating }] = useUpdateNftMutation();
+  const nft: any = null;
+  const isLoading = false;
+  const isFetching = false;
+  const isError = false;
+  const [updateNft, { isLoading: isUpdating }] = [async (...args: any[]) => ({ unwrap: () => {} }), { isLoading: false }];
 
   useEffect(() => {
     if (!nft) {

@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { useGetCampaignsQuery } from "@/services/campaign-api";
+// import { useGetCampaignsQuery } from "@/services/campaign-api";
 import Loading from "../atoms/loading/loading";
 import { formatStartEndDate } from "@/utils/formatStartEndDate";
 import { useCampaignColumns } from "./columns";
@@ -22,10 +22,12 @@ const CampaignManagement: React.FC = () => {
   const { t } = useLanguage();
   const router = useRouter();
   const columns = useCampaignColumns();
-  const { data: campaigns, isLoading } = useGetCampaignsQuery({
-    page: 1,
-    limit: 200,
-  });
+  // const { data: campaigns, isLoading } = useGetCampaignsQuery({
+  //   page: 1,
+  //   limit: 200,
+  // });
+  const campaigns: any = { data: [] };
+  const isLoading = false;
 
   const handleEditCampaign = () => {
     router.push("/edit-campaign");
@@ -74,7 +76,7 @@ const CampaignManagement: React.FC = () => {
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#32AA00]" />
+                      <Loading size="lg" className="border-[#FFFF00]" />
                     </div>
                   </TableCell>
                 </TableRow>

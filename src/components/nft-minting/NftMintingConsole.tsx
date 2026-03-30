@@ -954,14 +954,14 @@ export default function NftMintingConsole() {
                           key={url}
                           className={`group relative aspect-square h-full shrink-0 overflow-hidden rounded-xl border-2 transition-all cursor-pointer ${
                             previewIndex === index
-                              ? "border-[#32AA00]"
+                              ? "border-[#FFFF00]"
                               : "border-transparent opacity-60 hover:opacity-100"
                           }`}
                           onClick={() => setPreviewIndex(index)}
                         >
                           <img src={url} alt={`NFT ${index + 1}`} className="h-full w-full object-cover" />
                           {previewIndex === index && (
-                            <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#32AA00] text-white shadow-lg pointer-events-none">
+                            <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#FFFF00] text-white shadow-lg pointer-events-none">
                               <TickMarkIcon className="h-3 w-3" />
                             </div>
                           )}
@@ -993,7 +993,7 @@ export default function NftMintingConsole() {
             {/* Inputs Section */}
             <div className="space-y-6">
               {/* Metadata CSV Upload Box */}
-              <div className="relative rounded-[20px] border border-[#32AA00]/20 bg-[#121A15] p-6 shadow-theme-sm overflow-hidden group">
+              <div className="relative rounded-[20px] border border-[#FFFF00]/20 bg-[#121A15] p-6 shadow-theme-sm overflow-hidden group">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
                   <div className="space-y-2 max-w-2xl">
                     <h3 className="text-base font-bold text-white tracking-tight">Metadata CSV</h3>
@@ -1008,13 +1008,13 @@ export default function NftMintingConsole() {
                     {metadataCsvName ? `Metadata: ${metadataCsvName}` : "Upload Metadata CSV"}
                   </button>
                 </div>
-                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-[#32AA00]/5 blur-[80px] rounded-full pointer-events-none" />
+                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-[#FFFF00]/5 blur-[80px] rounded-full pointer-events-none" />
               </div>
 
               <Button
                 variant="success"
                 onClick={addAttribute}
-                className="h-9 rounded-[10px] bg-[#32AA00] px-6 text-sm hover:bg-[#32AA00]/90 font-semibold"
+                className="h-9 rounded-[10px] bg-[#FFFF00] px-6 text-sm hover:bg-[#FFFF00]/90 font-semibold"
               >
                 Add Trait
               </Button>
@@ -1079,7 +1079,7 @@ export default function NftMintingConsole() {
                 <div className="flex items-center gap-3">
                   <h3 className="text-lg font-semibold text-white">Issuance Quantity</h3>
                   {editionType === "open" && (
-                    <Badge variant="solid" className="bg-[#32AA00]/10 text-[#32AA00] border-transparent rounded-full px-4">
+                    <Badge variant="solid" className="bg-[#FFFF00]/10 text-[#FFFF00] border-transparent rounded-full px-4">
                       Open Edition
                     </Badge>
                   )}
@@ -1093,7 +1093,7 @@ export default function NftMintingConsole() {
                       onClick={() => setEditionType(type)}
                       className={`h-11 rounded-[16px] px-8 text-sm font-medium capitalize transition-all ${
                         editionType === type
-                          ? "bg-[#32AA00]/20 text-white border border-[#32AA00]/50 shadow-[0_0_20px_rgba(50,170,0,0.2)]"
+                          ? "bg-[#FFFF00]/20 text-white border border-[#FFFF00]/50 shadow-[0_0_20px_rgba(50,170,0,0.2)]"
                           : "text-white/40 hover:text-white hover:bg-white/5"
                       }`}
                     >
@@ -1103,7 +1103,7 @@ export default function NftMintingConsole() {
                 </div>
 
                 {editionType === "open" && (
-                  <p className="text-sm text-[#32AA00]">
+                  <p className="text-sm text-[#FFFF00]">
                     Open edition mode is active in the UI. Supply enforcement still needs backend and contract wiring.
                   </p>
                 )}
@@ -1137,7 +1137,7 @@ export default function NftMintingConsole() {
                 {/* Traits Summary Grid */}
                 <div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
                   <div className="border-r border-white/10 p-4">
-                    <p className="text-xs font-semibold text-[#32AA00] uppercase tracking-wider mb-3">Traits</p>
+                    <p className="text-xs font-semibold text-[#FFFF00] uppercase tracking-wider mb-3">Traits</p>
                     <div className="space-y-1">
                       <p className="text-[11px] text-white/40 font-medium">Badge</p>
                       <p className="text-sm font-semibold text-white">
@@ -1173,7 +1173,7 @@ export default function NftMintingConsole() {
                 <Button
                   onClick={handleMintClick}
                   variant="success"
-                  className="w-full h-14 rounded-[16px] bg-[#32AA00] text-base font-bold shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] transition-all"
+                  className="w-full h-14 rounded-[16px] bg-[#FFFF00] text-base font-bold shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] transition-all"
                 >
                   Mint Assets
                 </Button>

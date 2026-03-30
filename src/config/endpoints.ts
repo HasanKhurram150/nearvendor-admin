@@ -52,5 +52,28 @@ export const ENDPOINTS = {
   getCustomerList: "/customer/list", //GET
   toggleReferralTreeView: "/customer", //PUT /:accountId/referral-tree-view
   getLoginHistoryList: "/login-history/list", //GET
+
+  // NEW APIS
+  auth: "/admin/login",
+
+  // USER
+  userUpdate: "/users/update",
+  userChangePassword: "/users/change-password",
+  deleteUser: "/users/delete-account",
+  currentUser: "/users/me", //GET
+  userLocation: "/users/location", //GET
+  getAllUsers: "/admin/users", //GET
+  getUserById: "/admin/user", //GET :{id}
+
+  // VENDOR
+  register: "/vendor/register", //POST
+  vendorUpdate: "/vendor/update", //PUT
+  vendorStatus: "/vendor/me/status", //GET
+  vendorApprove: "/admin/approve", //PATCH :{vendorId}
+  vendorGetById: "/admin/vendor", //GET :{vendorId}
+  vendorAll: "/admin/vendors", //GET
+  vendorProfile: "/vendor/me/profile", //GET
+  vendorSearch: "/vendor/portfolio/search", //GET
+  vendorperformance: "/vendor/portfolio/performance", //GET
 };
 //----------------------------------------------------------------

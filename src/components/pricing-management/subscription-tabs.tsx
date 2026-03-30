@@ -9,7 +9,9 @@ import {
 import { usePackageColumns } from "./columns";
 import GenericButton from "../atoms/generic-button/generic-button";
 import { EditIcon } from "@/icons";
-import { IPackages, IPrice } from "@/services/packages-api/packages-api.types";
+// import { IPackages, IPrice } from "@/services/packages-api/packages-api.types";
+type IPackages = any;
+type IPrice = any;
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
 
@@ -76,7 +78,7 @@ const SubscriptionTabs = ({
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#32AA00]" />
+                      <Loading size="lg" className="border-[#FFFF00]" />
                     </div>
                   </TableCell>
                 </TableRow>

@@ -38,7 +38,7 @@ const UsersTable = ({ users, isLoading }: UsersTableProps) => {
     return (
       <TableRow>
         <TableCell colSpan={4} className="text-center py-10">
-          <Loading size="lg" className="border-[#32AA00]" />
+          <Loading size="lg" className="border-[#FFFF00]" />
         </TableCell>
       </TableRow>
     );

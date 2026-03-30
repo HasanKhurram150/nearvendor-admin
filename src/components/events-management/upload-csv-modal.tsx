@@ -16,10 +16,10 @@ import Input from "../form/input/InputField";
 import GenericButton from "../atoms/generic-button/generic-button";
 import GenericSelectDropdown from "../atoms/generic-select-dropdown/generic-select-dropdown";
 import { CSVFileUpload } from "../atoms/csv-file-upload";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
 import Loading from "../atoms/loading/loading";
-import { useProcessEventCSVMutation } from "@/services/events-management-api";
-import { useGetCategoriesQuery } from "@/services/categories-api";
+// import { useProcessEventCSVMutation } from "@/services/events-management-api";
+// import { useGetCategoriesQuery } from "@/services/categories-api";
 import { useLanguage } from "../common/LanguageContext";
 
 // Type-safe error message extractor
@@ -52,11 +52,17 @@ const validationSchema = Yup.object().shape({
 
 export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
   const { t } = useLanguage();
-  const [uploadEventCSV, { isLoading }] = useProcessEventCSVMutation();
-  const { data: categories, isLoading: isCategoryLoading } =
-    useGetCategoriesQuery({});
+  // const [uploadEventCSV, { isLoading }] = useProcessEventCSVMutation();
+  // const { data: categories, isLoading: isCategoryLoading } =
+  //   useGetCategoriesQuery({});
+  const [uploadEventCSV, { isLoading }] = [
+    async (...args: any[]) => ({ unwrap: () => {} }),
+    { isLoading: false },
+  ];
+  const categories: any[] = [];
+  const isCategoryLoading = false;
 
-    // console.log("this is categories...", categories);
+  // console.log("this is categories...", categories);
 
   const technologyCategories =
     categories
@@ -127,14 +133,16 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
 
       {isCategoryLoading ? (
         <div className="flex justify-center items-center w-full h-[300px]">
-          <Loading size="lg" className="border-[#32AA00]" />
+          <Loading size="lg" className="border-[#FFFF00]" />
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="space-y-6 py-2 w-full max-h-[40rem] overflow-y-auto">
             <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
               <div>
-                <p className="invisible">Only Technology category type side events is accepted</p>
+                <p className="invisible">
+                  Only Technology category type side events is accepted
+                </p>
                 <Label htmlFor="eventName">{t("eventName")}</Label>
                 <Input
                   id="eventName"
@@ -208,7 +216,7 @@ export const UploadCSVModal = ({ onClose }: { onClose: () => void }) => {
             <GenericButton
               btnText={isLoading ? "" : t("save")}
               icon={isLoading && <Loading size="sm" />}
-              bgColor="#32AA00"
+              bgColor="#FFFF00"
               borderRadius="5rem"
               color="#fff"
               height="2.5rem"

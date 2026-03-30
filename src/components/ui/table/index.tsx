@@ -21,7 +21,7 @@ interface TableBodyProps {
 }
 
 // Props for TableRow
-interface TableRowProps {
+interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   children: ReactNode;
   className?: string;
   hoverable?: boolean;
@@ -38,10 +38,16 @@ interface TableCellProps {
 }
 
 // Table Component
-const Table: React.FC<TableProps> = ({ children, className = "", hoverable = true }) => {
+const Table: React.FC<TableProps> = ({
+  children,
+  className = "",
+  hoverable = true,
+}) => {
   return (
     <div className="relative w-full overflow-hidden">
-      <table className={`w-full text-left border-collapse ${hoverable ? "table-hoverable" : ""} ${className}`}>
+      <table
+        className={`w-full text-left border-collapse ${hoverable ? "table-hoverable" : ""} ${className}`}
+      >
         {children}
       </table>
     </div>
@@ -49,9 +55,15 @@ const Table: React.FC<TableProps> = ({ children, className = "", hoverable = tru
 };
 
 // TableHeader Component
-const TableHeader: React.FC<TableHeaderProps> = ({ children, className = "", sticky = true }) => {
+const TableHeader: React.FC<TableHeaderProps> = ({
+  children,
+  className = "",
+  sticky = true,
+}) => {
   return (
-    <thead className={`${sticky ? "sticky top-0 z-10 backdrop-blur-md" : ""} ${className}`}>
+    <thead
+      className={`${sticky ? "sticky top-0 z-10 backdrop-blur-md" : ""} ${className}`}
+    >
       {children}
     </thead>
   );
@@ -63,9 +75,17 @@ const TableBody: React.FC<TableBodyProps> = ({ children, className = "" }) => {
 };
 
 // TableRow Component
-const TableRow: React.FC<TableRowProps> = ({ children, className = "", hoverable = true }) => {
+const TableRow: React.FC<TableRowProps> = ({
+  children,
+  className = "",
+  hoverable = true,
+  ...props
+}) => {
   return (
-    <tr className={`group transition-colors duration-200 ${hoverable ? "hover:bg-white/[0.03]" : ""} ${className}`}>
+    <tr
+      className={`group transition-colors duration-200 ${hoverable ? "hover:bg-white/3" : ""} ${className}`}
+      {...props}
+    >
       {children}
     </tr>
   );
@@ -81,7 +101,7 @@ const TableCell: React.FC<TableCellProps> = ({
   size = "md",
 }) => {
   const CellTag = isHeader ? "th" : "td";
-  
+
   const sizeClasses = {
     sm: "px-3 py-2 text-xs",
     md: "px-3 py-4 text-sm",

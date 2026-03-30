@@ -37,9 +37,9 @@ const CSVUploadButton = () => {
       <GenericButton
         icon={<UploadWhiteIcon />}
         btnText="Upload CSV"
-        bgColor="#32AA00"
+        bgColor="#FFFF00"
         color="#fff"
-        borderColor="#32AA00"
+        borderColor="#FFFF00"
         height="2.5rem"
         width="8.688rem"
         handleClick={handleButtonClick}

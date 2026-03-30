@@ -8,12 +8,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import Loading from "../atoms/loading/loading";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
-import {
-  useAddAdvertiserMutation,
-  useEditAdvertiserMutation,
-  useGetAdvertiserByIdQuery,
-} from "@/services/advertiser-api";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
+// import {
+//   useAddAdvertiserMutation,
+//   useEditAdvertiserMutation,
+//   useGetAdvertiserByIdQuery,
+// } from "@/services/advertiser-api";
 import { useLanguage } from "../common/LanguageContext";
 
 const validationSchema = Yup.object().shape({
@@ -31,10 +31,15 @@ const validationSchema = Yup.object().shape({
 const EditAdvertiser: React.FC = () => {
   const { t } = useLanguage();
   const router = useRouter();
-  const [mutate, { isLoading }] = useEditAdvertiserMutation();
+  // const [mutate, { isLoading }] = useEditAdvertiserMutation();
+  // const { slug } = useParams();
+  // const { data: advertiserDetail, isLoading: advertiserLoading } =
+  //   useGetAdvertiserByIdQuery(slug, { skip: !slug });
+  const mutate = async (...args: any[]) => ({ unwrap: () => {} });
+  const isLoading = false;
   const { slug } = useParams();
-  const { data: advertiserDetail, isLoading: advertiserLoading } =
-    useGetAdvertiserByIdQuery(slug, { skip: !slug });
+  const advertiserDetail: any = null;
+  const advertiserLoading = false;
   const {
     register,
     handleSubmit,

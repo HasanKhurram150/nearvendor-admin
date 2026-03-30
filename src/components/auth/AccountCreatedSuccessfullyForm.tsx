@@ -6,33 +6,32 @@ import Button from "../ui/button/Button";
 import { useRouter } from "next/navigation";
 
 export default function AccountCreatedSuccessfullyForm() {
-    const router = useRouter();
-    const handleGoLogin = () => {
-      router.push("/signin");
-    };
+  const router = useRouter();
+  const handleGoLogin = () => {
+    router.push("/signin");
+  };
 
   return (
     <div className="bg-[#08070d] flex flex-col items-center justify-center w-full">
       <div className="flex flex-col items-center justify-center w-full max-w-[33.75rem] mx-auto">
         <>
           <Image
-                         className="dark:hidden"
-                         src="/images/logo/logo.svg"
-                         alt="Logo"
-                         width={57}
-                         height={65}
-                       />
-                       <Image
+            className="dark:hidden"
+            src="/images/logo/near-vendor-logo.svg"
+            alt="Logo"
+            width={64}
+            height={64}
+          />
+          {/* <Image
                          className="hidden dark:block"
                          src="/images/logo/logo.svg"
                          alt="Logo"
                          width={57}
                          height={65}
-                       />
+                       /> */}
         </>
         <div className="w-full mt-[3.125rem] p-[1.875rem] bg-transparent dark:bg-gray-900 rounded-[1.875rem] border border-[#46464666]">
-  
-  <form>
+          <form>
             <div className="space-y-7">
               <Image
                 src="/images/logo/check-mark.webp"
@@ -42,22 +41,25 @@ export default function AccountCreatedSuccessfullyForm() {
                 className="block mx-auto mb-[1.5rem]"
               />
               <div className="mb-5 sm:mb-8 text-center">
-            <h1 className="mb-2 text-lg sm:text-2xl font-semibold text-[#201D1D] dark:text-white/90">
-            Account Created Successfully
-            </h1>
-            <p className="mx-auto max-w-[30rem] text-base text-gray-500 dark:text-gray-400">
-            Your onboarding has been successfully completed. 
-            </p>
-          </div>
+                <h1 className="mb-2 text-lg sm:text-2xl font-semibold text-[#201D1D] dark:text-white/90">
+                  Account Created Successfully
+                </h1>
+                <p className="mx-auto max-w-[30rem] text-base text-gray-500 dark:text-gray-400">
+                  Your onboarding has been successfully completed.
+                </p>
+              </div>
               {/* Button */}
               <div>
-                <Button className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base" size="sm" onClick={handleGoLogin}>
-                Go to Login
+                <Button
+                  className="w-full h-[3.25rem] rounded-2xl btn-bg text-white text-base"
+                  size="sm"
+                  onClick={handleGoLogin}
+                >
+                  Go to Login
                 </Button>
               </div>
             </div>
-        </form>
-         
+          </form>
         </div>
       </div>
     </div>

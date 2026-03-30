@@ -15,13 +15,14 @@ import GenericSearchField from "../atoms/generic-search-field/generic-search-fie
 import { GenericModal } from "../atoms/generic-modal";
 import { AddCategoryModal } from "./add-category-modal";
 import { EditCategoryModal } from "./edit-category-modal";
-import {
-  useDeleteCategoryMutation,
-  useGetCategoriesQuery,
-} from "@/services/categories-api";
-import type { ICategory } from "@/services/categories-api/categories-api.types";
+// import {
+//   useDeleteCategoryMutation,
+//   useGetCategoriesQuery,
+// } from "@/services/categories-api";
+// import type { ICategory } from "@/services/categories-api/categories-api.types";
+type ICategory = any;
 import toast from "react-hot-toast";
-import type { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import type { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
 import Select from "../form/Select";
 import { useLanguage } from "../common/LanguageContext";
 import PageBreadcrumb from "../common/PageBreadCrumb";
@@ -45,11 +46,17 @@ const CategoriesManagement: React.FC = () => {
   );
 
   // API hooks
-  const { data: categories, isLoading } = useGetCategoriesQuery({
-    type: selectedType,
-  });
-  const [deleteCategory, { isLoading: isDeleting }] =
-    useDeleteCategoryMutation();
+  // const { data: categories, isLoading } = useGetCategoriesQuery({
+  //   type: selectedType,
+  // });
+  // const [deleteCategory, { isLoading: isDeleting }] =
+  //   useDeleteCategoryMutation();
+  const categories: any[] = [];
+  const isLoading = false;
+  const [deleteCategory, { isLoading: isDeleting }] = [
+    async (...args: any[]) => ({ unwrap: () => {} }),
+    { isLoading: false },
+  ];
 
   const filteredCategories = useMemo(() => {
     if (!categories) return [];
@@ -111,7 +118,7 @@ const CategoriesManagement: React.FC = () => {
         <TableRow>
           <TableCell colSpan={columns.length} className="text-center py-8">
             <div className="flex justify-center">
-              <Loading size="lg" className="border-[#32AA00]" />
+              <Loading size="lg" className="border-[#FFFF00]" />
             </div>
           </TableCell>
         </TableRow>
@@ -192,7 +199,7 @@ const CategoriesManagement: React.FC = () => {
           <GenericButton
             icon={<PlusIcon />}
             btnText={t("addNew")}
-            bgColor="#32AA00"
+            bgColor="#FFFF00"
             color="#fff"
             height="2.5rem"
             width="7.188rem"

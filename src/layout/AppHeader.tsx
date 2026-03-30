@@ -1,6 +1,6 @@
 "use client";
-import { LanguageToggleButton } from "@/components/common/LanguageToggleButton";
-import WalletConnectButton from "@/components/header/WalletConnectButton";
+// import { LanguageToggleButton } from "@/components/common/LanguageToggleButton";
+// import WalletConnectButton from "@/components/header/WalletConnectButton";
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 // import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
@@ -43,7 +43,7 @@ const AppHeader: React.FC = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 flex w-full bg-transparent border-[#1D1C1C] z-40">
+    <header className="sticky top-0 flex w-full bg-transparent border-[#1E293B] z-40">
       <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
         <div className="flex lg:hidden items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
           <button
@@ -88,18 +88,18 @@ const AppHeader: React.FC = () => {
           <Link href="/" className="lg:hidden">
             <Image
               className="dark:hidden"
-              src="/images/logo/logo.svg"
+              src="/images/logo/near-vendor-logo.svg"
               alt="Logo"
               width={57}
               height={65}
             />
-            <Image
+            {/* <Image
               className="hidden dark:block"
               src="/images/logo/logo.svg"
               alt="Logo"
               width={57}
               height={65}
-            />
+            /> */}
           </Link>
 
           <button
@@ -158,8 +158,9 @@ const AppHeader: React.FC = () => {
           </div>
         </div>
         <div
-          className={`${isApplicationMenuOpen ? "flex" : "hidden"
-            } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
+          className={`${
+            isApplicationMenuOpen ? "flex" : "hidden"
+          } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
@@ -170,8 +171,8 @@ const AppHeader: React.FC = () => {
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          <LanguageToggleButton />
-          <WalletConnectButton />
+          {/* <LanguageToggleButton /> */}
+          {/* <WalletConnectButton /> */}
           <UserDropdown />
         </div>
       </div>

@@ -4,11 +4,11 @@ import toast from "react-hot-toast";
 import Loading from "@/components/atoms/loading/loading";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import {
-  useGetAdminConfigQuery,
-  useUpdateNftMasterWalletMutation,
-} from "@/services/admin-config-api";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+// import {
+//   useGetAdminConfigQuery,
+//   useUpdateNftMasterWalletMutation,
+// } from "@/services/admin-config-api";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
 
 const CHAIN_LABELS: Record<string, string> = {
   "1": "Ethereum (1)",
@@ -32,7 +32,9 @@ interface WalletRowProps {
 function WalletRow({ chainId, currentAddress }: WalletRowProps) {
   const [address, setAddress] = useState(currentAddress ?? "");
   const [touched, setTouched] = useState(false);
-  const [updateWallet, { isLoading }] = useUpdateNftMasterWalletMutation();
+  // const [updateWallet, { isLoading }] = useUpdateNftMasterWalletMutation();
+  const updateWallet = async (...args: any[]) => ({ unwrap: () => {} });
+  const isLoading = false;
 
   const isDirty = address !== (currentAddress ?? "");
   const isValid = /^0x[0-9a-fA-F]{40}$/.test(address.trim());
@@ -48,7 +50,7 @@ function WalletRow({ chainId, currentAddress }: WalletRowProps) {
     } catch (error) {
       const apiError = error as ApiErrorResponse;
       toast.error(
-        apiError?.data?.message ?? "Failed to update wallet. Please try again."
+        apiError?.data?.message ?? "Failed to update wallet. Please try again.",
       );
     }
   };
@@ -85,7 +87,9 @@ function WalletRow({ chainId, currentAddress }: WalletRowProps) {
 }
 
 export function NftWalletSettings() {
-  const { data, isLoading } = useGetAdminConfigQuery();
+  // const { data, isLoading } = useGetAdminConfigQuery();
+  const data: any = null;
+  const isLoading = false;
 
   return (
     <div className="rounded-2xl bg-white dark:bg-white/[0.03] w-full p-6">
@@ -99,7 +103,7 @@ export function NftWalletSettings() {
 
       {isLoading ? (
         <div className="flex justify-center py-10">
-          <Loading size="lg" className="border-[#32AA00]" />
+          <Loading size="lg" className="border-[#FFFF00]" />
         </div>
       ) : !data ? (
         <p className="text-gray-500 py-6 text-center">

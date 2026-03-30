@@ -63,7 +63,7 @@ export default function ForgotPasswordForm() {
 
                 <div className="pt-2 space-y-6">
                   <Button
-                    className="relative w-full h-14 rounded-2xl bg-[#32AA00] text-white font-bold text-lg shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] hover:bg-[#32AA00]/90 active:scale-[0.98] transition-all overflow-hidden group/btn"
+                    className="relative w-full h-14 rounded-2xl bg-[#FFFF00] text-white font-bold text-lg shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] hover:bg-[#FFFF00]/90 active:scale-[0.98] transition-all overflow-hidden group/btn"
                     type="submit"
                   >
                     Get Verification Link
@@ -107,7 +107,7 @@ export default function ForgotPasswordForm() {
               </p>
 
               <Button
-                className="w-full h-14 rounded-2xl bg-[#32AA00] text-white font-bold text-lg shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] transition-all"
+                className="w-full h-14 rounded-2xl bg-[#FFFF00] text-white font-bold text-lg shadow-[0_4px_20px_rgba(50,170,0,0.3)] hover:shadow-[0_4px_25px_rgba(50,170,0,0.4)] transition-all"
                 onClick={handleCreateNewPassword}
               >
                 Continue

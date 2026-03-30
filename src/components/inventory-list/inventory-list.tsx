@@ -16,7 +16,7 @@ import { EditIcon } from "@/icons";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import { useRouter } from "next/navigation";
 import { ToggleSwitch } from "../toggle-button/toggle-button";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
 import toast from "react-hot-toast";
 // import GenericPagination from "../atoms/generic-pagination/generic-pagination";
 
@@ -88,7 +88,7 @@ const InventoryList: React.FC = () => {
                     className="text-center py-8"
                   >
                     <div className="flex justify-center">
-                      <Loading size="lg" className="border-[#32AA00]" />
+                      <Loading size="lg" className="border-[#FFFF00]" />
                     </div>
                   </TableCell>
                 </TableRow>

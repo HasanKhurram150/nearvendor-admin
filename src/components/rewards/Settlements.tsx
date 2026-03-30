@@ -17,11 +17,11 @@ import {
 import Badge from "@/components/ui/badge/Badge";
 import { useLanguage } from "@/components/common/LanguageContext";
 import Select from "@/components/form/Select";
-import { ApiErrorResponse } from "@/services/auth-api/auth-api.types";
-import {
-  useDeleteAdminRewardSettlementMutation,
-  useGetAdminRewardSettlementsQuery,
-} from "@/services/rewards-api";
+import { ApiErrorResponse } from "@/services/auth/auth-api/auth-api.types";
+// import {
+//   useDeleteAdminRewardSettlementMutation,
+//   useGetAdminRewardSettlementsQuery,
+// } from "@/services/rewards-api";
 import { TxLink, formatAmount, truncateAddress } from "./rewards-table-utils";
 import { CreateSettlementModal } from "./CreateSettlementModal";
 
@@ -48,8 +48,14 @@ function SummaryCard({
   return (
     <div className="dashboard-card p-5">
       <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">{value}</p>
-      {detail ? <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{detail}</p> : null}
+      <p className="mt-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+        {value}
+      </p>
+      {detail ? (
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          {detail}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -58,7 +64,7 @@ function SettlementStatusBadge({ status }: { status: string }) {
   const normalizedStatus = status.toLowerCase();
   const classes =
     normalizedStatus === "completed"
-      ? "bg-[#32AA00]/10 text-[#32AA00]"
+      ? "bg-[#FFFF00]/10 text-[#FFFF00]"
       : normalizedStatus === "failed"
         ? "bg-red-500/10 text-red-400"
         : normalizedStatus === "submitted" || normalizedStatus === "processing"
@@ -66,7 +72,9 @@ function SettlementStatusBadge({ status }: { status: string }) {
           : "bg-amber-500/10 text-amber-400";
 
   return (
-    <span className={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${classes}`}>
+    <span
+      className={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${classes}`}
+    >
       {status}
     </span>
   );
@@ -87,7 +95,10 @@ function DistributionCell({
         {recipients.length} recipients • {rewardCount} rewards
       </span>
       {recipients.slice(0, 2).map((distribution) => (
-        <div key={`${distribution.recipient}-${distribution.amount}`} className="flex items-center justify-between gap-3">
+        <div
+          key={`${distribution.recipient}-${distribution.amount}`}
+          className="flex items-center justify-between gap-3"
+        >
           <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
             {truncateAddress(distribution.recipient)}
           </span>
@@ -97,7 +108,9 @@ function DistributionCell({
         </div>
       ))}
       {recipients.length > 2 ? (
-        <span className="text-xs text-gray-400">+{recipients.length - 2} more</span>
+        <span className="text-xs text-gray-400">
+          +{recipients.length - 2} more
+        </span>
       ) : null}
     </div>
   );
@@ -108,19 +121,25 @@ export default function Settlements() {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
-  const [deletingSettlementId, setDeletingSettlementId] = useState<string | null>(null);
+  const [deletingSettlementId, setDeletingSettlementId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     setPage(1);
   }, [sort]);
 
-  const { data, isLoading, isFetching } = useGetAdminRewardSettlementsQuery({
-    page,
-    pageSize: DEFAULT_PAGE_SIZE,
-    sortBy: "createdAt",
-    sort,
-  });
-  const [deleteSettlement] = useDeleteAdminRewardSettlementMutation();
+  // const { data, isLoading, isFetching } = useGetAdminRewardSettlementsQuery({
+  //   page,
+  //   pageSize: DEFAULT_PAGE_SIZE,
+  //   sortBy: "createdAt",
+  //   sort,
+  // });
+  // const [deleteSettlement] = useDeleteAdminRewardSettlementMutation();
+  const data: any = null;
+  const isLoading = false;
+  const isFetching = false;
+  const deleteSettlement = async (...args: any[]) => ({ unwrap: () => {} });
 
   const settlements = data?.data ?? [];
   const meta = data?.meta;
@@ -128,13 +147,20 @@ export default function Settlements() {
   const totalItems = meta?.totalItems ?? 0;
   const currentPage = meta?.currentPage ?? page;
   const itemsPerPage = meta?.itemsPerPage ?? DEFAULT_PAGE_SIZE;
-  const rangeStart = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const rangeStart =
+    totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
   const rangeEnd = totalItems === 0 ? 0 : rangeStart + settlements.length - 1;
-  const pendingCount = settlements.filter((settlement) => settlement.status.toLowerCase() === "pending").length;
-  const completedCount = settlements.filter((settlement) => settlement.status.toLowerCase() === "completed").length;
+  const pendingCount = settlements.filter(
+    (settlement) => settlement.status.toLowerCase() === "pending",
+  ).length;
+  const completedCount = settlements.filter(
+    (settlement) => settlement.status.toLowerCase() === "completed",
+  ).length;
 
   const handleDeleteSettlement = async (settlementId: string) => {
-    const shouldDelete = window.confirm(t("deleteSingleSettlementConfirmation"));
+    const shouldDelete = window.confirm(
+      t("deleteSingleSettlementConfirmation"),
+    );
 
     if (!shouldDelete) return;
 
@@ -152,7 +178,10 @@ export default function Settlements() {
 
   return (
     <div className="flex flex-col gap-8 w-full">
-      <PageBreadcrumb pageTitle={t("settlements")} info={t("manageSettlements")} />
+      <PageBreadcrumb
+        pageTitle={t("settlements")}
+        info={t("manageSettlements")}
+      />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <SummaryCard label={t("totalSettlements")} value={String(totalItems)} />
@@ -161,8 +190,16 @@ export default function Settlements() {
           value={`${currentPage} / ${totalPages}`}
           detail={`${itemsPerPage} ${t("itemsPerPage")}`}
         />
-        <SummaryCard label={t("pending")} value={String(pendingCount)} detail={t("onCurrentPage")} />
-        <SummaryCard label={t("completed")} value={String(completedCount)} detail={t("onCurrentPage")} />
+        <SummaryCard
+          label={t("pending")}
+          value={String(pendingCount)}
+          detail={t("onCurrentPage")}
+        />
+        <SummaryCard
+          label={t("completed")}
+          value={String(completedCount)}
+          detail={t("onCurrentPage")}
+        />
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4 dashboard-card p-5">
@@ -193,17 +230,21 @@ export default function Settlements() {
           ) : null}
         </div>
 
-        <Button onClick={() => setIsSettlementModalOpen(true)}>{t("createSettlement")}</Button>
+        <Button onClick={() => setIsSettlementModalOpen(true)}>
+          {t("createSettlement")}
+        </Button>
       </div>
 
       <div className="overflow-hidden dashboard-card pb-6">
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <div className="flex justify-center py-16">
-              <Loading size="lg" className="border-[#32AA00]" />
+              <Loading size="lg" className="border-[#FFFF00]" />
             </div>
           ) : settlements.length === 0 ? (
-            <div className="py-16 text-center text-gray-400">{t("noSettlementsFound")}</div>
+            <div className="py-16 text-center text-gray-400">
+              {t("noSettlementsFound")}
+            </div>
           ) : (
             <Table aria-label="Settlements table">
               <TableHeader className="border-b border-[#1D1C1C] bg-white/[0.02]">
@@ -231,108 +272,151 @@ export default function Settlements() {
 
                   return (
                     <TableRow key={settlement.id}>
-                    {/* Batch & Status */}
-                    <TableCell className="whitespace-nowrap py-4 pl-6 pr-3 min-w-[16rem]">
-                      <div className="flex flex-col gap-2 text-left">
-                        <div className="flex flex-col">
-                          <span className="text-sm font-semibold text-white/90">
-                            Batch: {truncateAddress(settlement.batchGroupId)}
-                          </span>
-                          <span className="text-[10px] text-gray-500 font-mono">
-                            ID: {settlement.id}
-                          </span>
+                      {/* Batch & Status */}
+                      <TableCell className="whitespace-nowrap py-4 pl-6 pr-3 min-w-[16rem]">
+                        <div className="flex flex-col gap-2 text-left">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-semibold text-white/90">
+                              Batch: {truncateAddress(settlement.batchGroupId)}
+                            </span>
+                            <span className="text-[10px] text-gray-500 font-mono">
+                              ID: {settlement.id}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <SettlementStatusBadge status={settlement.status} />
+                            <span className="text-[10px] text-gray-500">
+                              #{settlement.batchIndex} •{" "}
+                              {settlement.attemptCount} att
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <SettlementStatusBadge status={settlement.status} />
-                          <span className="text-[10px] text-gray-500">
-                             #{settlement.batchIndex} • {settlement.attemptCount} att
-                          </span>
-                        </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    {/* Network & Participants */}
-                    <TableCell className="px-3 py-4 min-w-[14rem]">
-                      <div className="flex flex-col gap-2 text-left">
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium text-white/90">
-                            {settlement.paymentTokenSymbol}
-                          </span>
-                          <span className="text-[10px] text-gray-500 font-mono">
-                            {truncateAddress(settlement.paymentTokenAddress)}
-                          </span>
-                          <span className="text-[10px] text-gray-400">
-                            Chain {settlement.chainId}
-                          </span>
+                      {/* Network & Participants */}
+                      <TableCell className="px-3 py-4 min-w-[14rem]">
+                        <div className="flex flex-col gap-2 text-left">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-white/90">
+                              {settlement.paymentTokenSymbol}
+                            </span>
+                            <span className="text-[10px] text-gray-500 font-mono">
+                              {truncateAddress(settlement.paymentTokenAddress)}
+                            </span>
+                            <span className="text-[10px] text-gray-400">
+                              Chain {settlement.chainId}
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-gray-500 bg-white/5 rounded px-2 py-1 w-fit">
+                            {settlement.recipientCount} Recipients •{" "}
+                            {settlement.rewardCount} Rewards
+                          </div>
                         </div>
-                        <div className="text-[10px] text-gray-500 bg-white/5 rounded px-2 py-1 w-fit">
-                          {settlement.recipientCount} Recipients • {settlement.rewardCount} Rewards
-                        </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    {/* Settlement Details */}
-                    <TableCell className="px-3 py-4 min-w-[15rem]">
-                      <div className="flex flex-col gap-1.5 text-left text-xs">
-                        <div className="flex justify-between gap-4 border-b border-white/5 pb-1">
-                          <span className="text-gray-500">User Total:</span>
-                          <span className="text-gray-300 font-medium">{formatAmount(settlement.userAmount)} {settlement.paymentTokenSymbol}</span>
+                      {/* Settlement Details */}
+                      <TableCell className="px-3 py-4 min-w-[15rem]">
+                        <div className="flex flex-col gap-1.5 text-left text-xs">
+                          <div className="flex justify-between gap-4 border-b border-white/5 pb-1">
+                            <span className="text-gray-500">User Total:</span>
+                            <span className="text-gray-300 font-medium">
+                              {formatAmount(settlement.userAmount)}{" "}
+                              {settlement.paymentTokenSymbol}
+                            </span>
+                          </div>
+                          <div className="flex justify-between gap-4 border-b border-white/5 pb-1">
+                            <span className="text-gray-500">Platform:</span>
+                            <span className="text-gray-300 font-medium">
+                              {formatAmount(settlement.platformAmount)}{" "}
+                              {settlement.paymentTokenSymbol}
+                            </span>
+                          </div>
+                          <div className="flex justify-between gap-4 pt-0.5">
+                            <span className="text-gray-400 font-semibold">
+                              Total:
+                            </span>
+                            <span className="text-success-500 font-bold">
+                              {formatAmount(settlement.totalAmount)}{" "}
+                              {settlement.paymentTokenSymbol}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex justify-between gap-4 border-b border-white/5 pb-1">
-                          <span className="text-gray-500">Platform:</span>
-                          <span className="text-gray-300 font-medium">{formatAmount(settlement.platformAmount)} {settlement.paymentTokenSymbol}</span>
-                        </div>
-                        <div className="flex justify-between gap-4 pt-0.5">
-                          <span className="text-gray-400 font-semibold">Total:</span>
-                          <span className="text-success-500 font-bold">{formatAmount(settlement.totalAmount)} {settlement.paymentTokenSymbol}</span>
-                        </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    {/* Distribution Preview */}
-                    <TableCell className="px-3 py-4 min-w-[14rem]">
-                      <DistributionCell
-                        recipients={settlement.userDistributions.map((distribution) => ({
-                          recipient: distribution.recipient,
-                          amount: distribution.amount,
-                        }))}
-                        rewardCount={settlement.rewardCount}
-                        symbol={settlement.paymentTokenSymbol}
-                      />
-                    </TableCell>
-
-                    {/* Tx & Timeline */}
-                    <TableCell className="px-3 py-4 min-w-[14rem]">
-                      <div className="flex flex-col gap-2 text-left">
-                        {settlement.txHash ? (
-                          <TxLink hash={settlement.txHash} chainId={settlement.chainId} />
-                        ) : (
-                          <Badge variant="light" color="light" size="sm" className="w-fit">Pending</Badge>
-                        )}
-                        <div className="flex flex-col text-[10px] text-gray-500">
-                          <span>Created: {dayjs(settlement.createdAt).format("DD MMM, HH:mm")}</span>
-                          {settlement.completedAt && (
-                            <span className="text-success-500/80">Done: {dayjs(settlement.completedAt).format("DD MMM, HH:mm")}</span>
+                      {/* Distribution Preview */}
+                      <TableCell className="px-3 py-4 min-w-[14rem]">
+                        <DistributionCell
+                          recipients={settlement.userDistributions.map(
+                            (distribution) => ({
+                              recipient: distribution.recipient,
+                              amount: distribution.amount,
+                            }),
                           )}
-                        </div>
-                      </div>
-                    </TableCell>
+                          rewardCount={settlement.rewardCount}
+                          symbol={settlement.paymentTokenSymbol}
+                        />
+                      </TableCell>
 
-                    {/* Actions */}
-                    <TableCell className="px-3 py-4 pr-6 min-w-[8rem] text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => void handleDeleteSettlement(settlement.id)}
-                        disabled={!canDelete || deletingSettlementId === settlement.id}
-                        className="text-red-400 hover:text-red-500 hover:bg-red-500/5 px-2"
-                      >
-                        {deletingSettlementId === settlement.id ? <Loading size="sm" /> : "Delete"}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                      {/* Tx & Timeline */}
+                      <TableCell className="px-3 py-4 min-w-[14rem]">
+                        <div className="flex flex-col gap-2 text-left">
+                          {settlement.txHash ? (
+                            <TxLink
+                              hash={settlement.txHash}
+                              chainId={settlement.chainId}
+                            />
+                          ) : (
+                            <Badge
+                              variant="light"
+                              color="light"
+                              size="sm"
+                              className="w-fit"
+                            >
+                              Pending
+                            </Badge>
+                          )}
+                          <div className="flex flex-col text-[10px] text-gray-500">
+                            <span>
+                              Created:{" "}
+                              {dayjs(settlement.createdAt).format(
+                                "DD MMM, HH:mm",
+                              )}
+                            </span>
+                            {settlement.completedAt && (
+                              <span className="text-success-500/80">
+                                Done:{" "}
+                                {dayjs(settlement.completedAt).format(
+                                  "DD MMM, HH:mm",
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+
+                      {/* Actions */}
+                      <TableCell className="px-3 py-4 pr-6 min-w-[8rem] text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            void handleDeleteSettlement(settlement.id)
+                          }
+                          disabled={
+                            !canDelete || deletingSettlementId === settlement.id
+                          }
+                          className="text-red-400 hover:text-red-500 hover:bg-red-500/5 px-2"
+                        >
+                          {deletingSettlementId === settlement.id ? (
+                            <Loading size="sm" />
+                          ) : (
+                            "Delete"
+                          )}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           )}
@@ -347,7 +431,11 @@ export default function Settlements() {
                 total: totalItems,
               })}
             </span>
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           </div>
         ) : null}
       </div>
