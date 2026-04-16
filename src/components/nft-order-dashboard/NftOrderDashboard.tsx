@@ -88,9 +88,13 @@ export default function NftOrderDashboard() {
       else if (timeSpan === "monthly") cutoff = now.startOf("month");
       else if (timeSpan === "lastQuarter") cutoff = now.subtract(3, "month");
       else if (timeSpan === "yearly") cutoff = now.startOf("year");
-      
-      filteredUsers = filteredUsers.filter(u => dayjs(u.createdAt).isAfter(cutoff));
-      filteredVendors = filteredVendors.filter(v => dayjs(v.createdAt).isAfter(cutoff));
+
+      filteredUsers = filteredUsers.filter((u) =>
+        dayjs(u.createdAt).isAfter(cutoff),
+      );
+      filteredVendors = filteredVendors.filter((v) =>
+        dayjs(v.createdAt).isAfter(cutoff),
+      );
     }
 
     // 2. Search Filter

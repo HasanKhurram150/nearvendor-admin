@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { INftOrderStats } from "@/services/nft-order-stats-api/nft-order-stats-api.types";
+// import { INftOrderStats } from "@/services/nft-order-stats-api/nft-order-stats-api.types";
 import { useLanguage } from "@/components/common/LanguageContext";
 
 interface StatCard {
@@ -58,7 +58,9 @@ export function OrderStatsCards({ stats }: { stats: any }) {
           key={card.label}
           className="dashboard-card p-5 md:p-6 flex flex-col justify-center border border-white/[0.04]"
         >
-          <span className="text-[12px] font-medium text-gray-500 uppercase tracking-wider">{card.label}</span>
+          <span className="text-[12px] font-medium text-gray-500 uppercase tracking-wider">
+            {card.label}
+          </span>
           <h4 className="mt-3 font-bold text-white text-[28px]">
             {card.value}
           </h4>

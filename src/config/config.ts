@@ -1,5 +1,5 @@
 // API
-// export const BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
+export const BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
 export const API_KEY = process.env.NEXT_PUBLIC_ALLOW_API_MOCKING;
 export const NEXTAUTH_URL = process.env.NEXT_PUBLIC_NEXTAUTH_URL;
 // ----------------------------------------------------------------------

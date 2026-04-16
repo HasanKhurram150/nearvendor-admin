@@ -9,7 +9,10 @@ import {
   TableRow,
 } from "../ui/table";
 import { getAllUsersAPI } from "@/services/users/get-all-users/get-all-users-api";
-import { GetAllUsersOutputDto, User } from "@/services/users/get-all-users/get-all-user-types";
+import {
+  GetAllUsersOutputDto,
+  User,
+} from "@/services/users/get-all-users/get-all-user-types";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
@@ -41,7 +44,9 @@ const UserManagement: React.FC = () => {
   const { t } = useLanguage();
 
   const [users, setUsers] = useState<User[]>([]);
-  const [pagination, setPagination] = useState<GetAllUsersOutputDto["data"]["pagination"] | null>(null);
+  const [pagination, setPagination] = useState<
+    GetAllUsersOutputDto["data"]["pagination"] | null
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("");
@@ -80,13 +85,15 @@ const UserManagement: React.FC = () => {
 
   // Client-side filtering on current page results
   const filteredUsers = users.filter((user) => {
-    const matchesSearch = !search || 
+    const matchesSearch =
+      !search ||
       user.fullName?.toLowerCase().includes(search.toLowerCase()) ||
       user.email?.toLowerCase().includes(search.toLowerCase());
-    
+
     const matchesRole = !roleFilter || user.role === roleFilter;
-    
-    const matchesStatus = !statusFilter || String(user.isActive) === statusFilter;
+
+    const matchesStatus =
+      !statusFilter || String(user.isActive) === statusFilter;
 
     return matchesSearch && matchesRole && matchesStatus;
   });
@@ -94,7 +101,7 @@ const UserManagement: React.FC = () => {
   return (
     <div className="flex flex-col gap-8 w-full">
       <PageBreadcrumb
-        pageTitle={"userManagement"}
+        pageTitle={"User Management"}
         counter={true}
         counterText={t("totalUsers")}
         counterValue={pagination?.total || 0}
@@ -117,7 +124,9 @@ const UserManagement: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full xl:w-auto">
             {/* Role Filters */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-medium text-gray-500 mr-1 uppercase tracking-wider">Role:</span>
+              <span className="text-xs font-medium text-gray-500 mr-1 uppercase tracking-wider">
+                Role:
+              </span>
               {ROLE_FILTERS.map(({ label, value }) => (
                 <button
                   key={value}
@@ -126,7 +135,7 @@ const UserManagement: React.FC = () => {
                     "px-4 py-1.5 rounded-full text-xs font-semibold transition-all border",
                     roleFilter === value
                       ? "bg-brand-500 border-brand-500 text-gray-950"
-                      : "bg-transparent border-white/[0.06] text-gray-500 hover:border-white/20 hover:text-gray-300"
+                      : "bg-transparent border-white/[0.06] text-gray-500 hover:border-white/20 hover:text-gray-300",
                   )}
                 >
                   {label}
@@ -136,7 +145,9 @@ const UserManagement: React.FC = () => {
 
             {/* Status Filters */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-medium text-gray-500 mr-1 uppercase tracking-wider">Status:</span>
+              <span className="text-xs font-medium text-gray-500 mr-1 uppercase tracking-wider">
+                Status:
+              </span>
               {STATUS_FILTERS.map(({ label, value }) => (
                 <button
                   key={value}
@@ -149,7 +160,7 @@ const UserManagement: React.FC = () => {
                         : value === "false"
                           ? "bg-red-500/20 border-red-500/40 text-red-400"
                           : "bg-white/10 border-white/20 text-white"
-                      : "bg-transparent border-white/[0.06] text-gray-500 hover:border-white/20 hover:text-gray-300"
+                      : "bg-transparent border-white/[0.06] text-gray-500 hover:border-white/20 hover:text-gray-300",
                   )}
                 >
                   {label}
@@ -228,7 +239,9 @@ const UserManagement: React.FC = () => {
                     className="cursor-pointer"
                   >
                     <TableCell className="pl-6 pr-3 py-4 text-xs text-gray-500 font-mono">
-                      {((page - 1) * DEFAULT_PAGE_SIZE + (index + 1)).toString().padStart(2, "0")}
+                      {((page - 1) * DEFAULT_PAGE_SIZE + (index + 1))
+                        .toString()
+                        .padStart(2, "0")}
                     </TableCell>
                     <TableCell className="px-3 py-4">
                       <div className="flex flex-col gap-0.5">
@@ -265,7 +278,9 @@ const UserManagement: React.FC = () => {
                     </TableCell>
                     <TableCell className="py-4 pl-3 pr-6 text-xs text-gray-500">
                       {userItem.lastLoginAt
-                        ? dayjs(userItem.lastLoginAt).format("DD MMM, YYYY HH:mm")
+                        ? dayjs(userItem.lastLoginAt).format(
+                            "DD MMM, YYYY HH:mm",
+                          )
                         : "—"}
                     </TableCell>
                   </TableRow>
@@ -279,7 +294,9 @@ const UserManagement: React.FC = () => {
         {!isLoading && pagination && pagination.total > 0 && (
           <div className="mt-4 flex flex-col items-center justify-between gap-3 px-6 sm:flex-row">
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Showing {(page - 1) * DEFAULT_PAGE_SIZE + 1}–{Math.min(page * DEFAULT_PAGE_SIZE, pagination.total)} of {pagination.total} records
+              Showing {(page - 1) * DEFAULT_PAGE_SIZE + 1}–
+              {Math.min(page * DEFAULT_PAGE_SIZE, pagination.total)} of{" "}
+              {pagination.total} records
             </span>
             <Pagination
               currentPage={page}

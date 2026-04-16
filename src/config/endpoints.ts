@@ -76,5 +76,9 @@ export const ENDPOINTS = {
   vendorProfile: "/vendor/me/profile", //GET
   vendorSearch: "/vendor/portfolio/search", //GET
   vendorperformance: "/vendor/portfolio/performance", //GET
+
+  //REPORTS
+  getAllReports: "reports/users", //GET
+  getAllReportsbyId: "reports/user", //GET
 };
 //----------------------------------------------------------------

@@ -198,6 +198,25 @@ body {
     cursor: pointer;
   }
 
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
   body {
     @apply z-1 relative bg-[#0F172A] font-outfit font-normal text-[#F8FAFC]/90 overflow-x-hidden;
     background-image:
@@ -325,16 +344,16 @@ body {
   }
 
   &::-webkit-scrollbar-track {
-    @apply rounded-full;
+    @apply bg-transparent rounded-full;
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-gray-200 dark:bg-gray-700 rounded-full;
+    @apply bg-white/10 hover:bg-white/20 rounded-full;
   }
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #344054;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 @layer utilities {
