@@ -12,14 +12,16 @@ import Loading from "../atoms/loading/loading";
 import toast from "react-hot-toast";
 import Button from "../ui/button/Button";
 import dayjs from "dayjs";
+import { vendorRejectAPI } from "@/services/vendor/reject/vendor-reject-api";
 
 const VendorApplication: React.FC = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  
+
   const [vendor, setVendor] = useState<GetVendorIdOutputDto["data"] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
 
   const fetchVendorDetails = async () => {
     if (!id) return;
@@ -60,6 +62,23 @@ const VendorApplication: React.FC = () => {
     } finally {
       setIsVerifying(false);
     }
+  }; const handleReject = async () => {
+    if (!id) return;
+    setIsRejecting(true);
+    try {
+      const res = await vendorRejectAPI.vendorReject({ vendorId: id });
+      if (res.success) {
+        toast.success("Vendor application rejected successfully!");
+        fetchVendorDetails(); // Refresh details
+      } else {
+        toast.error(res.message || "Failed to reject  vendor application");
+      }
+    } catch (error) {
+      console.error("Error verifying vendor:", error);
+      toast.error("An error occurred during verification");
+    } finally {
+      setIsRejecting(false);
+    }
   };
 
   if (isLoading) {
@@ -89,21 +108,21 @@ const VendorApplication: React.FC = () => {
     { label: "Business Type", value: vendor.businessType },
     { label: "Tax ID", value: vendor.taxId },
     { label: "Support Contact", value: vendor.supportContact },
-    { 
-      label: "Status", 
-      value: vendor.status, 
-      isBadge: true, 
-      color: vendor.status === "APPROVED" ? "success" : vendor.status === "REJECTED" ? "error" : "warning" 
+    {
+      label: "Status",
+      value: vendor.status,
+      isBadge: true,
+      color: vendor.status === "APPROVED" ? "success" : vendor.status === "REJECTED" ? "error" : "warning"
     },
-    { 
-      label: "Verification Status", 
-      value: vendor.isVerified ? "Verified" : "Unverified", 
-      isBadge: true, 
-      color: vendor.isVerified ? "success" : "error" 
+    {
+      label: "Verification Status",
+      value: vendor.isVerified ? "Verified" : "Unverified",
+      isBadge: true,
+      color: vendor.isVerified ? "success" : "error"
     },
-    { 
-      label: "Joined At", 
-      value: dayjs(vendor.createdAt).format("DD MMM YYYY, HH:mm") 
+    {
+      label: "Joined At",
+      value: dayjs(vendor.createdAt).format("DD MMM YYYY, HH:mm")
     },
   ];
 
@@ -112,13 +131,22 @@ const VendorApplication: React.FC = () => {
       <div className="flex items-center justify-between gap-4">
         <PageBreadcrumb pageTitle="Vendor Application Details" />
         {vendor.status === "PENDING" && (
-          <Button 
-            onClick={handleVerify} 
-            loading={isVerifying}
-            className="px-6"
-          >
-            Verify Vendor
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={handleVerify}
+              loading={isVerifying}
+              className="px-6"
+            >
+              Verify Vendor
+            </Button>
+            <Button
+              onClick={handleReject}
+              loading={isRejecting}
+              className="px-6 bg-red-500 hover:bg-red-600"
+            >
+              Reject Vendor
+            </Button>
+          </div>
         )}
       </div>
 
@@ -156,11 +184,11 @@ const VendorApplication: React.FC = () => {
               </span>
               {vendor.cnicImageUrl ? (
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
-                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={vendor.cnicImageUrl} 
-                    alt="CNIC Front" 
-                    className="w-full h-full object-cover" 
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={vendor.cnicImageUrl}
+                    alt="CNIC Front"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ) : (

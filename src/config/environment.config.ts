@@ -1,5 +1,6 @@
 import { string, object } from "yup";
-import { API_KEY, BASE_URL } from "./config";
+// import { API_KEY, BASE_URL } from "./config";
+import { API_KEY } from "./config";
 
 /**
  * contains all the validated environment variables.
@@ -13,7 +14,7 @@ export const environment = object()
     apiKey: string().required(),
     allowApiMocking: string(),
   })
-  .validateSync({
-    apiKey: BASE_URL,
-    allowApiMocking: API_KEY,
-  });
+// .validateSync({
+//   apiKey: BASE_URL,
+//   allowApiMocking: API_KEY,
+// });

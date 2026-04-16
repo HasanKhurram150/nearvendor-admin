@@ -70,6 +70,7 @@ export const ENDPOINTS = {
   vendorUpdate: "/vendor/update", //PUT
   vendorStatus: "/vendor/me/status", //GET
   vendorApprove: "/admin/approve", //PATCH :{vendorId}
+  vendorReject: "/admin/reject", //PATCH :{vendorId}
   vendorGetById: "/admin/vendor", //GET :{vendorId}
   vendorAll: "/admin/vendors", //GET
   vendorProfile: "/vendor/me/profile", //GET
