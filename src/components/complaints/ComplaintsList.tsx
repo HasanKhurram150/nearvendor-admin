@@ -1,125 +1,138 @@
 "use client";
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
 import Badge from "@/components/ui/badge/Badge";
 import { ChevronRight } from "lucide-react";
-
-export interface Complaint {
-  id: string;
-  reporterName: string;
-  reporterEmail: string;
-  reportedUserName: string;
-  reportedUserEmail: string;
-  reason: string;
-  status: "pending" | "resolved" | "dismissed";
-  createdAt: string;
-}
-
-const mockComplaints: Complaint[] = [
-  {
-    id: "COMP-001",
-    reporterName: "Alice Johnson",
-    reporterEmail: "alice@example.com",
-    reportedUserName: "Bob Smith",
-    reportedUserEmail: "bob@example.com",
-    reason: "Harassment in direct messages.",
-    status: "pending",
-    createdAt: "2024-04-10",
-  },
-  {
-    id: "COMP-002",
-    reporterName: "Charlie Brown",
-    reporterEmail: "charlie@example.com",
-    reportedUserName: "Dave Miller",
-    reportedUserEmail: "dave@example.com",
-    reason: "Fraudulent transaction attempt.",
-    status: "pending",
-    createdAt: "2024-04-12",
-  },
-  {
-    id: "COMP-003",
-    reporterName: "Eve White",
-    reporterEmail: "eve@example.com",
-    reportedUserName: "Frank Black",
-    reportedUserEmail: "frank@example.com",
-    reason: "Inappropriate content in NFT description.",
-    status: "resolved",
-    createdAt: "2024-04-05",
-  },
-];
+import { getAllReportsAPI } from "@/services/reports/reports-api";
+import { GetAllReportsOutputDto } from "@/services/reports/reports-api-types";
+import Loading from "../atoms/loading/loading";
+import toast from "react-hot-toast";
+import dayjs from "dayjs";
 
 export function ComplaintsList() {
   const router = useRouter();
+  const [data, setData] = useState<GetAllReportsOutputDto["data"] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchReports = async (page = 1) => {
+    setIsLoading(true);
+    try {
+      const res = await getAllReportsAPI.getAllReports({ page, limit: 10 });
+      if (res.success) {
+        setData(res.data);
+      } else {
+        toast.error("Failed to fetch reports");
+      }
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+      toast.error("An error occurred while fetching reports");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReports();
+  }, []);
 
   const handleRowClick = (id: string) => {
     router.push(`/complaints/${id}`);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 min-h-[400px]">
+        <Loading size="lg" className="border-brand-500" />
+      </div>
+    );
+  }
+
+  const users = data?.users || [];
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white">Complaints Management</h2>
-        <p className="text-gray-500 text-sm">Review and take action on user reported complaints.</p>
+        <p className="text-gray-500 text-sm">
+          Review and take action on user reported complaints.
+        </p>
       </div>
 
       <div className="dashboard-card border border-white/5 bg-[#11192E] overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow hoverable={false} className="border-b border-white/5">
-              <TableCell isHeader>Reporter</TableCell>
-              <TableCell isHeader>Reported User</TableCell>
-              <TableCell isHeader>Reason</TableCell>
+              <TableCell isHeader>User</TableCell>
+              <TableCell isHeader>Email</TableCell>
+              <TableCell isHeader>Role</TableCell>
               <TableCell isHeader>Status</TableCell>
-              <TableCell isHeader>Date</TableCell>
+              <TableCell isHeader>Reported On</TableCell>
               <TableCell isHeader className="w-10">
                 {""}
               </TableCell>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockComplaints.map((complaint) => (
+            {users.map((user) => (
               <TableRow
-                key={complaint.id}
-                onClick={() => handleRowClick(complaint.id)}
+                key={user.id}
+                onClick={() => handleRowClick(user.id)}
                 className="cursor-pointer group"
               >
                 <TableCell>
-                  <div className="flex flex-col">
-                    <span className="text-white font-medium">{complaint.reporterName}</span>
-                    <span className="text-xs text-gray-500">{complaint.reporterEmail}</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-white/5 border border-white/10 shrink-0">
+                      {user.photoUrl ? (
+                        <img
+                          src={user.photoUrl}
+                          alt={user.fullName}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-500 text-[10px]">
+                          {user.fullName.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-white font-medium">
+                      {user.fullName}
+                    </span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-col">
-                    <span className="text-white font-medium">{complaint.reportedUserName}</span>
-                    <span className="text-xs text-gray-500">{complaint.reportedUserEmail}</span>
-                  </div>
+                  <span className="text-gray-400 text-sm">{user.email}</span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-gray-300 line-clamp-1 max-w-[200px]">{complaint.reason}</span>
+                  <span className="text-gray-300 text-sm uppercase tracking-wider text-[10px] font-bold">
+                    {user.role}
+                  </span>
                 </TableCell>
                 <TableCell>
                   <Badge
-                    color={
-                      complaint.status === "pending"
-                        ? "warning"
-                        : complaint.status === "resolved"
-                        ? "success"
-                        : "light"
-                    }
+                    color={user.isActive ? "success" : "error"}
                     variant="light"
                     size="sm"
                   >
-                    {complaint.status}
+                    {user.isActive ? "Active" : "Inactive"}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <span className="text-gray-500 font-mono text-xs">{complaint.createdAt}</span>
+                  <span className="text-gray-500 font-mono text-xs">
+                    {dayjs(user.createdAt).format("DD MMM YYYY")}
+                  </span>
                 </TableCell>
                 <TableCell>
-                  <ChevronRight size={16} className="text-gray-600 group-hover:text-white transition-colors" />
+                  <ChevronRight
+                    size={16}
+                    className="text-gray-600 group-hover:text-white transition-colors"
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -127,9 +140,11 @@ export function ComplaintsList() {
         </Table>
       </div>
 
-      {mockComplaints.length === 0 && (
+      {users.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
-          <p className="text-gray-500">No complaints found. Everything looks good!</p>
+          <p className="text-gray-500">
+            No complaints found. Everything looks good!
+          </p>
         </div>
       )}
     </div>

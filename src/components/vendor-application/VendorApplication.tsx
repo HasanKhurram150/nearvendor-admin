@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import ComponentCard from "../common/ComponentCard";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Badge from "../ui/badge/Badge";
@@ -13,19 +13,23 @@ import toast from "react-hot-toast";
 import Button from "../ui/button/Button";
 import dayjs from "dayjs";
 import { vendorRejectAPI } from "@/services/vendor/reject/vendor-reject-api";
+import { ChevronLeft } from "lucide-react";
 
 const VendorApplication: React.FC = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const id = searchParams.get("id");
 
-  const [vendor, setVendor] = useState<GetVendorIdOutputDto["data"] | null>(null);
+  const [vendor, setVendor] = useState<GetVendorIdOutputDto["data"] | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
 
-  const fetchVendorDetails = async () => {
+  const fetchVendorDetails = async (silent = false) => {
     if (!id) return;
-    setIsLoading(true);
+    if (!silent) setIsLoading(true);
     try {
       const res = await getVendorIdAPI.getVendorId({ id });
       if (res.success) {
@@ -37,7 +41,7 @@ const VendorApplication: React.FC = () => {
       console.error("Error fetching vendor details:", error);
       toast.error("An error occurred while fetching details");
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   };
 
@@ -50,9 +54,10 @@ const VendorApplication: React.FC = () => {
     setIsVerifying(true);
     try {
       const res = await vendorApproveAPI.vendorApprove({ vendorId: id });
-      if (res.success) {
+      console.log("Verify Response:", res);
+      if (res.success || res.statusCode === 200 || res.statusCode === 201) {
         toast.success("Vendor application verified successfully!");
-        fetchVendorDetails(); // Refresh details
+        fetchVendorDetails(true); // Silent refresh
       } else {
         toast.error(res.message || "Failed to verify vendor application");
       }
@@ -62,14 +67,16 @@ const VendorApplication: React.FC = () => {
     } finally {
       setIsVerifying(false);
     }
-  }; const handleReject = async () => {
+  };
+  const handleReject = async () => {
     if (!id) return;
     setIsRejecting(true);
     try {
       const res = await vendorRejectAPI.vendorReject({ vendorId: id });
-      if (res.success) {
+      console.log("Reject Response:", res);
+      if (res.success || res.statusCode === 200 || res.statusCode === 201) {
         toast.success("Vendor application rejected successfully!");
-        fetchVendorDetails(); // Refresh details
+        fetchVendorDetails(true); // Silent refresh
       } else {
         toast.error(res.message || "Failed to reject  vendor application");
       }
@@ -112,22 +119,35 @@ const VendorApplication: React.FC = () => {
       label: "Status",
       value: vendor.status,
       isBadge: true,
-      color: vendor.status === "APPROVED" ? "success" : vendor.status === "REJECTED" ? "error" : "warning"
+      color:
+        vendor.status === "APPROVED"
+          ? "success"
+          : vendor.status === "REJECTED"
+            ? "error"
+            : "warning",
     },
     {
       label: "Verification Status",
       value: vendor.isVerified ? "Verified" : "Unverified",
       isBadge: true,
-      color: vendor.isVerified ? "success" : "error"
+      color: vendor.isVerified ? "success" : "error",
     },
     {
       label: "Joined At",
-      value: dayjs(vendor.createdAt).format("DD MMM YYYY, HH:mm")
+      value: dayjs(vendor.createdAt).format("DD MMM YYYY, HH:mm"),
     },
   ];
 
   return (
-    <div className="flex flex-col gap-8 w-full">
+    <div className="flex flex-col gap-6 w-full">
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors w-fit"
+      >
+        <ChevronLeft size={20} />
+        Back to Vendor Applications
+      </button>
+
       <div className="flex items-center justify-between gap-4">
         <PageBreadcrumb pageTitle="Vendor Application Details" />
         {vendor.status === "PENDING" && (
@@ -136,15 +156,17 @@ const VendorApplication: React.FC = () => {
               onClick={handleVerify}
               loading={isVerifying}
               className="px-6"
+              variant="success"
             >
-              Verify Vendor
+              Verify
             </Button>
             <Button
               onClick={handleReject}
               loading={isRejecting}
-              className="px-6 bg-red-500 hover:bg-red-600"
+              variant="destructive"
+              // className="px-6 bg-red-500 hover:bg-red-600 text-white"
             >
-              Reject Vendor
+              Reject
             </Button>
           </div>
         )}
@@ -161,7 +183,11 @@ const VendorApplication: React.FC = () => {
                   </span>
                   <div className="flex items-center">
                     {detail.isBadge ? (
-                      <Badge color={detail.color as any} variant="light" size="sm">
+                      <Badge
+                        color={detail.color as any}
+                        variant="light"
+                        size="sm"
+                      >
                         {detail.value}
                       </Badge>
                     ) : (

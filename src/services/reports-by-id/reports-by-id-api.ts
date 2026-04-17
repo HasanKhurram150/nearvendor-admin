@@ -5,11 +5,11 @@ import {
   GetReportsByIdOutputDto,
 } from "./reports-by-id-types";
 
-export const getUserByIdAPI = {
+export const getReportsByIdAPI = {
   // Login user
-  getUserById: async (input: GetReportsByIdInputDto) => {
+  getReportsById: async (input: GetReportsByIdInputDto) => {
     return API.get<GetReportsByIdOutputDto>(
-      ENDPOINTS.getUserById + `/${input.id}`,
+      ENDPOINTS.getAllReportsById + `/${input.id}`,
     );
   },
 };

@@ -78,7 +78,8 @@ export const ENDPOINTS = {
   vendorperformance: "/vendor/portfolio/performance", //GET
 
   //REPORTS
-  getAllReports: "reports/users", //GET
-  getAllReportsbyId: "reports/user", //GET
+  getAllReports: "admin/reports/users", //GET
+  getAllReportsById: "admin/reports/user", //GET
+  deactivateUser: "admin/user/inactivate", //GET
 };
 //----------------------------------------------------------------

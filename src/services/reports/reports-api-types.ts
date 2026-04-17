@@ -3,16 +3,28 @@ export interface GetAllReportsInputDto {
   limit: number;
 }
 
+interface Users {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+  isActive: boolean;
+  photoUrl: string;
+  createdAt: string;
+}
+
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface GetAllReportsOutputDto {
   success: boolean;
   statusCode: number;
   data: {
-    users: [];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
+    users: Users[];
+    pagination: Pagination;
   };
 }

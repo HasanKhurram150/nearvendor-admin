@@ -270,6 +270,9 @@ body {
 
   & svg path {
     stroke: #0c111d;
+  }
+
+  & svg path[fill]:not([fill="none"]) {
     fill: #0c111d;
   }
 

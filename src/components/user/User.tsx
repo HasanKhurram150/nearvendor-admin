@@ -5,16 +5,18 @@ import PageBreadcrumb from "../common/PageBreadCrumb";
 import Badge from "../ui/badge/Badge";
 import Button from "../ui/button/Button";
 import dayjs from "dayjs";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { getUserByIdAPI } from "@/services/users/get-user-by-id/get-user-by-id-api";
 import { User as UserDetail } from "@/services/users/get-user-by-id/get-user-by-id-types";
 import toast from "react-hot-toast";
 import Loading from "../atoms/loading/loading";
+import { ChevronLeft } from "lucide-react";
 
 const User: React.FC = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const userId = searchParams.get("id");
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserDetail | null>(null);
@@ -95,7 +97,7 @@ const User: React.FC = () => {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
         <p className="text-gray-500">User not found</p>
-        <Button onClick={() => window.history.back()}>Go Back</Button>
+        <Button onClick={() => router.back()}>Go Back</Button>
       </div>
     );
   }
@@ -114,7 +116,7 @@ const User: React.FC = () => {
     {
       label: "Phone Number",
       key: "phone",
-      value: isEditing ? formData.phone : (user.phone || "—"),
+      value: isEditing ? formData.phone : user.phone || "—",
     },
     {
       label: "Role",
@@ -124,9 +126,13 @@ const User: React.FC = () => {
     {
       label: "Status",
       key: "isActive",
-      value: (isEditing ? formData.isActive : user.isActive) ? "Active" : "Inactive",
+      value: (isEditing ? formData.isActive : user.isActive)
+        ? "Active"
+        : "Inactive",
       isBadge: true,
-      color: (isEditing ? formData.isActive : user.isActive) ? "success" : "error",
+      color: (isEditing ? formData.isActive : user.isActive)
+        ? "success"
+        : "error",
     },
     {
       label: "Created At",
@@ -137,33 +143,65 @@ const User: React.FC = () => {
     {
       label: "Last Login",
       key: "lastLoginAt",
-      value: user.lastLoginAt ? dayjs(user.lastLoginAt).format("DD MMM, YYYY") : "Never",
+      value: user.lastLoginAt
+        ? dayjs(user.lastLoginAt).format("DD MMM, YYYY")
+        : "Never",
       readOnly: true,
     },
   ];
 
   // Map URL for iframe (using OpenStreetMap for simplicity/no-key)
-  const mapUrl = user.lastKnownLatitude && user.lastKnownLongitude 
-    ? `https://www.openstreetmap.org/export/embed.html?bbox=${Number(user.lastKnownLongitude)-0.01}%2C${Number(user.lastKnownLatitude)-0.01}%2C${Number(user.lastKnownLongitude)+0.01}%2C${Number(user.lastKnownLatitude)+0.01}&layer=mapnik&marker=${user.lastKnownLatitude}%2C${user.lastKnownLongitude}`
-    : null;
+  const mapUrl =
+    user.lastKnownLatitude && user.lastKnownLongitude
+      ? `https://www.openstreetmap.org/export/embed.html?bbox=${Number(user.lastKnownLongitude) - 0.01}%2C${Number(user.lastKnownLatitude) - 0.01}%2C${Number(user.lastKnownLongitude) + 0.01}%2C${Number(user.lastKnownLatitude) + 0.01}&layer=mapnik&marker=${user.lastKnownLatitude}%2C${user.lastKnownLongitude}`
+      : null;
 
   return (
-    <div className="flex flex-col gap-8 w-full">
+    <div className="flex flex-col gap-6 w-full">
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors w-fit"
+      >
+        <ChevronLeft size={20} />
+        Back to Users
+      </button>
+
       <PageBreadcrumb pageTitle="User Details" />
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Wishlist Items", value: stats.wishlist, color: "text-pink-500" },
-          { label: "Search History", value: stats.searchHistory, color: "text-blue-500" },
-          { label: "Recent Items", value: stats.recentItems, color: "text-orange-500" },
-          { label: "Activity Events", value: stats.analytics, color: "text-brand-500" },
+          {
+            label: "Wishlist Items",
+            value: stats.wishlist,
+            color: "text-pink-500",
+          },
+          {
+            label: "Search History",
+            value: stats.searchHistory,
+            color: "text-blue-500",
+          },
+          {
+            label: "Recent Items",
+            value: stats.recentItems,
+            color: "text-orange-500",
+          },
+          {
+            label: "Activity Events",
+            value: stats.analytics,
+            color: "text-brand-500",
+          },
         ].map((stat, i) => (
-          <div key={i} className="dashboard-card p-5 flex flex-col gap-1 transition-all hover:border-brand-500/20 group">
+          <div
+            key={i}
+            className="dashboard-card p-5 flex flex-col gap-1 transition-all hover:border-brand-500/20 group"
+          >
             <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 group-hover:text-brand-500/60 transition-colors">
               {stat.label}
             </span>
-            <span className={`text-2xl font-bold ${stat.color} dark:drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]`}>
+            <span
+              className={`text-2xl font-bold ${stat.color} dark:drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]`}
+            >
               {stat.value}
             </span>
           </div>
@@ -276,16 +314,25 @@ const User: React.FC = () => {
           <ComponentCard title="Location Coordinates">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-500/80">Latitude</span>
-                <span className="text-sm font-mono text-white/90">{user.lastKnownLatitude || "—"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-500/80">
+                  Latitude
+                </span>
+                <span className="text-sm font-mono text-white/90">
+                  {user.lastKnownLatitude || "—"}
+                </span>
               </div>
               <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-500/80">Longitude</span>
-                <span className="text-sm font-mono text-white/90">{user.lastKnownLongitude || "—"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-500/80">
+                  Longitude
+                </span>
+                <span className="text-sm font-mono text-white/90">
+                  {user.lastKnownLongitude || "—"}
+                </span>
               </div>
               <div className="mt-4 p-4 rounded-xl bg-brand-500/5 border border-brand-500/10">
                 <p className="text-xs text-brand-500 italic">
-                  * Location data is based on the last recorded login or activity.
+                  * Location data is based on the last recorded login or
+                  activity.
                 </p>
               </div>
             </div>
