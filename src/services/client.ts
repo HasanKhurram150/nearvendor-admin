@@ -1,9 +1,15 @@
 import axios from "axios";
 import { useAuthStore } from "@/store/auth-store";
-import { BASE_URL } from "@/config";
+import { environment } from "@/config";
 
-//for dev
-const API_BASE_URL = BASE_URL;
+//for dev/prod
+const API_BASE_URL = environment.baseUrl;
+
+if (process.env.NODE_ENV === "development" && !API_BASE_URL) {
+  console.warn(
+    "API_BASE_URL is not defined. Please check your environment variables.",
+  );
+}
 
 //for prod
 // const API_BASE_URL = "https://api.nearvendor.pro/api";
