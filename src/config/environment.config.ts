@@ -1,5 +1,5 @@
 import { string, object } from "yup";
-import { API_KEY, BASE_URL } from "./config";
+import { ALLOW_API_MOCKING, BASE_URL } from "./config";
 // import { API_KEY } from "./config";
 
 /**
@@ -11,10 +11,10 @@ import { API_KEY, BASE_URL } from "./config";
  */
 export const environment = object()
   .shape({
-    apiKey: string().required(),
+    baseUrl: string().required(),
     allowApiMocking: string(),
   })
   .validateSync({
-    apiKey: BASE_URL,
-    allowApiMocking: API_KEY,
+    baseUrl: BASE_URL,
+    allowApiMocking: ALLOW_API_MOCKING,
   });

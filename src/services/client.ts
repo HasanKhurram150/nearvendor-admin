@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useAuthStore } from "@/store/auth-store";
+import { BASE_URL } from "@/config";
 
 //for dev
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
+const API_BASE_URL = BASE_URL;
 
 //for prod
 // const API_BASE_URL = "https://api.nearvendor.pro/api";

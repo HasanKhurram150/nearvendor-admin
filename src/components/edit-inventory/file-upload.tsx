@@ -1,6 +1,6 @@
 import { ExportIcon } from "@/icons";
 import React, { useRef, useState } from "react";
-import { API_KEY, BASE_URL } from "@/config";
+import { BASE_URL } from "@/config";
 
 interface FileUploadProps {
   value?: File | null;

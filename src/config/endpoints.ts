@@ -54,7 +54,7 @@ export const ENDPOINTS = {
   getLoginHistoryList: "/login-history/list", //GET
 
   // NEW APIS
-  auth: "/admin/login",
+  auth: "/auth/login",
 
   // USER
   userUpdate: "/users/update",
