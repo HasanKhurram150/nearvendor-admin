@@ -3,7 +3,8 @@ import { useAuthStore } from "@/store/auth-store";
 import { environment } from "@/config";
 
 //for dev/prod
-const API_BASE_URL = environment.baseUrl;
+// const API_BASE_URL = environment.baseUrl;
+const API_BASE_URL = "https://api.nearvendor.pro/api";
 
 if (process.env.NODE_ENV === "development" && !API_BASE_URL) {
   console.warn(
