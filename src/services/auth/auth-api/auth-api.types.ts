@@ -84,12 +84,12 @@
 //   email: string;
 // }
 
-// export interface ApiErrorResponse {
-//   data: {
-//     statusCode: number;
-//     message: string;
-//   };
-// }
+export interface ApiErrorResponse {
+  data: {
+    statusCode: number;
+    message: string;
+  };
+}
 export interface LoginCredentials {
   email: string;
   password: string;

@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
     "/user-management",
     "/vendor-applications",
     "/user",
-    "/mint-nft",
+    // "/mint-nft",
     "/vendor-application",
   ];
   const authPaths = [

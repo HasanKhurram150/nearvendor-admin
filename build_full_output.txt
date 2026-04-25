@@ -1,0 +1,37 @@
+
+> devent-admin-panel@2.0.2 build
+> next build
+
+   ▲ Next.js 15.5.13
+   - Environments: .env
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/components/campaign-management/campaign-management.tsx
+Module not found: Can't resolve '@/utils/formatStartEndDate'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/components/nft-minting/NftMintingConsole.tsx
+Module not found: Can't resolve '@/utils'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/components/nft-orders/NftOrdersListing.tsx
+Module not found: Can't resolve '@/services/nft-order-stats-api'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/components/nft-orders/NftOrdersListing.tsx
+Module not found: Can't resolve '@/services/nft-order-stats-api/nft-order-stats-api.types'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/components/placement-list/placement-list.tsx
+Module not found: Can't resolve '@/services/placement-api'
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+> Build failed because of webpack errors

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import React from "react";
-import NftMintingConsole from "@/components/nft-minting/NftMintingConsole";
+// import NftMintingConsole from "@/components/nft-minting/NftMintingConsole";
 
 export const metadata: Metadata = {
   title: "NFT Minting Console",
@@ -8,5 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default function MintNftPage() {
-  return <NftMintingConsole />;
+  return <div>NFT Minting Console (Disabled)</div>;
+  // return <NftMintingConsole />;
 }

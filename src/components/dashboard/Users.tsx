@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useGetDashboardUsersQuery } from "@/services/dashboard-api";
+// import { useGetDashboardUsersQuery } from "@/services/dashboard-api";
 import {
   Table,
   TableBody,
@@ -13,7 +13,7 @@ import Pagination from "@/components/tables/Pagination";
 import GenericSearchField from "../atoms/generic-search-field/generic-search-field";
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
-import { truncateAddress } from "@/components/rewards/rewards-table-utils";
+// import { truncateAddress } from "@/components/rewards/rewards-table-utils";
 
 interface User {
   id: string;
@@ -103,14 +103,14 @@ export default function Users() {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, DEBOUNCE_DELAY);
 
-  const { data, isLoading: usersLoading } = useGetDashboardUsersQuery({
-    page,
-    pageSize: DEFAULT_PAGE_SIZE,
-    search: debouncedSearchTerm,
-  });
+  // const { data, isLoading: usersLoading } = useGetDashboardUsersQuery({
+  //   page,
+  //   pageSize: DEFAULT_PAGE_SIZE,
+  //   search: debouncedSearchTerm,
+  // });
 
-  const totalPages = data?.meta?.totalPages || 1;
-  const users = data?.data || [];
+  // const totalPages = data?.meta?.totalPages || 1;
+  // const users = data?.data || [];
 
   useEffect(() => {
     setPage(1);
@@ -153,13 +153,13 @@ export default function Users() {
               </TableRow>
             </TableHeader>
 
-            <TableBody className="divide-y divide-[#1D1C1C]">
+            {/* <TableBody className="divide-y divide-[#1D1C1C]">
               <UsersTable users={users} isLoading={usersLoading} />
-            </TableBody>
+            </TableBody> */}
           </Table>
         </div>
 
-        {!usersLoading && data?.meta && data.meta.totalItems > 0 && (
+        {/* {!usersLoading && data?.meta && data.meta.totalItems > 0 && (
           <div className="mt-4 flex flex-col items-center justify-between gap-3 px-6 sm:flex-row">
             <span className="text-sm text-gray-500 dark:text-gray-400">
               {t("showingRecords", {
@@ -174,7 +174,7 @@ export default function Users() {
               onPageChange={setPage}
             />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

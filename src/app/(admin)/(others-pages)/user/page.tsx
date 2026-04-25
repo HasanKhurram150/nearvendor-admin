@@ -1,6 +1,7 @@
 import User from "@/components/user/User";
 import { Metadata } from "next";
-import React from "react";
+import React, { Suspense } from "react";
+import Loading from "@/components/atoms/loading/loading";
 
 export const metadata: Metadata = {
   title: "User Details",
@@ -8,5 +9,15 @@ export const metadata: Metadata = {
 };
 
 export default function page() {
-  return <User />;
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Loading size="lg" className="border-brand-500" />
+        </div>
+      }
+    >
+      <User />
+    </Suspense>
+  );
 }

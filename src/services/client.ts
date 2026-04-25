@@ -2,10 +2,11 @@ import axios from "axios";
 import { useAuthStore } from "@/store/auth-store";
 
 //for dev
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
 
 //for prod
-const API_BASE_URL = "https://api.nearvendor.pro/api";
+// const API_BASE_URL = "https://api.nearvendor.pro/api";
+// const API_BASE_URL = "http://76.13.223.103:3836/api";
 
 //ip based
 // const API_BASE_URL = "https://10.111.101.26/v1/api"

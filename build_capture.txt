@@ -1,0 +1,133 @@
+
+> devent-admin-panel@2.0.2 build
+> next build
+
+   ▲ Next.js 15.5.13
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings in 6.5s
+
+./src/components/add-campaign/add-campaign.tsx
+Attempted import error: 'useGetAllAdvertiserQuery' is not exported from '@/services' (imported as 'useGetAllAdvertiserQuery').
+
+Import trace for requested module:
+./src/components/add-campaign/add-campaign.tsx
+
+./src/components/add-campaign/add-campaign.tsx
+Attempted import error: 'useAddCampaignMutation' is not exported from '@/services' (imported as 'useAddCampaignMutation').
+
+Import trace for requested module:
+./src/components/add-campaign/add-campaign.tsx
+
+./src/components/advertiser-management/advertiser-management.tsx
+Attempted import error: 'useGetAllAdvertiserQuery' is not exported from '@/services' (imported as 'useGetAllAdvertiserQuery').
+
+Import trace for requested module:
+./src/components/advertiser-management/advertiser-management.tsx
+
+./src/components/auth/EnableGoogleAuthForm.tsx
+Attempted import error: 'useGet2FaQuery' is not exported from '@/services' (imported as 'useGet2FaQuery').
+
+Import trace for requested module:
+./src/components/auth/EnableGoogleAuthForm.tsx
+
+./src/components/calendars-management/calendars-management.tsx
+Attempted import error: 'useGetAllInventoryQuery' is not exported from '@/services' (imported as 'useGetAllInventoryQuery').
+
+Import trace for requested module:
+./src/components/calendars-management/calendars-management.tsx
+
+./src/components/edit-campaign/edit-campaign.tsx
+Attempted import error: 'useGetAllAdvertiserQuery' is not exported from '@/services' (imported as 'useGetAllAdvertiserQuery').
+
+Import trace for requested module:
+./src/components/edit-campaign/edit-campaign.tsx
+
+./src/components/edit-campaign/edit-campaign.tsx
+Attempted import error: 'useAddCampaignMutation' is not exported from '@/services' (imported as 'useAddCampaignMutation').
+
+Import trace for requested module:
+./src/components/edit-campaign/edit-campaign.tsx
+
+./src/components/inventory-list/inventory-list.tsx
+Attempted import error: 'useGetAllInventoryQuery' is not exported from '@/services' (imported as 'useGetAllInventoryQuery').
+
+Import trace for requested module:
+./src/components/inventory-list/inventory-list.tsx
+
+./src/components/inventory-list/inventory-list.tsx
+Attempted import error: 'useUpdateStatusMutation' is not exported from '@/services' (imported as 'useUpdateStatusMutation').
+
+Import trace for requested module:
+./src/components/inventory-list/inventory-list.tsx
+
+./src/components/add-campaign/add-campaign.tsx
+Attempted import error: 'useGetAllAdvertiserQuery' is not exported from '@/services' (imported as 'useGetAllAdvertiserQuery').
+
+Import trace for requested module:
+./src/components/add-campaign/add-campaign.tsx
+
+./src/components/add-campaign/add-campaign.tsx
+Attempted import error: 'useAddCampaignMutation' is not exported from '@/services' (imported as 'useAddCampaignMutation').
+
+Import trace for requested module:
+./src/components/add-campaign/add-campaign.tsx
+
+./src/components/advertiser-management/advertiser-management.tsx
+Attempted import error: 'useGetAllAdvertiserQuery' is not exported from '@/services' (imported as 'useGetAllAdvertiserQuery').
+
+Import trace for requested module:
+./src/components/advertiser-management/advertiser-management.tsx
+
+./src/components/auth/EnableGoogleAuthForm.tsx
+Attempted import error: 'useGet2FaQuery' is not exported from '@/services' (imported as 'useGet2FaQuery').
+
+Import trace for requested module:
+./src/components/auth/EnableGoogleAuthForm.tsx
+
+./src/components/calendars-management/calendars-management.tsx
+Attempted import error: 'useGetAllInventoryQuery' is not exported from '@/services' (imported as 'useGetAllInventoryQuery').
+
+Import trace for requested module:
+./src/components/calendars-management/calendars-management.tsx
+
+./src/components/edit-campaign/edit-campaign.tsx
+Attempted import error: 'useGetAllAdvertiserQuery' is not exported from '@/services' (imported as 'useGetAllAdvertiserQuery').
+
+Import trace for requested module:
+./src/components/edit-campaign/edit-campaign.tsx
+
+./src/components/edit-campaign/edit-campaign.tsx
+Attempted import error: 'useAddCampaignMutation' is not exported from '@/services' (imported as 'useAddCampaignMutation').
+
+Import trace for requested module:
+./src/components/edit-campaign/edit-campaign.tsx
+
+./src/components/inventory-list/inventory-list.tsx
+Attempted import error: 'useGetAllInventoryQuery' is not exported from '@/services' (imported as 'useGetAllInventoryQuery').
+
+Import trace for requested module:
+./src/components/inventory-list/inventory-list.tsx
+
+./src/components/inventory-list/inventory-list.tsx
+Attempted import error: 'useUpdateStatusMutation' is not exported from '@/services' (imported as 'useUpdateStatusMutation').
+
+Import trace for requested module:
+./src/components/inventory-list/inventory-list.tsx
+
+   Linting and checking validity of types ...
+ ⨯ ESLint: Unexpected token '<<'
+Failed to compile.
+
+./src/components/add-advertiser/add-advertiser.tsx:11:10
+Type error: Module '"@/services/auth/auth-api/auth-api.types"' has no exported member 'ApiErrorResponse'.
+
+[0m [90m  9 |[39m [36mimport[39m { useRouter } [36mfrom[39m [32m"next/navigation"[39m[33m;[39m
+ [90m 10 |[39m [36mimport[39m [33mLoading[39m [36mfrom[39m [32m"../atoms/loading/loading"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 11 |[39m [36mimport[39m { [33mApiErrorResponse[39m } [36mfrom[39m [32m"@/services/auth/auth-api/auth-api.types"[39m[33m;[39m
+ [90m    |[39m          [31m[1m^[22m[39m
+ [90m 12 |[39m [90m// import { useAddAdvertiserMutation } from "@/services/advertiser-api";[39m
+ [90m 13 |[39m [36mimport[39m { useLanguage } [36mfrom[39m [32m"../common/LanguageContext"[39m[33m;[39m
+ [90m 14 |[39m [36mimport[39m [33mPageBreadcrumb[39m [36mfrom[39m [32m"../common/PageBreadCrumb"[39m[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

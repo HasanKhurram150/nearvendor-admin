@@ -18,15 +18,11 @@ const eslintConfig = [
 			"@typescript-eslint/no-unused-expressions": "off",
 			"@typescript-eslint/ban-ts-comment": "off",
 			"react-hooks/set-state-in-effect": "off",
-<<<<<<< HEAD
 			"react-hooks/exhaustive-deps": "off",
 			"react-hooks/preserve-manual-memoization": "off",
 			"react-hooks/purity": "off",
-=======
-			"react-hooks/preserve-manual-memoization": "off",
-			"react-hooks/purity": "off",
 			"react-hooks/incompatible-library": "off",
->>>>>>> cd6db6d201663ba441afe964ace0d40db4c9275f
+			"@next/next/no-img-element": "off",
 		},
 	},
 ];
