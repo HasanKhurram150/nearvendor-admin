@@ -11,7 +11,7 @@ import { ALLOW_API_MOCKING, BASE_URL } from "./config";
  */
 export const environment = object()
   .shape({
-    baseUrl: string().required(),
+    baseUrl: string(), // Removed .required() to fix build error on Vercel
     allowApiMocking: string(),
   })
   .validateSync({
