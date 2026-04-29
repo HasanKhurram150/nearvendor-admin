@@ -209,7 +209,7 @@ const VendorApplication: React.FC = () => {
                 CNIC Image
               </span>
               {vendor.cnicImageUrl ? (
-                <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
+                <div className="relative aspect-4/3 rounded-xl overflow-hidden border border-white/10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={vendor.cnicImageUrl}
@@ -218,7 +218,7 @@ const VendorApplication: React.FC = () => {
                   />
                 </div>
               ) : (
-                <div className="aspect-[4/3] rounded-xl bg-white/[0.03] border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
+                <div className="aspect-4/3 rounded-xl bg-white/3 border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
                   No image provided
                 </div>
               )}
