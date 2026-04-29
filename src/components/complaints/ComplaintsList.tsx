@@ -14,6 +14,7 @@ import { getAllReportsAPI } from "@/services/reports/reports-api";
 import { GetAllReportsOutputDto } from "@/services/reports/reports-api-types";
 import Loading from "../atoms/loading/loading";
 import toast from "react-hot-toast";
+import Image from "next/image";
 import dayjs from "dayjs";
 
 export function ComplaintsList() {
@@ -90,11 +91,14 @@ export function ComplaintsList() {
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-white/5 border border-white/10 shrink-0">
                       {user.photoUrl ? (
-                        <img
-                          src={user.photoUrl}
-                          alt={user.fullName}
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={user.photoUrl}
+                            alt={user.fullName}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-500 text-[10px]">
                           {user.fullName.charAt(0)}

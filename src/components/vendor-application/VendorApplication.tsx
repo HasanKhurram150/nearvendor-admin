@@ -11,6 +11,7 @@ import { vendorApproveAPI } from "@/services/vendor/approve/vendor-approve-api";
 import Loading from "../atoms/loading/loading";
 import toast from "react-hot-toast";
 import Button from "../ui/button/Button";
+import Image from "next/image";
 import dayjs from "dayjs";
 import { vendorRejectAPI } from "@/services/vendor/reject/vendor-reject-api";
 import { ChevronLeft } from "lucide-react";
@@ -210,11 +211,11 @@ const VendorApplication: React.FC = () => {
               </span>
               {vendor.cnicImageUrl ? (
                 <div className="relative aspect-4/3 rounded-xl overflow-hidden border border-white/10">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={vendor.cnicImageUrl}
                     alt="CNIC Front"
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
               ) : (

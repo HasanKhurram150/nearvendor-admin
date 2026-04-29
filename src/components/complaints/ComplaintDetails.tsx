@@ -14,6 +14,7 @@ import { getReportsByIdAPI } from "@/services/reports-by-id/reports-by-id-api";
 import { GetReportsByIdOutputDto } from "@/services/reports-by-id/reports-by-id-types";
 import Loading from "../atoms/loading/loading";
 import toast from "react-hot-toast";
+import Image from "next/image";
 import dayjs from "dayjs";
 
 interface ComplaintDetailProps {
@@ -90,11 +91,14 @@ export function ComplaintDetails({ id }: ComplaintDetailProps) {
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-white/5 border border-white/10 shrink-0">
                     {report.reporter.photoUrl ? (
-                      <img
-                        src={report.reporter.photoUrl}
-                        alt={report.reporter.fullName}
-                        className="w-full h-full object-cover"
-                      />
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={report.reporter.photoUrl}
+                          alt={report.reporter.fullName}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
                         {report.reporter.fullName.charAt(0)}
