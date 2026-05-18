@@ -59,19 +59,19 @@ export const useAuthStore = create<AuthState>()(
         login: async (email: string, password: string) => {
           try {
             set({ isLoading: true });
-            const data = await authAPI.login({ email, password });
+            const response = await authAPI.login({ email, password });
 
-            if (data.token) {
+            if (response.data?.token) {
               const expiry = Date.now() + 24 * 60 * 60 * 1000;
-              cookieUtils.set("auth-token", data.token, {
+              cookieUtils.set("auth-token", response.data.token, {
                 persistent: true,
                 expires: new Date(expiry),
               });
-              localStorage.setItem("authToken", data.token);
+              localStorage.setItem("authToken", response.data.token);
 
               set({
-                user: mapApiUser(data.user || {}),
-                token: data.token,
+                user: mapApiUser(response.data.user || {}),
+                token: response.data.token,
                 tokenExpiry: expiry,
                 isAuthenticated: true,
                 isLoading: false,

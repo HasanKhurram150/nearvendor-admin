@@ -99,22 +99,27 @@ export interface AuthResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  user: {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    fullName: string;
-    email: string;
-    isEmailVerified: boolean;
-    phone: number;
-    photoUrl: string;
-    isPhoneVerified: boolean;
-    role: string;
-    isActive: boolean;
-    lastKnownLongitude: number;
-    lastKnownLatitude: number;
-    lastLoginAt: number;
-    deletedAt: string;
+  data: {
+    user: {
+      id: string;
+      createdAt: string;
+      updatedAt: string;
+      fullName: string;
+      email: string;
+      isEmailVerified: boolean;
+      phone: string | null;
+      photoUrl: string | null;
+      isPhoneVerified: boolean;
+      isPasswordSet: boolean;
+      role: string;
+      isActive: boolean;
+      lastKnownLongitude: number | null;
+      lastKnownLatitude: number | null;
+      lastLoginAt: string | null;
+      deletedAt: string | null;
+      hashedRefreshToken: string | null;
+    };
+    token: string;
+    refreshToken: string;
   };
-  token: string;
 }
