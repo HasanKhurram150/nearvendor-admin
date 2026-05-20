@@ -69,10 +69,10 @@ export const ENDPOINTS = {
   register: "/vendor/register", //POST
   vendorUpdate: "/vendor/update", //PUT
   vendorStatus: "/vendor/me/status", //GET
-  vendorApprove: "/admin/approve", //PATCH :{vendorId}
-  vendorReject: "/admin/reject", //PATCH :{vendorId}
-  vendorGetById: "/admin/vendor", //GET :{vendorId}
-  vendorAll: "/admin/vendors", //GET
+  vendorApprove: "/admin/applications/approve", //PATCH :{vendorId}
+  vendorReject: "/admin/applications/reject", //PATCH :{vendorId}
+  vendorGetById: "/admin/applications", //GET :{id}
+  vendorAll: "/admin/applications", //GET
   vendorProfile: "/vendor/me/profile", //GET
   vendorSearch: "/vendor/portfolio/search", //GET
   vendorperformance: "/vendor/portfolio/performance", //GET

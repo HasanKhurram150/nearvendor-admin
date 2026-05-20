@@ -109,13 +109,18 @@ const VendorApplication: React.FC = () => {
   }
 
   const details = [
-    { label: "Vendor Name", value: vendor.user.fullName },
-    { label: "Email", value: vendor.user.email },
-    { label: "CNIC", value: vendor.cnic },
+    { label: "First Name", value: vendor.firstName },
+    { label: "Last Name", value: vendor.lastName },
+    { label: "Business Email", value: vendor.businessEmail },
+    { label: "Mobile Number", value: vendor.mobileNumber },
+    { label: "Business Phone", value: vendor.businessPhoneNumber },
     { label: "Business Name", value: vendor.businessName },
     { label: "Business Type", value: vendor.businessType },
-    { label: "Tax ID", value: vendor.taxId },
-    { label: "Support Contact", value: vendor.supportContact },
+    { label: "Street Address", value: vendor.streetAddress },
+    { label: "Area", value: vendor.area },
+    { label: "City", value: vendor.city },
+    { label: "State", value: vendor.state },
+    { label: "Postal Code", value: vendor.postalCode },
     {
       label: "Status",
       value: vendor.status,
@@ -129,14 +134,17 @@ const VendorApplication: React.FC = () => {
     },
     {
       label: "Verification Status",
-      value: vendor.isVerified ? "Verified" : "Unverified",
+      value: vendor.status === "APPROVED" ? "Verified" : "Unverified",
       isBadge: true,
-      color: vendor.isVerified ? "success" : "error",
+      color: vendor.status === "APPROVED" ? "success" : "error",
     },
     {
       label: "Joined At",
       value: dayjs(vendor.createdAt).format("DD MMM YYYY, HH:mm"),
     },
+    ...(vendor.status === "REJECTED" && vendor.rejectionReason
+      ? [{ label: "Rejection Reason", value: vendor.rejectionReason }]
+      : []),
   ];
 
   return (
@@ -205,24 +213,46 @@ const VendorApplication: React.FC = () => {
 
         <div className="flex flex-col gap-8">
           <ComponentCard title="Documents">
-            <div className="flex flex-col gap-4 p-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                CNIC Image
-              </span>
-              {vendor.cnicImageUrl ? (
-                <div className="relative aspect-4/3 rounded-xl overflow-hidden border border-white/10">
-                  <Image
-                    src={vendor.cnicImageUrl}
-                    alt="CNIC Front"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="aspect-4/3 rounded-xl bg-white/3 border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
-                  No image provided
-                </div>
-              )}
+            <div className="flex flex-col gap-6 p-2">
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  CNIC Front Image
+                </span>
+                {vendor.cnicFrontImageUrl ? (
+                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
+                    <Image
+                      src={vendor.cnicFrontImageUrl}
+                      alt="CNIC Front"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-[4/3] rounded-xl bg-white/3 border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
+                    No image provided
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  CNIC Back Image
+                </span>
+                {vendor.cnicBackImageUrl ? (
+                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
+                    <Image
+                      src={vendor.cnicBackImageUrl}
+                      alt="CNIC Back"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-[4/3] rounded-xl bg-white/3 border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
+                    No image provided
+                  </div>
+                )}
+              </div>
             </div>
           </ComponentCard>
         </div>

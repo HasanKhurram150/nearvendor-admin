@@ -6,7 +6,7 @@ import { useLanguage } from "@/components/common/LanguageContext";
 import { getAllUsersAPI } from "@/services/users/get-all-users/get-all-users-api";
 import { getAllVendorAPI } from "@/services/vendor/get-all-vendor/get-all-vendor-api";
 import { User } from "@/services/users/get-all-users/get-all-user-types";
-import { VendorItem } from "@/services/vendor/get-all-vendor/get-all-vendor-types";
+import { Applications } from "@/services/vendor/get-all-vendor/get-all-vendor-types";
 import { OrderStatsCards } from "./OrderStatsCards";
 import { OrderStatusBreakdown } from "./OrderStatusBreakdown";
 import { SalesChart } from "./SalesChart";
@@ -40,7 +40,7 @@ export default function NftOrderDashboard() {
 
   // States for data
   const [users, setUsers] = useState<User[]>([]);
-  const [vendors, setVendors] = useState<VendorItem[]>([]);
+  const [vendors, setVendors] = useState<Applications[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // States for filters
@@ -62,7 +62,7 @@ export default function NftOrderDashboard() {
         ]);
 
         if (usersRes.success) setUsers(usersRes.data.users || []);
-        if (vendorsRes.success) setVendors(vendorsRes.data.vendors || []);
+        if (vendorsRes.success) setVendors(vendorsRes.data.applications || []);
       } catch (error) {
         console.error("Dashboard data fetch failed:", error);
       } finally {
@@ -108,7 +108,7 @@ export default function NftOrderDashboard() {
       filteredVendors = filteredVendors.filter(
         (v) =>
           v.businessName?.toLowerCase().includes(q) ||
-          v.user?.fullName?.toLowerCase().includes(q),
+          `${v.firstName || ""} ${v.lastName || ""}`.toLowerCase().includes(q),
       );
     }
 

@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { getAllVendorAPI } from "@/services/vendor/get-all-vendor/get-all-vendor-api";
-import { GetAllVendorOutputDto, VendorItem } from "@/services/vendor/get-all-vendor/get-all-vendor-types";
+import { GetAllVendorOutputDto, Applications } from "@/services/vendor/get-all-vendor/get-all-vendor-types";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Loading from "../atoms/loading/loading";
 import Badge from "@/components/ui/badge/Badge";
@@ -30,7 +30,7 @@ const DEFAULT_PAGE_SIZE = 10;
 
 const VendorApplications: React.FC = () => {
   const router = useRouter();
-  const [vendors, setVendors] = useState<VendorItem[]>([]);
+  const [vendors, setVendors] = useState<Applications[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("");
@@ -48,7 +48,7 @@ const VendorApplications: React.FC = () => {
         });
         
         // Correct data access based on the actual response structure
-        const vendorsData = res?.data?.vendors;
+        const vendorsData = res?.data?.applications;
         const paginationData = res?.data?.pagination;
         
         setVendors(Array.isArray(vendorsData) ? vendorsData : []);
@@ -68,11 +68,11 @@ const VendorApplications: React.FC = () => {
   const filtered = vendors.filter((v) => {
     if (!search) return true;
     const q = search.toLowerCase();
+    const fullName = `${v.firstName || ""} ${v.lastName || ""}`.trim().toLowerCase();
     return (
       v.businessName?.toLowerCase().includes(q) ||
-      v.user?.fullName?.toLowerCase().includes(q) ||
-      v.user?.email?.toLowerCase().includes(q) ||
-      String(v.cnic).includes(q)
+      fullName.includes(q) ||
+      v.businessEmail?.toLowerCase().includes(q)
     );
   });
 
@@ -223,10 +223,10 @@ const VendorApplications: React.FC = () => {
                     <TableCell className="px-3 py-4">
                       <div className="flex flex-col gap-0.5">
                         <span className="text-sm font-semibold text-white/90">
-                          {vendor.user?.fullName || "—"}
+                          {`${vendor.firstName || ""} ${vendor.lastName || ""}`.trim() || "—"}
                         </span>
                         <span className="text-xs text-gray-500 truncate max-w-[12rem]">
-                          {vendor.user?.email || "—"}
+                          {vendor.businessEmail || "—"}
                         </span>
                       </div>
                     </TableCell>
@@ -234,7 +234,7 @@ const VendorApplications: React.FC = () => {
                     {/* CNIC */}
                     <TableCell className="px-3 py-4">
                       <span className="text-xs text-gray-400 font-mono">
-                        {vendor.cnic || "—"}
+                        {"—"}
                       </span>
                     </TableCell>
 
@@ -268,10 +268,10 @@ const VendorApplications: React.FC = () => {
                       <div className="flex flex-col items-end gap-1">
                         <Badge
                           variant="light"
-                          color={vendor.isVerified ? "success" : "error"}
+                          color={vendor.status === "APPROVED" ? "success" : "error"}
                           size="sm"
                         >
-                          {vendor.isVerified ? "Verified" : "Unverified"}
+                          {vendor.status === "APPROVED" ? "Verified" : "Unverified"}
                         </Badge>
                         <span className="text-[10px] text-gray-600">
                           {dayjs(vendor.createdAt).format("DD MMM, YYYY")}

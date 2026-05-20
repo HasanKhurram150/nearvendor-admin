@@ -4,46 +4,45 @@ export interface GetAllVendorInputDto {
   limit?: number;
 }
 
-export interface VendorItem {
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface Applications {
   id: string;
   createdAt: string;
   updatedAt: string;
   businessName: string;
+  firstName: string;
+  lastName: string;
   businessType: string;
-  taxId: string;
-  cnic: string; // Changed back to string based on user's response example "12345-1234567-1"
-  cnicImageUrl: string;
-  supportContact: string; // Changed back to string based on user's response example "+12234545656"
+  businessEmail: string;
+  mobileNumber: string;
+  businessPhoneNumber: string;
+  cnicFrontImageUrl: string;
+  cnicBackImageUrl: string;
+  state: string;
+  city: string;
+  area: string;
+  postalCode: string;
+  streetAddress: string;
+  shopLongitude: number | null;
+  shopLatitude: number | null;
   status: string;
-  isVerified: boolean;
-  user: {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    fullName: string;
-    email: string;
-    isEmailVerified: boolean;
-    phone: string | null;
-    photoUrl: string | null;
-    isPhoneVerified: boolean;
-    role: string;
-    isActive: boolean;
-    lastKnownLongitude: string;
-    lastKnownLatitude: string;
-    lastLoginAt: string | null;
-  };
+  rejectionReason: string | null;
+  reviewedAt: string | null;
+  userId: string;
 }
 
 export interface GetAllVendorOutputDto {
   success: boolean;
   statusCode: number;
+  message: string;
   data: {
-    vendors: VendorItem[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
+    applications: Applications[];
+    pagination: Pagination;
   };
 }
