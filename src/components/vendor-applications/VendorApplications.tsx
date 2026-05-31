@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { RefreshCw } from "lucide-react";
+import toast from "react-hot-toast";
 import {
   Table,
   TableBody,
@@ -9,11 +12,14 @@ import {
   TableRow,
 } from "../ui/table";
 import { getAllVendorAPI } from "@/services/vendor/get-all-vendor/get-all-vendor-api";
-import { GetAllVendorOutputDto, Applications } from "@/services/vendor/get-all-vendor/get-all-vendor-types";
+import {
+  GetAllVendorOutputDto,
+  Applications,
+} from "@/services/vendor/get-all-vendor/get-all-vendor-types";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Loading from "../atoms/loading/loading";
 import Badge from "@/components/ui/badge/Badge";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 import { cn } from "@/utils/cn";
 import Pagination from "@/components/tables/Pagination";
 
@@ -30,50 +36,42 @@ const DEFAULT_PAGE_SIZE = 10;
 
 const VendorApplications: React.FC = () => {
   const router = useRouter();
-  const [vendors, setVendors] = useState<Applications[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("");
   const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState<GetAllVendorOutputDto["data"]["pagination"] | null>(null);
+
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+    queryKey: ["vendors", page, statusFilter],
+    queryFn: () =>
+      getAllVendorAPI.getAllVendor({
+        status: statusFilter !== "" ? statusFilter : undefined,
+        page,
+        limit: DEFAULT_PAGE_SIZE,
+      }),
+    placeholderData: keepPreviousData,
+  });
+
+  const vendors = Array.isArray(data?.data?.applications)
+    ? data.data.applications
+    : [];
+  const pagination = data?.data?.pagination || null;
 
   useEffect(() => {
-    const fetchVendors = async () => {
-      setIsLoading(true);
-      try {
-        const res = await getAllVendorAPI.getAllVendor({
-          status: statusFilter !== "" ? statusFilter : undefined,
-          page,
-          limit: DEFAULT_PAGE_SIZE,
-        });
-        
-        // Correct data access based on the actual response structure
-        const vendorsData = res?.data?.applications;
-        const paginationData = res?.data?.pagination;
-        
-        setVendors(Array.isArray(vendorsData) ? vendorsData : []);
-        setPagination(paginationData || null);
-      } catch {
-        setVendors([]);
-        setPagination(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchVendors();
-  }, [statusFilter, page]);
+    if (isError) {
+      toast.error("Failed to load vendor applications");
+    }
+  }, [isError]);
 
   // Client-side search filtering on current page results
   const filtered = vendors.filter((v) => {
     if (!search) return true;
     const q = search.toLowerCase();
-    const fullName = `${v.firstName || ""} ${v.lastName || ""}`.trim().toLowerCase();
-    return (
-      v.businessName?.toLowerCase().includes(q) ||
-      fullName.includes(q) ||
-      v.businessEmail?.toLowerCase().includes(q)
-    );
+    // const fullName = `${v.firstName || ""} ${v.lastName || ""}`.trim().toLowerCase();
+    // return (
+    //   v.businessName?.toLowerCase().includes(q) ||
+    //   fullName.includes(q) ||
+    //   v.businessEmail?.toLowerCase().includes(q)
+    // );
   });
 
   const statusBadgeColor = (status: string) => {
@@ -111,6 +109,17 @@ const VendorApplications: React.FC = () => {
               className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-sm text-gray-200 placeholder-gray-500 outline-none transition-colors focus:border-brand-500/40 focus:bg-white/[0.05]"
             />
           </div>
+
+          {/* Refresh Button */}
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="flex items-center justify-center gap-2 p-3 text-sm font-medium text-white transition-colors border rounded-full border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Refresh vendor applications"
+          >
+            <RefreshCw size={16} className={cn(isFetching && "animate-spin")} />
+            {/* <span className="hidden sm:inline">Refresh</span> */}
+          </button>
 
           {/* Status Filter Pills */}
           <div className="flex items-center gap-2 flex-wrap">
@@ -211,23 +220,27 @@ const VendorApplications: React.FC = () => {
                 filtered.map((vendor, index) => (
                   <TableRow
                     key={vendor.id}
-                    onClick={() => router.push(`/vendor-application?id=${vendor.id}`)}
+                    onClick={() =>
+                      router.push(`/vendor-application?id=${vendor.id}`)
+                    }
                     className="cursor-pointer"
                   >
                     {/* # */}
                     <TableCell className="pl-6 pr-3 py-4 text-xs text-gray-500 font-mono">
-                      {((page - 1) * DEFAULT_PAGE_SIZE + (index + 1)).toString().padStart(2, "0")}
+                      {((page - 1) * DEFAULT_PAGE_SIZE + (index + 1))
+                        .toString()
+                        .padStart(2, "0")}
                     </TableCell>
 
                     {/* Vendor Name */}
                     <TableCell className="px-3 py-4">
                       <div className="flex flex-col gap-0.5">
                         <span className="text-sm font-semibold text-white/90">
-                          {`${vendor.firstName || ""} ${vendor.lastName || ""}`.trim() || "—"}
+                          {`${vendor.businessName || ""}` || "—"}
                         </span>
-                        <span className="text-xs text-gray-500 truncate max-w-[12rem]">
+                        {/* <span className="text-xs text-gray-500 truncate max-w-[12rem]">
                           {vendor.businessEmail || "—"}
-                        </span>
+                        </span> */}
                       </div>
                     </TableCell>
 
@@ -246,11 +259,11 @@ const VendorApplications: React.FC = () => {
                     </TableCell>
 
                     {/* Business Type */}
-                    <TableCell className="px-3 py-4">
+                    {/* <TableCell className="px-3 py-4">
                       <span className="text-sm text-gray-300 capitalize">
                         {vendor.businessType || "—"}
                       </span>
-                    </TableCell>
+                    </TableCell> */}
 
                     {/* Status */}
                     <TableCell className="px-3 py-4">
@@ -268,14 +281,18 @@ const VendorApplications: React.FC = () => {
                       <div className="flex flex-col items-end gap-1">
                         <Badge
                           variant="light"
-                          color={vendor.status === "APPROVED" ? "success" : "error"}
+                          color={
+                            vendor.status === "APPROVED" ? "success" : "error"
+                          }
                           size="sm"
                         >
-                          {vendor.status === "APPROVED" ? "Verified" : "Unverified"}
+                          {vendor.status === "APPROVED"
+                            ? "Verified"
+                            : "Unverified"}
                         </Badge>
-                        <span className="text-[10px] text-gray-600">
+                        {/* <span className="text-[10px] text-gray-600">
                           {dayjs(vendor.createdAt).format("DD MMM, YYYY")}
-                        </span>
+                        </span> */}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -289,7 +306,9 @@ const VendorApplications: React.FC = () => {
         {!isLoading && pagination && pagination.total > 0 && (
           <div className="mt-4 flex flex-col items-center justify-between gap-3 px-6 sm:flex-row">
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Showing {(page - 1) * DEFAULT_PAGE_SIZE + 1}–{Math.min(page * DEFAULT_PAGE_SIZE, pagination.total)} of {pagination.total} records
+              Showing {(page - 1) * DEFAULT_PAGE_SIZE + 1}–
+              {Math.min(page * DEFAULT_PAGE_SIZE, pagination.total)} of{" "}
+              {pagination.total} records
             </span>
             <Pagination
               currentPage={page}

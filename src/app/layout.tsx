@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 // import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
 import { LanguageProvider } from "@/components/common/LanguageContext";
+import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 
 export default function RootLayout({
   children,
@@ -21,7 +22,8 @@ export default function RootLayout({
         />
       </head>
       <body className="">
-        <LanguageProvider>
+        <ReactQueryProvider>
+          <LanguageProvider>
           {/* <Providers> */}
           <Toaster
             position="bottom-center"
@@ -38,7 +40,8 @@ export default function RootLayout({
             <SidebarProvider>{children}</SidebarProvider>
           </ThemeProvider>
           {/* </Providers> */}
-        </LanguageProvider>
+          </LanguageProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

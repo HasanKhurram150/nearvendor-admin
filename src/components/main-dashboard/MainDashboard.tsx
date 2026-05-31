@@ -7,11 +7,11 @@ import { getAllUsersAPI } from "@/services/users/get-all-users/get-all-users-api
 import { getAllVendorAPI } from "@/services/vendor/get-all-vendor/get-all-vendor-api";
 import { User } from "@/services/users/get-all-users/get-all-user-types";
 import { Applications } from "@/services/vendor/get-all-vendor/get-all-vendor-types";
-import { OrderStatsCards } from "./OrderStatsCards";
-import { OrderStatusBreakdown } from "./OrderStatusBreakdown";
-import { SalesChart } from "./SalesChart";
-import { TopSellingNfts } from "./TopSellingNfts";
-import { SalesBreakdown } from "./SalesBreakdown";
+import { useQuery } from "@tanstack/react-query";
+import { DashboardStatsCards } from "./DashboardStatsCards";
+import { RoleDistributionChart } from "./RoleDistributionChart";
+import { UserGrowthChart } from "./UserGrowthChart";
+import { VendorStatusChart } from "./VendorStatusChart";
 import { cn } from "@/utils/cn";
 import dayjs from "dayjs";
 
@@ -35,13 +35,8 @@ const TIME_SPANS: { label: string; value: TimeSpan }[] = [
   { label: "Yearly", value: "yearly" },
 ];
 
-export default function NftOrderDashboard() {
+export default function MainDashboard() {
   const { t } = useLanguage();
-
-  // States for data
-  const [users, setUsers] = useState<User[]>([]);
-  const [vendors, setVendors] = useState<Applications[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   // States for filters
   const [timeSpan, setTimeSpan] = useState<TimeSpan>("all");
@@ -52,26 +47,19 @@ export default function NftOrderDashboard() {
   const [vendorStatusFilter, setVendorStatusFilter] =
     useState<VendorStatusFilter>("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [usersRes, vendorsRes] = await Promise.all([
-          getAllUsersAPI.getAllUsers({ page: 1, limit: 1000 }),
-          getAllVendorAPI.getAllVendor({ page: 1, limit: 1000 }),
-        ]);
+  const { data: usersData, isLoading: usersLoading } = useQuery({
+    queryKey: ["users", "dashboard"],
+    queryFn: () => getAllUsersAPI.getAllUsers({ page: 1, limit: 1000 }),
+  });
 
-        if (usersRes.success) setUsers(usersRes.data.users || []);
-        if (vendorsRes.success) setVendors(vendorsRes.data.applications || []);
-      } catch (error) {
-        console.error("Dashboard data fetch failed:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { data: vendorsData, isLoading: vendorsLoading } = useQuery({
+    queryKey: ["vendors", "dashboard"],
+    queryFn: () => getAllVendorAPI.getAllVendor({ page: 1, limit: 1000 }),
+  });
 
-    fetchData();
-  }, []);
+  const isLoading = usersLoading || vendorsLoading;
+  const users = usersData?.success ? usersData.data.users || [] : [];
+  const vendors = vendorsData?.success ? vendorsData.data.applications || [] : [];
 
   // Filter Logic
   const filteredData = useMemo(() => {
@@ -92,9 +80,9 @@ export default function NftOrderDashboard() {
       filteredUsers = filteredUsers.filter((u) =>
         dayjs(u.createdAt).isAfter(cutoff),
       );
-      filteredVendors = filteredVendors.filter((v) =>
-        dayjs(v.createdAt).isAfter(cutoff),
-      );
+      // filteredVendors = filteredVendors.filter((v) =>
+      //   dayjs(v.createdAt).isAfter(cutoff),
+      // );
     }
 
     // 2. Search Filter
@@ -108,7 +96,7 @@ export default function NftOrderDashboard() {
       filteredVendors = filteredVendors.filter(
         (v) =>
           v.businessName?.toLowerCase().includes(q) ||
-          `${v.firstName || ""} ${v.lastName || ""}`.toLowerCase().includes(q),
+          `${v.businessName || ""}`,
       );
     }
 
@@ -297,30 +285,25 @@ export default function NftOrderDashboard() {
 
       {/* Stats Cards */}
       <div className="col-span-12">
-        <OrderStatsCards stats={stats} />
+        <DashboardStatsCards stats={stats} />
       </div>
 
-      {/* User Role Distribution (Repurposed OrderStatusBreakdown) */}
+      {/* User Role Distribution */}
       <div className="col-span-12 lg:col-span-5">
-        <OrderStatusBreakdown stats={stats} />
+        <RoleDistributionChart stats={stats} />
       </div>
 
-      {/* User Growth Chart (SalesChart) */}
+      {/* User Growth Chart */}
       <div className="col-span-12 lg:col-span-7">
-        <SalesChart salesData={stats.growthData as [number, number][]} />
+        <UserGrowthChart salesData={stats.growthData as [number, number][]} />
       </div>
 
-      {/* Vendor Status Breakdown (SalesBreakdown) */}
+      {/* Vendor Status Breakdown */}
       <div className="col-span-12 lg:col-span-6">
-        <SalesBreakdown
+        <VendorStatusChart
           title="Vendor Application Status"
           data={stats.vendorStatusBreakdown}
         />
-      </div>
-
-      {/* Recent Activity Table (TopSellingNfts) */}
-      <div className="col-span-12 lg:col-span-6">
-        <TopSellingNfts nfts={stats.recentActivity} />
       </div>
     </div>
   );

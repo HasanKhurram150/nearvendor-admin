@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import ComponentCard from "../common/ComponentCard";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Badge from "../ui/badge/Badge";
@@ -21,34 +22,24 @@ const VendorApplication: React.FC = () => {
   const router = useRouter();
   const id = searchParams.get("id");
 
-  const [vendor, setVendor] = useState<GetVendorIdOutputDto["data"] | null>(
-    null,
-  );
-  const [isLoading, setIsLoading] = useState(true);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
 
-  const fetchVendorDetails = async (silent = false) => {
-    if (!id) return;
-    if (!silent) setIsLoading(true);
-    try {
-      const res = await getVendorIdAPI.getVendorId({ id });
-      if (res.success) {
-        setVendor(res.data);
-      } else {
-        toast.error("Failed to fetch vendor details");
-      }
-    } catch (error) {
-      console.error("Error fetching vendor details:", error);
-      toast.error("An error occurred while fetching details");
-    } finally {
-      if (!silent) setIsLoading(false);
-    }
-  };
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["vendor", id],
+    queryFn: () => getVendorIdAPI.getVendorId({ id: id as string }),
+    enabled: !!id,
+  });
+
+  const vendor = data?.success ? data.data : null;
 
   useEffect(() => {
-    fetchVendorDetails();
-  }, [id]);
+    if (!id) {
+      toast.error("No vendor ID provided");
+    } else if (isError) {
+      toast.error("Failed to fetch vendor details");
+    }
+  }, [id, isError]);
 
   const handleVerify = async () => {
     if (!id) return;
@@ -58,7 +49,7 @@ const VendorApplication: React.FC = () => {
       console.log("Verify Response:", res);
       if (res.success || res.statusCode === 200 || res.statusCode === 201) {
         toast.success("Vendor application verified successfully!");
-        fetchVendorDetails(true); // Silent refresh
+        refetch(); // Silent refresh
       } else {
         toast.error(res.message || "Failed to verify vendor application");
       }
@@ -77,13 +68,13 @@ const VendorApplication: React.FC = () => {
       console.log("Reject Response:", res);
       if (res.success || res.statusCode === 200 || res.statusCode === 201) {
         toast.success("Vendor application rejected successfully!");
-        fetchVendorDetails(true); // Silent refresh
+        refetch(); // Silent refresh
       } else {
-        toast.error(res.message || "Failed to reject  vendor application");
+        toast.error(res.message || "Failed to reject vendor application");
       }
     } catch (error) {
-      console.error("Error verifying vendor:", error);
-      toast.error("An error occurred during verification");
+      console.error("Error rejecting vendor:", error);
+      toast.error("An error occurred during rejection");
     } finally {
       setIsRejecting(false);
     }

@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { RefreshCw } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -9,10 +11,10 @@ import {
   TableRow,
 } from "../ui/table";
 import { getAllUsersAPI } from "@/services/users/get-all-users/get-all-users-api";
-import {
-  GetAllUsersOutputDto,
-  User,
-} from "@/services/users/get-all-users/get-all-user-types";
+// import {
+//   GetAllUsersOutputDto,
+//   User,
+// } from "@/services/users/get-all-users/get-all-user-types";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Loading from "../atoms/loading/loading";
 import { useLanguage } from "../common/LanguageContext";
@@ -27,11 +29,11 @@ const DEFAULT_PAGE_SIZE = 10;
 type RoleFilter = "" | "BUYER" | "VENDOR";
 type StatusFilter = "" | "true" | "false";
 
-const ROLE_FILTERS: { label: string; value: RoleFilter }[] = [
-  { label: "All Roles", value: "" },
-  { label: "Buyer", value: "BUYER" },
-  { label: "Vendor", value: "VENDOR" },
-];
+// const ROLE_FILTERS: { label: string; value: RoleFilter }[] = [
+//   { label: "All Roles", value: "" },
+//   { label: "Buyer", value: "BUYER" },
+//   { label: "Vendor", value: "VENDOR" },
+// ];
 
 const STATUS_FILTERS: { label: string; value: StatusFilter }[] = [
   { label: "All Status", value: "" },
@@ -43,45 +45,31 @@ const UserManagement: React.FC = () => {
   const router = useRouter();
   const { t } = useLanguage();
 
-  const [users, setUsers] = useState<User[]>([]);
-  const [pagination, setPagination] = useState<
-    GetAllUsersOutputDto["data"]["pagination"] | null
-  >(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("");
   const [page, setPage] = useState(1);
 
-  const fetchUsers = async () => {
-    setIsLoading(true);
-    try {
-      const res = await getAllUsersAPI.getAllUsers({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+    queryKey: ["users", page],
+    queryFn: () =>
+      getAllUsersAPI.getAllUsers({
         page,
         limit: DEFAULT_PAGE_SIZE,
-      });
+      }),
+    placeholderData: keepPreviousData,
+  });
 
-      if (res.success) {
-        setUsers(res.data.users || []);
-        setPagination(res.data.pagination || null);
-      } else {
-        toast.error("Failed to load users");
-        setUsers([]);
-        setPagination(null);
-      }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      toast.error("An error occurred while loading users");
-      setUsers([]);
-      setPagination(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const users = data?.success ? data.data.users || [] : [];
+  const pagination = data?.success ? data.data.pagination || null : null;
 
   useEffect(() => {
-    fetchUsers();
-  }, [page]);
+    if (data && !data.success) {
+      toast.error("Failed to load users");
+    } else if (isError) {
+      toast.error("An error occurred while loading users");
+    }
+  }, [data, isError]);
 
   // Client-side filtering on current page results
   const filteredUsers = users.filter((user) => {
@@ -90,7 +78,8 @@ const UserManagement: React.FC = () => {
       user.fullName?.toLowerCase().includes(search.toLowerCase()) ||
       user.email?.toLowerCase().includes(search.toLowerCase());
 
-    const matchesRole = !roleFilter || user.role === roleFilter;
+    // const matchesRole = !roleFilter || user.role === roleFilter;
+    const matchesRole = user.role === "BUYER"; // Display only buyers for now
 
     const matchesStatus =
       !statusFilter || String(user.isActive) === statusFilter;
@@ -122,12 +111,26 @@ const UserManagement: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full xl:w-auto">
+            {/* Refresh Button */}
+            <button
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className="flex items-center justify-center gap-2 p-3 text-sm font-medium text-white transition-colors border rounded-full border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Refresh users list"
+            >
+              <RefreshCw
+                size={16}
+                className={cn(isFetching && "animate-spin")}
+              />
+              {/* <span className="hidden lg:inline">Refresh</span> */}
+            </button>
+
             {/* Role Filters */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-medium text-gray-500 mr-1 uppercase tracking-wider">
                 Role:
               </span>
-              {ROLE_FILTERS.map(({ label, value }) => (
+              {/* {ROLE_FILTERS.map(({ label, value }) => (
                 <button
                   key={value}
                   onClick={() => setRoleFilter(value)}
@@ -140,7 +143,7 @@ const UserManagement: React.FC = () => {
                 >
                   {label}
                 </button>
-              ))}
+              ))} */}
             </div>
 
             {/* Status Filters */}
@@ -261,7 +264,8 @@ const UserManagement: React.FC = () => {
                     <TableCell className="px-3 py-4 text-xs text-gray-400 capitalize">
                       <Badge
                         variant="light"
-                        color={userItem.role === "VENDOR" ? "info" : "light"}
+                        // color={userItem.role === "VENDOR" ? "info" : "light"}
+                        color="light"
                         size="sm"
                       >
                         {userItem.role || "—"}

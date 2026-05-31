@@ -8,7 +8,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export function SalesChart({ salesData }: { salesData: [number, number][] | undefined }) {
+export function UserGrowthChart({ salesData }: { salesData: [number, number][] | undefined }) {
   const { t } = useLanguage();
 
   const chartData = salesData ?? [];

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import React from "react";
-import NftOrderDashboard from "@/components/nft-order-dashboard/NftOrderDashboard";
+import MainDashboard from "@/components/main-dashboard/MainDashboard";
 
 export const metadata: Metadata = {
-  title: "NFT Order Dashboard",
-  description: "NFT order statistics and sales insights",
+  title: "Admin Dashboard",
+  description: "User and Vendor Analytics Dashboard",
 };
 
 export default function Page() {
-  return <NftOrderDashboard />;
+  return <MainDashboard />;
 }

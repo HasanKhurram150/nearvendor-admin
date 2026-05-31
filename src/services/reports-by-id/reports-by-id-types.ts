@@ -30,14 +30,15 @@ interface Reporter {
 
 interface Reports {
   id: string;
-  createdAt: string;
-  updatedAt: string;
-  targetId: string;
-  targetType: string;
+  // createdAt: string;
+  // updatedAt: string;
+  // targetId: string;
+  // targetType: string;
+  reporterId: string;
   reason: string;
-  additionalDetails: string;
-  isResolved: boolean;
-  reporter: Reporter;
+  // additionalDetails: string;
+  // isResolved: boolean;
+  // reporter: Reporter;
 }
 
 export interface GetReportsByIdOutputDto {

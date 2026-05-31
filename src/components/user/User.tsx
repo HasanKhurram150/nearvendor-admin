@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import ComponentCard from "../common/ComponentCard";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Badge from "../ui/badge/Badge";
@@ -18,60 +19,46 @@ const User: React.FC = () => {
   const userId = searchParams.get("id");
 
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<UserDetail | null>(null);
-  const [stats, setStats] = useState({
-    wishlist: 0,
-    searchHistory: 0,
-    recentItems: 0,
-    analytics: 0,
-  });
   const [formData, setFormData] = useState<Partial<UserDetail>>({});
 
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => getUserByIdAPI.getUserById({ id: userId as string }),
+    enabled: !!userId,
+  });
+
+  const user = data?.success ? data.data?.user : null;
+  const stats = {
+    wishlist: data?.data?.wishlist?.pagination?.total || 0,
+    searchHistory: data?.data?.searchHistory?.pagination?.total || 0,
+    recentItems: data?.data?.recentItems?.pagination?.total || 0,
+    analytics: data?.data?.analyticsEvents?.pagination?.total || 0,
+  };
+
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!userId) {
-        toast.error("No user ID provided");
-        setIsLoading(false);
-        return;
-      }
+    if (!userId) {
+      toast.error("No user ID provided");
+    } else if (isError) {
+      toast.error("Error loading user details");
+    }
+  }, [userId, isError]);
 
-      setIsLoading(true);
-      try {
-        const res = await getUserByIdAPI.getUserById({ id: userId });
-        if (res.success && res.data) {
-          setUser(res.data.user);
-          setFormData(res.data.user);
-          setStats({
-            wishlist: res.data.wishlist?.pagination?.total || 0,
-            searchHistory: res.data.searchHistory?.pagination?.total || 0,
-            recentItems: res.data.recentItems?.pagination?.total || 0,
-            analytics: res.data.analyticsEvents?.pagination?.total || 0,
-          });
-        } else {
-          toast.error("Failed to load user details");
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        toast.error("Error loading user details");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, [userId]);
+  useEffect(() => {
+    if (user) {
+      setFormData(user);
+    }
+  }, [user]);
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    // Implement save logic here if API exists
-    setUser(formData as UserDetail);
-    setIsEditing(false);
-    toast.success("User updated locally (mock)");
-  };
+  // const handleSave = () => {
+  //   // Implement save logic here if API exists
+  //   setUser(formData as UserDetail);
+  //   setIsEditing(false);
+  //   toast.success("User updated locally (mock)");
+  // };
 
   const handleCancel = () => {
     setFormData(user || {});
@@ -216,9 +203,9 @@ const User: React.FC = () => {
               <Button size="sm" variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button size="sm" variant="primary" onClick={handleSave}>
+              {/* <Button size="sm" variant="primary" onClick={handleSave}>
                 Save Changes
-              </Button>
+              </Button> */}
             </div>
           ) : (
             <Button size="sm" variant="outline" onClick={handleEdit}>
@@ -299,7 +286,10 @@ const User: React.FC = () => {
                   marginHeight={0}
                   marginWidth={0}
                   src={mapUrl}
-                  className="filter grayscale invert contrast-125 opacity-80"
+                  className="w-full h-full border-0 transition-all duration-300 opacity-85 hover:opacity-100"
+                  style={{
+                    filter: "invert(90%) hue-rotate(180deg) brightness(95%) contrast(95%)",
+                  }}
                 ></iframe>
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-500 text-sm">

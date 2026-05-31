@@ -9,7 +9,7 @@ interface BreakdownData {
   rejected: number;
 }
 
-export function SalesBreakdown({
+export function VendorStatusChart({
   title,
   data,
 }: {

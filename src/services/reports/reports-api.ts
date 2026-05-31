@@ -1,9 +1,6 @@
 import { ENDPOINTS } from "@/config";
 import { API } from "../base-api";
-import {
-  GetAllReportsOutputDto,
-  GetAllReportsInputDto,
-} from "./reports-api-types";
+import { GetAllReportsOutputDto, GetAllReportsInputDto } from "./reports-types";
 
 export const getAllReportsAPI = {
   // Login user

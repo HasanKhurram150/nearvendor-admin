@@ -8,13 +8,7 @@ interface DistributionItem {
   color: string;
 }
 
-interface StatCard {
-  label: string;
-  value: string | number;
-  subLabel?: string;
-}
-
-export function OrderStatusBreakdown({ stats }: { stats: any }) {
+export function RoleDistributionChart({ stats }: { stats: any }) {
   const { t } = useLanguage();
 
   if (!stats) return null;

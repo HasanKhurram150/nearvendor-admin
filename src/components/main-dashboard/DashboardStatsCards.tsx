@@ -1,27 +1,6 @@
 "use client";
 import React from "react";
-// import { INftOrderStats } from "@/services/nft-order-stats-api/nft-order-stats-api.types";
-import { useLanguage } from "@/components/common/LanguageContext";
-
-interface StatCard {
-  label: string;
-  value: string | number;
-  subLabel?: string;
-}
-
-function formatAmount(value: string | undefined): string {
-  if (!value) return "0";
-  const num = parseFloat(value);
-  if (isNaN(num)) return "0";
-  return num.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 6,
-  });
-}
-
-export function OrderStatsCards({ stats }: { stats: any }) {
-  const { t } = useLanguage();
-
+export function DashboardStatsCards({ stats }: { stats: any }) {
   if (!stats) return null;
 
   const cards = [

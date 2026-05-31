@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import {
   Table,
   TableHeader,
@@ -8,40 +9,28 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import Badge from "@/components/ui/badge/Badge";
 import { ChevronRight } from "lucide-react";
 import { getAllReportsAPI } from "@/services/reports/reports-api";
-import { GetAllReportsOutputDto } from "@/services/reports/reports-api-types";
 import Loading from "../atoms/loading/loading";
 import toast from "react-hot-toast";
-import Image from "next/image";
-import dayjs from "dayjs";
 
 export function ComplaintsList() {
   const router = useRouter();
-  const [data, setData] = useState<GetAllReportsOutputDto["data"] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchReports = async (page = 1) => {
-    setIsLoading(true);
-    try {
-      const res = await getAllReportsAPI.getAllReports({ page, limit: 10 });
-      if (res.success) {
-        setData(res.data);
-      } else {
-        toast.error("Failed to fetch reports");
-      }
-    } catch (error) {
-      console.error("Error fetching reports:", error);
-      toast.error("An error occurred while fetching reports");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data: queryData, isLoading, isError } = useQuery({
+    queryKey: ["reports", 1],
+    queryFn: () => getAllReportsAPI.getAllReports({ page: 1, limit: 10 }),
+  });
+
+  const data = queryData?.success ? queryData.data : null;
 
   useEffect(() => {
-    fetchReports();
-  }, []);
+    if (isError) {
+      toast.error("An error occurred while fetching reports");
+    } else if (queryData && !queryData.success) {
+      toast.error("Failed to fetch reports");
+    }
+  }, [isError, queryData]);
 
   const handleRowClick = (id: string) => {
     router.push(`/complaints/${id}`);
@@ -70,11 +59,9 @@ export function ComplaintsList() {
         <Table>
           <TableHeader>
             <TableRow hoverable={false} className="border-b border-white/5">
-              <TableCell isHeader>User</TableCell>
+              <TableCell isHeader>User ID</TableCell>
               <TableCell isHeader>Email</TableCell>
-              <TableCell isHeader>Role</TableCell>
-              <TableCell isHeader>Status</TableCell>
-              <TableCell isHeader>Reported On</TableCell>
+              <TableCell isHeader>Report Count</TableCell>
               <TableCell isHeader className="w-10">
                 {""}
               </TableCell>
@@ -88,48 +75,14 @@ export function ComplaintsList() {
                 className="cursor-pointer group"
               >
                 <TableCell>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full overflow-hidden bg-white/5 border border-white/10 shrink-0">
-                      {user.photoUrl ? (
-                        <div className="relative w-full h-full">
-                          <Image
-                            src={user.photoUrl}
-                            alt={user.fullName}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-500 text-[10px]">
-                          {user.fullName.charAt(0)}
-                        </div>
-                      )}
-                    </div>
-                    <span className="text-white font-medium">
-                      {user.fullName}
-                    </span>
-                  </div>
+                  <span className="text-white font-mono text-xs">{user.id}</span>
                 </TableCell>
                 <TableCell>
                   <span className="text-gray-400 text-sm">{user.email}</span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-gray-300 text-sm uppercase tracking-wider text-[10px] font-bold">
-                    {user.role}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    color={user.isActive ? "success" : "error"}
-                    variant="light"
-                    size="sm"
-                  >
-                    {user.isActive ? "Active" : "Inactive"}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <span className="text-gray-500 font-mono text-xs">
-                    {dayjs(user.createdAt).format("DD MMM YYYY")}
+                  <span className="text-gray-300 text-sm font-bold">
+                    {user.reportCount}
                   </span>
                 </TableCell>
                 <TableCell>
