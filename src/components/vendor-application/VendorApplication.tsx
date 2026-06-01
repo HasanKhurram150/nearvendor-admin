@@ -24,6 +24,7 @@ const VendorApplication: React.FC = () => {
 
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
+  const [expandedImage, setExpandedImage] = useState<{ src: string; title: string } | null>(null);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["vendor", id],
@@ -210,16 +211,22 @@ const VendorApplication: React.FC = () => {
                   CNIC Front Image
                 </span>
                 {vendor.cnicFrontImageUrl ? (
-                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
+                  <div 
+                    onClick={() => setExpandedImage({ src: vendor.cnicFrontImageUrl, title: "CNIC Front Image" })}
+                    className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 cursor-pointer group hover:border-brand-500/50 transition-all duration-300"
+                  >
                     <Image
                       src={vendor.cnicFrontImageUrl}
                       alt="CNIC Front"
                       fill
-                      className="object-cover"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span className="text-white text-xs font-semibold bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-sm">Click to Expand</span>
+                    </div>
                   </div>
                 ) : (
-                  <div className="aspect-[4/3] rounded-xl bg-white/3 border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
+                  <div className="aspect-[4/3] rounded-xl bg-white/[0.03] border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
                     No image provided
                   </div>
                 )}
@@ -230,16 +237,22 @@ const VendorApplication: React.FC = () => {
                   CNIC Back Image
                 </span>
                 {vendor.cnicBackImageUrl ? (
-                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
+                  <div 
+                    onClick={() => setExpandedImage({ src: vendor.cnicBackImageUrl, title: "CNIC Back Image" })}
+                    className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 cursor-pointer group hover:border-brand-500/50 transition-all duration-300"
+                  >
                     <Image
                       src={vendor.cnicBackImageUrl}
                       alt="CNIC Back"
                       fill
-                      className="object-cover"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span className="text-white text-xs font-semibold bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-sm">Click to Expand</span>
+                    </div>
                   </div>
                 ) : (
-                  <div className="aspect-[4/3] rounded-xl bg-white/3 border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
+                  <div className="aspect-[4/3] rounded-xl bg-white/[0.03] border border-dashed border-white/10 flex items-center justify-center text-gray-500 text-sm">
                     No image provided
                   </div>
                 )}
@@ -248,6 +261,60 @@ const VendorApplication: React.FC = () => {
           </ComponentCard>
         </div>
       </div>
+
+      {/* Lightbox / Expanded Image Modal */}
+      {expandedImage && (
+        <div 
+          onClick={() => setExpandedImage(null)}
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/85 backdrop-blur-md p-4 cursor-zoom-out animate-fadeIn"
+        >
+          {/* Close button */}
+          <button 
+            onClick={() => setExpandedImage(null)}
+            className="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all duration-300"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            className="relative max-w-4xl w-full max-h-[85vh] flex flex-col items-center gap-4 cursor-default animate-scaleUp"
+          >
+            <div className="relative w-full aspect-[4/3] max-h-[75vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+              <Image 
+                src={expandedImage.src} 
+                alt={expandedImage.title}
+                fill
+                className="object-contain"
+                sizes="(max-width: 1200px) 100vw, 1200px"
+                priority
+              />
+            </div>
+            <span className="text-white/90 text-sm font-semibold tracking-wider bg-black/40 px-4 py-2 rounded-full border border-white/10 backdrop-blur-sm">
+              {expandedImage.title}
+            </span>
+          </div>
+
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            @keyframes scaleUp {
+              from { transform: scale(0.95); opacity: 0; }
+              to { transform: scale(1); opacity: 1; }
+            }
+            .animate-fadeIn {
+              animation: fadeIn 0.2s ease-out forwards;
+            }
+            .animate-scaleUp {
+              animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+          `}} />
+        </div>
+      )}
     </div>
   );
 };

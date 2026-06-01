@@ -51,10 +51,12 @@ export const cookieUtils = {
   
       console.log("Getting cookie:", name, "from:", document.cookie);
   
-      const value = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith(`${name}=`))
-        ?.split("=")[1];
+      const row = document.cookie
+        .split(";")
+        .map((c) => c.trim())
+        .find((r) => r.startsWith(`${name}=`));
+        
+      const value = row ? row.substring(name.length + 1) : undefined;
   
       const decodedValue = value ? decodeURIComponent(value) : null;
       console.log("Cookie get result:", name, "found:", !!decodedValue);

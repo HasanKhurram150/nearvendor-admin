@@ -13,7 +13,7 @@ interface Pagination {
 
 export interface Applications {
   id: string;
-  // createdAt: string;
+  createdAt: string;
   // updatedAt: string;
   businessName: string;
   // firstName: string;

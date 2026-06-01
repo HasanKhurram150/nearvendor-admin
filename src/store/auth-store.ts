@@ -42,11 +42,33 @@ const mapApiUser = (user: any): User => ({
   role: user.role || (Array.isArray(user.userRole) ? user.userRole[0] : user.userRole) || "",
 });
 
+function getTokenExpiry(token: string): number | null {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    if (!payloadBase64) return null;
+    
+    const payloadStr = typeof window !== "undefined" 
+      ? atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'))
+      : Buffer.from(payloadBase64, 'base64').toString();
+      
+    const payload = JSON.parse(payloadStr);
+    if (payload.exp) {
+      return payload.exp * 1000; // JWT exp is in seconds
+    }
+  } catch (e) {
+    console.error("Failed to decode token", e);
+  }
+  return null;
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => {
       // Synchronous initialization from cookies to prevent "flash of dashboard"
-      const initialToken = typeof window !== "undefined" ? cookieUtils.get("auth-token") : null;
+      let initialToken = typeof window !== "undefined" ? cookieUtils.get("auth-token") : null;
+      if (!initialToken && typeof window !== "undefined") {
+        initialToken = localStorage.getItem("authToken");
+      }
       
       return {
         user: null,
@@ -62,7 +84,8 @@ export const useAuthStore = create<AuthState>()(
             const response = await authAPI.login({ email, password });
 
             if (response.data?.token) {
-              const expiry = Date.now() + 24 * 60 * 60 * 1000;
+              const decodedExpiry = getTokenExpiry(response.data.token);
+              const expiry = decodedExpiry || (Date.now() + 24 * 60 * 60 * 1000);
               cookieUtils.set("auth-token", response.data.token, {
                 persistent: true,
                 expires: new Date(expiry),
@@ -129,7 +152,8 @@ export const useAuthStore = create<AuthState>()(
         },
 
         setToken: (token: string, expiryMs?: number) => {
-          const expiry = expiryMs || Date.now() + 24 * 60 * 60 * 1000;
+          const decodedExpiry = getTokenExpiry(token);
+          const expiry = expiryMs || decodedExpiry || (Date.now() + 24 * 60 * 60 * 1000);
           cookieUtils.set("auth-token", token, {
             persistent: true,
             expires: new Date(expiry),

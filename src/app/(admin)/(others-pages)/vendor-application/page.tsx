@@ -6,6 +6,9 @@ import React, { Suspense } from "react";
 export const metadata: Metadata = {
   title: "Vendor Application",
   description: "Vendor Application",
+  icons: {
+    icon: "/images/logo/near-vendor-logo.svg",
+  },
 };
 
 export default function page() {

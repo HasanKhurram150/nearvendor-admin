@@ -103,7 +103,7 @@ const VendorApplications: React.FC = () => {
           <div className="relative max-w-sm w-full">
             <input
               type="text"
-              placeholder="Search by business name, vendor name, CNIC..."
+              placeholder="Search by business name, vendor name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-sm text-gray-200 placeholder-gray-500 outline-none transition-colors focus:border-brand-500/40 focus:bg-white/[0.05]"
@@ -165,24 +165,24 @@ const VendorApplications: React.FC = () => {
                 >
                   Vendor Name
                 </TableCell>
-                <TableCell
+                {/* <TableCell
                   isHeader
                   className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
                 >
                   CNIC
-                </TableCell>
+                </TableCell> */}
                 <TableCell
                   isHeader
                   className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
                 >
                   Business Name
                 </TableCell>
-                <TableCell
+                {/* <TableCell
                   isHeader
                   className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[8rem]"
                 >
                   Business Type
-                </TableCell>
+                </TableCell> */}
                 <TableCell
                   isHeader
                   className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[7rem]"
@@ -191,9 +191,9 @@ const VendorApplications: React.FC = () => {
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 pl-3 pr-6 font-medium text-[#201D1D99] text-end text-base dark:text-white min-w-[10rem]"
+                  className="py-3 pl-3 pr-6 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
                 >
-                  Verification
+                  Created At
                 </TableCell>
               </TableRow>
             </TableHeader>
@@ -245,11 +245,11 @@ const VendorApplications: React.FC = () => {
                     </TableCell>
 
                     {/* CNIC */}
-                    <TableCell className="px-3 py-4">
+                    {/* <TableCell className="px-3 py-4">
                       <span className="text-xs text-gray-400 font-mono">
                         {"—"}
                       </span>
-                    </TableCell>
+                    </TableCell> */}
 
                     {/* Business Name */}
                     <TableCell className="px-3 py-4">
@@ -278,8 +278,8 @@ const VendorApplications: React.FC = () => {
 
                     {/* Verification */}
                     <TableCell className="py-4 pl-3 pr-6 text-right">
-                      <div className="flex flex-col items-end gap-1">
-                        <Badge
+                      <div className="flex flex-col items-start gap-1">
+                        {/* <Badge
                           variant="light"
                           color={
                             vendor.status === "APPROVED" ? "success" : "error"
@@ -289,7 +289,10 @@ const VendorApplications: React.FC = () => {
                           {vendor.status === "APPROVED"
                             ? "Verified"
                             : "Unverified"}
-                        </Badge>
+                        </Badge> */}
+                        {vendor.createdAt
+                          ? vendor.createdAt.replace("T", " ").substring(0, 16)
+                          : "—"}
                         {/* <span className="text-[10px] text-gray-600">
                           {dayjs(vendor.createdAt).format("DD MMM, YYYY")}
                         </span> */}

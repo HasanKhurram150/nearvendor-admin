@@ -5,6 +5,9 @@ import React from "react";
 export const metadata: Metadata = {
   title: "Vendor Applications",
   description: "Admin Vendor Applications Review",
+  icons: {
+    icon: "/images/logo/near-vendor-logo.svg",
+  },
 };
 
 export default function page() {

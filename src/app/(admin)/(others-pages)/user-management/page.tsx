@@ -5,6 +5,9 @@ import React from "react";
 export const metadata: Metadata = {
   title: "User",
   description: "User Management",
+  icons: {
+    icon: "/images/logo/near-vendor-logo.svg",
+  },
 };
 
 export default function page() {

@@ -7,6 +7,9 @@ import React from "react";
 export const metadata: Metadata = {
   title: "Settings",
   description: "Settings",
+  icons: {
+    icon: "/images/logo/near-vendor-logo.svg",
+  },
 };
 
 export default function Profile() {

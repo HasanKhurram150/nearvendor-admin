@@ -6,6 +6,9 @@ import Loading from "@/components/atoms/loading/loading";
 export const metadata: Metadata = {
   title: "User Details",
   description: "User Details Management",
+  icons: {
+    icon: "/images/logo/near-vendor-logo.svg",
+  },
 };
 
 export default function page() {
