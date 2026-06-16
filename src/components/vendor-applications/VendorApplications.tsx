@@ -175,7 +175,7 @@ const VendorApplications: React.FC = () => {
                   isHeader
                   className="py-3 px-3 font-medium text-[#201D1D99] text-start text-base dark:text-white min-w-[10rem]"
                 >
-                  Business Name
+                  Business Email
                 </TableCell>
                 {/* <TableCell
                   isHeader
@@ -254,7 +254,7 @@ const VendorApplications: React.FC = () => {
                     {/* Business Name */}
                     <TableCell className="px-3 py-4">
                       <span className="text-sm text-white/80">
-                        {vendor.businessName || "—"}
+                        {vendor.businessEmail || "—"}
                       </span>
                     </TableCell>
 

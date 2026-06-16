@@ -15,13 +15,16 @@ import {
   TimeIcon,
   TicketIcon,
 } from "../icons/index";
-import { DiamondPlus, FlagTriangleRight } from "lucide-react";
+import { DiamondPlus, FlagTriangleRight, Megaphone, Store } from "lucide-react";
 import { useLanguage } from "@/components/common/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { getAllVendorAPI } from "@/services/vendor/get-all-vendor/get-all-vendor-api";
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
+  badge?: number; // Number of unread/new items
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
@@ -29,6 +32,20 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
   const { t } = useLanguage();
+
+  // Fetch pending vendor applications count
+  const { data: pendingVendorsData } = useQuery({
+    queryKey: ["pending-vendor-count"],
+    queryFn: () =>
+      getAllVendorAPI.getAllVendor({
+        status: "PENDING",
+        page: 1,
+        limit: 1,
+      }),
+    refetchInterval: 60000, // Poll every minute
+  });
+
+  const pendingVendorCount = pendingVendorsData?.data?.pagination?.total || 0;
 
   const navItems: NavItem[] = [
     {
@@ -81,6 +98,7 @@ const AppSidebar: React.FC = () => {
       icon: <TimeIcon />,
       name: "Vendor Applications",
       path: "/vendor-applications",
+      badge: pendingVendorCount,
     },
     {
       icon: <DiamondPlus />,
@@ -91,6 +109,16 @@ const AppSidebar: React.FC = () => {
       icon: <FlagTriangleRight />,
       name: "Complaints",
       path: "/complaints",
+    },
+    {
+      icon: <Store className="w-5 h-5" />,
+      name: "Shops",
+      path: "/shops",
+    },
+    {
+      icon: <Megaphone className="w-5 h-5" />,
+      name: "Broadcasts",
+      path: "/notifications",
     },
     // {
     //   icon: <PlugInIcon />,
@@ -156,7 +184,7 @@ const AppSidebar: React.FC = () => {
               nav.path && (
                 <Link
                   href={nav.path}
-                  className={`menu-item group rounded-xl ${
+                  className={`menu-item group rounded-xl relative ${
                     isActive(nav.path)
                       ? "menu-item-active"
                       : "menu-item-inactive"
@@ -172,7 +200,18 @@ const AppSidebar: React.FC = () => {
                     {nav.icon}
                   </span>
                   {(isExpanded || isHovered || isMobileOpen) && (
-                    <span className={`menu-item-text`}>{nav.name}</span>
+                    <span className={`menu-item-text truncate flex-1 text-left pr-8`}>{nav.name}</span>
+                  )}
+                  {nav.badge !== undefined && nav.badge > 0 && (
+                    <span
+                      className={`absolute ${
+                        isExpanded || isHovered || isMobileOpen
+                          ? "right-4 top-1/2 -translate-y-1/2"
+                          : "right-0 top-0"
+                      } bg-red-500 text-white text-[10px] leading-none font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-[#11192E] flex items-center justify-center`}
+                    >
+                      {nav.badge > 99 ? '99+' : nav.badge}
+                    </span>
                   )}
                 </Link>
               )

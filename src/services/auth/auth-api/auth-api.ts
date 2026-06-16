@@ -93,7 +93,7 @@
 //   useLoginMutation,
 // } = authAPI;
 
-import { LoginCredentials, AuthResponse } from "./auth-api.types";
+import { LoginCredentials, AuthResponse, RefreshTokenInput, RefreshTokenResponse } from "./auth-api.types";
 import { ENDPOINTS } from "@/config";
 import { API } from "../../base-api";
 
@@ -101,5 +101,9 @@ export const authAPI = {
   // Login user
   login: async (credentials: LoginCredentials) => {
     return API.post<AuthResponse>(ENDPOINTS.auth, credentials);
+  },
+  // Refresh token
+  refreshTokens: async (input: RefreshTokenInput) => {
+    return API.post<RefreshTokenResponse>(ENDPOINTS.authRefresh, input);
   },
 };

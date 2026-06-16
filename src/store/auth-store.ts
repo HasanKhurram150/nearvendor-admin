@@ -24,6 +24,7 @@ export interface User {
 export interface AuthState {
   user: User | null;
   token: string | null;
+  refreshToken: string | null;
   tokenExpiry: number | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -32,7 +33,7 @@ export interface AuthState {
   logout: () => Promise<void>;
   verifyToken: () => Promise<void>;
   setUser: (user: User) => void;
-  setToken: (token: string, expiryMs?: number) => void;
+  setToken: (token: string, refreshToken?: string, expiryMs?: number) => void;
 }
 
 const mapApiUser = (user: any): User => ({
@@ -70,9 +71,15 @@ export const useAuthStore = create<AuthState>()(
         initialToken = localStorage.getItem("authToken");
       }
       
+      let initialRefreshToken = typeof window !== "undefined" ? cookieUtils.get("refresh-token") : null;
+      if (!initialRefreshToken && typeof window !== "undefined") {
+        initialRefreshToken = localStorage.getItem("refreshToken");
+      }
+      
       return {
         user: null,
         token: initialToken || null,
+        refreshToken: initialRefreshToken || null,
         tokenExpiry: null,
         isAuthenticated: !!initialToken,
         isLoading: false,
@@ -92,14 +99,24 @@ export const useAuthStore = create<AuthState>()(
               });
               localStorage.setItem("authToken", response.data.token);
 
+              if (response.data.refreshToken) {
+                // Refresh token typically lives longer, e.g., 7 days
+                const rtExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+                cookieUtils.set("refresh-token", response.data.refreshToken, {
+                  persistent: true,
+                  expires: rtExpiry,
+                });
+                localStorage.setItem("refreshToken", response.data.refreshToken);
+              }
+
               set({
                 user: mapApiUser(response.data.user || {}),
                 token: response.data.token,
+                refreshToken: response.data.refreshToken || null,
                 tokenExpiry: expiry,
                 isAuthenticated: true,
                 isLoading: false,
               });
-              setAutoLogout(expiry);
               return { success: true };
             }
 
@@ -118,15 +135,17 @@ export const useAuthStore = create<AuthState>()(
 
         logout: async () => {
           cookieUtils.remove("auth-token");
+          cookieUtils.remove("refresh-token");
           localStorage.removeItem("authToken");
+          localStorage.removeItem("refreshToken");
           set({
             user: null,
             token: null,
+            refreshToken: null,
             tokenExpiry: null,
             isAuthenticated: false,
             isLoading: false,
           });
-          if (logoutTimer) clearTimeout(logoutTimer);
         },
 
         verifyToken: async () => {
@@ -151,20 +170,31 @@ export const useAuthStore = create<AuthState>()(
           set({ user });
         },
 
-        setToken: (token: string, expiryMs?: number) => {
+        setToken: (token: string, refreshToken?: string, expiryMs?: number) => {
           const decodedExpiry = getTokenExpiry(token);
           const expiry = expiryMs || decodedExpiry || (Date.now() + 24 * 60 * 60 * 1000);
           cookieUtils.set("auth-token", token, {
             persistent: true,
             expires: new Date(expiry),
           });
-          set({
+          localStorage.setItem("authToken", token);
+
+          if (refreshToken) {
+            const rtExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            cookieUtils.set("refresh-token", refreshToken, {
+              persistent: true,
+              expires: rtExpiry,
+            });
+            localStorage.setItem("refreshToken", refreshToken);
+          }
+
+          set((state) => ({
             token,
+            refreshToken: refreshToken || state.refreshToken,
             tokenExpiry: expiry,
             isAuthenticated: true,
             isLoading: false,
-          });
-          setAutoLogout(expiry);
+          }));
         },
       };
     },
@@ -173,6 +203,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state: AuthState) => ({
         user: state.user,
         token: state.token,
+        refreshToken: state.refreshToken,
         tokenExpiry: state.tokenExpiry,
         isAuthenticated: state.isAuthenticated,
       }),
@@ -185,8 +216,14 @@ export const useAuthStore = create<AuthState>()(
               expires: state.tokenExpiry ? new Date(state.tokenExpiry) : undefined,
             });
           }
-          if (state.tokenExpiry) {
-            setAutoLogout(state.tokenExpiry);
+          
+          const cookieRefreshToken = cookieUtils.get("refresh-token");
+          if (!cookieRefreshToken && state.refreshToken) {
+            const rtExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            cookieUtils.set("refresh-token", state.refreshToken, {
+              persistent: true,
+              expires: rtExpiry,
+            });
           }
         }
         useAuthStore.setState({ isHydrated: true });
@@ -195,16 +232,3 @@ export const useAuthStore = create<AuthState>()(
   ),
 );
 
-let logoutTimer: ReturnType<typeof setTimeout> | null = null;
-function setAutoLogout(expiry: number | null) {
-  if (logoutTimer) clearTimeout(logoutTimer);
-  if (!expiry) return;
-  const ms = expiry - Date.now();
-  if (ms <= 0) {
-    useAuthStore.getState().logout();
-    return;
-  }
-  logoutTimer = setTimeout(() => {
-    useAuthStore.getState().logout();
-  }, ms);
-}

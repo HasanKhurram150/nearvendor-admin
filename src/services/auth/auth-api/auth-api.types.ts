@@ -123,3 +123,15 @@ export interface AuthResponse {
     refreshToken: string;
   };
 }
+
+export interface RefreshTokenInput {
+  refreshToken: string;
+}
+
+export interface RefreshTokenResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  token: string;
+  refreshToken: string;
+}

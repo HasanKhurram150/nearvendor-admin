@@ -11,16 +11,23 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-    domains: [
-      "storage.googleapis.com",
-      "devent.com",
-      "example.com",
-      "images.lumacdn.com",
-      "cdn.lu.ma",
-      "res.cloudinary.com",
-      "images.unsplash.com",
-    ],
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "devent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "example.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
       {
         protocol: "https",
         hostname: "pbs.twimg.com",
@@ -44,6 +51,31 @@ const nextConfig: NextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: wss: data: blob:;",
+          },
+        ],
+      },
+    ];
   },
 };
 

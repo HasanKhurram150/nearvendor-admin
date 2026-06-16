@@ -1,6 +1,7 @@
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 import { useAuthStore } from "@/store/auth-store";
 import { environment } from "@/config";
+import { cookieUtils } from "@/utils/cookie-utils";
 
 //for dev/prod
 // const API_BASE_URL = environment.baseUrl;
@@ -27,12 +28,30 @@ export const apiClient = axios.create({
   },
 });
 
+// Refresh token logic
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: unknown) => void;
+  reject: (reason?: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
     if (typeof window !== "undefined") {
       const { token } = useAuthStore.getState();
-      if (token) {
+      if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
@@ -80,21 +99,75 @@ apiClient.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
-      // Only auto-logout if it's not a login endpoint or token verification endpoint
-      const isLoginEndpoint = error.config?.url?.includes("/auth/");
-      const isVerifyEndpoint = error.config?.url?.includes("/auth/verify");
+      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-      if (
-        !isLoginEndpoint &&
-        !isVerifyEndpoint &&
-        typeof window !== "undefined"
-      ) {
-        console.log("401 error on non-auth endpoint, logging out");
-        const { logout } = useAuthStore.getState();
-        logout();
-        window.location.href = "/";
-      } else if (isLoginEndpoint || isVerifyEndpoint) {
+      // Endpoints to skip auto-refresh/logout
+      const isLoginEndpoint = originalRequest.url?.includes("/auth/");
+      const isVerifyEndpoint = originalRequest.url?.includes("/auth/verify");
+      const isRefreshEndpoint = originalRequest.url?.includes("/auth/refresh-token");
+
+      if (isLoginEndpoint || isVerifyEndpoint || isRefreshEndpoint) {
         console.log("401 error on auth endpoint, not auto-logging out");
+        return Promise.reject(error);
+      }
+
+      if (!originalRequest._retry && typeof window !== "undefined") {
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          })
+            .then((token) => {
+              if (originalRequest.headers) {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+              }
+              return apiClient(originalRequest);
+            })
+            .catch((err) => {
+              return Promise.reject(err);
+            });
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        const { refreshToken, setToken, logout } = useAuthStore.getState();
+
+        if (!refreshToken) {
+          console.log("No refresh token available, logging out");
+          logout();
+          window.location.href = "/";
+          return Promise.reject(error);
+        }
+
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`${API_BASE_URL}/auth/refresh-token`, { refreshToken })
+            .then(({ data }) => {
+              if (data?.success && data?.token) {
+                // Update auth store with new tokens
+                setToken(data.token, data.refreshToken || refreshToken);
+                
+                // Retry original request
+                if (originalRequest.headers) {
+                  originalRequest.headers.Authorization = `Bearer ${data.token}`;
+                }
+                processQueue(null, data.token);
+                resolve(apiClient(originalRequest));
+              } else {
+                throw new Error("Invalid refresh response");
+              }
+            })
+            .catch((refreshError) => {
+              console.log("Token refresh failed, logging out");
+              processQueue(refreshError, null);
+              logout();
+              window.location.href = "/";
+              reject(refreshError);
+            })
+            .finally(() => {
+              isRefreshing = false;
+            });
+        });
       }
     }
     return Promise.reject(error);

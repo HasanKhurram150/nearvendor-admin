@@ -19,7 +19,7 @@ export interface Applications {
   // firstName: string;
   // lastName: string;
   // businessType: string;
-  // businessEmail: string;
+  businessEmail: string;
   // mobileNumber: string;
   // businessPhoneNumber: string;
   // cnicFrontImageUrl: string;

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ComponentCard from "../common/ComponentCard";
 import PageBreadcrumb from "../common/PageBreadCrumb";
 import Badge from "../ui/badge/Badge";
@@ -20,11 +20,15 @@ import { ChevronLeft } from "lucide-react";
 const VendorApplication: React.FC = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const id = searchParams.get("id");
 
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
-  const [expandedImage, setExpandedImage] = useState<{ src: string; title: string } | null>(null);
+  const [expandedImage, setExpandedImage] = useState<{
+    src: string;
+    title: string;
+  } | null>(null);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["vendor", id],
@@ -50,6 +54,8 @@ const VendorApplication: React.FC = () => {
       console.log("Verify Response:", res);
       if (res.success || res.statusCode === 200 || res.statusCode === 201) {
         toast.success("Vendor application verified successfully!");
+        queryClient.invalidateQueries({ queryKey: ["pending-vendor-count"] });
+        queryClient.invalidateQueries({ queryKey: ["vendors"] });
         refetch(); // Silent refresh
       } else {
         toast.error(res.message || "Failed to verify vendor application");
@@ -69,6 +75,8 @@ const VendorApplication: React.FC = () => {
       console.log("Reject Response:", res);
       if (res.success || res.statusCode === 200 || res.statusCode === 201) {
         toast.success("Vendor application rejected successfully!");
+        queryClient.invalidateQueries({ queryKey: ["pending-vendor-count"] });
+        queryClient.invalidateQueries({ queryKey: ["vendors"] });
         refetch(); // Silent refresh
       } else {
         toast.error(res.message || "Failed to reject vendor application");
@@ -211,8 +219,13 @@ const VendorApplication: React.FC = () => {
                   CNIC Front Image
                 </span>
                 {vendor.cnicFrontImageUrl ? (
-                  <div 
-                    onClick={() => setExpandedImage({ src: vendor.cnicFrontImageUrl, title: "CNIC Front Image" })}
+                  <div
+                    onClick={() =>
+                      setExpandedImage({
+                        src: vendor.cnicFrontImageUrl,
+                        title: "CNIC Front Image",
+                      })
+                    }
                     className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 cursor-pointer group hover:border-brand-500/50 transition-all duration-300"
                   >
                     <Image
@@ -222,7 +235,9 @@ const VendorApplication: React.FC = () => {
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <span className="text-white text-xs font-semibold bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-sm">Click to Expand</span>
+                      <span className="text-white text-xs font-semibold bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-sm">
+                        Click to Expand
+                      </span>
                     </div>
                   </div>
                 ) : (
@@ -237,8 +252,13 @@ const VendorApplication: React.FC = () => {
                   CNIC Back Image
                 </span>
                 {vendor.cnicBackImageUrl ? (
-                  <div 
-                    onClick={() => setExpandedImage({ src: vendor.cnicBackImageUrl, title: "CNIC Back Image" })}
+                  <div
+                    onClick={() =>
+                      setExpandedImage({
+                        src: vendor.cnicBackImageUrl,
+                        title: "CNIC Back Image",
+                      })
+                    }
                     className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 cursor-pointer group hover:border-brand-500/50 transition-all duration-300"
                   >
                     <Image
@@ -248,7 +268,9 @@ const VendorApplication: React.FC = () => {
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <span className="text-white text-xs font-semibold bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-sm">Click to Expand</span>
+                      <span className="text-white text-xs font-semibold bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-sm">
+                        Click to Expand
+                      </span>
                     </div>
                   </div>
                 ) : (
@@ -264,27 +286,39 @@ const VendorApplication: React.FC = () => {
 
       {/* Lightbox / Expanded Image Modal */}
       {expandedImage && (
-        <div 
+        <div
           onClick={() => setExpandedImage(null)}
           className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/85 backdrop-blur-md p-4 cursor-zoom-out animate-fadeIn"
         >
           {/* Close button */}
-          <button 
+          <button
             onClick={() => setExpandedImage(null)}
             className="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all duration-300"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
-          
-          <div 
-            onClick={(e) => e.stopPropagation()} 
+
+          <div
+            onClick={(e) => e.stopPropagation()}
             className="relative max-w-4xl w-full max-h-[85vh] flex flex-col items-center gap-4 cursor-default animate-scaleUp"
           >
             <div className="relative w-full aspect-[4/3] max-h-[75vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
-              <Image 
-                src={expandedImage.src} 
+              <Image
+                src={expandedImage.src}
                 alt={expandedImage.title}
                 fill
                 className="object-contain"
@@ -297,7 +331,9 @@ const VendorApplication: React.FC = () => {
             </span>
           </div>
 
-          <style dangerouslySetInnerHTML={{__html: `
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
             @keyframes fadeIn {
               from { opacity: 0; }
               to { opacity: 1; }
@@ -312,7 +348,9 @@ const VendorApplication: React.FC = () => {
             .animate-scaleUp {
               animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
-          `}} />
+          `,
+            }}
+          />
         </div>
       )}
     </div>

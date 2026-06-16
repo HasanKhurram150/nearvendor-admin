@@ -196,7 +196,7 @@ const User: React.FC = () => {
       </div>
 
       <ComponentCard
-        title="User Information"
+        title={`User Information: ${userId}`}
         headerActions={
           isEditing ? (
             <div className="flex items-center gap-2">

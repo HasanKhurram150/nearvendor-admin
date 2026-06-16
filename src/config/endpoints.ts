@@ -55,6 +55,7 @@ export const ENDPOINTS = {
 
   // NEW APIS
   auth: "/auth/login",
+  authRefresh: "/auth/refresh-token",
 
   // USER
   userUpdate: "/users/update",
@@ -81,5 +82,13 @@ export const ENDPOINTS = {
   getAllReports: "admin/reports/users", //GET
   getAllReportsById: "admin/reports/user", //GET
   deactivateUser: "admin/user/inactivate", //GET
+  
+  // NOTIFICATIONS
+  adminBroadcast: "/notifications/admin/broadcast", //POST
+  adminBroadcasts: "/notifications/admin/broadcasts", //GET, GET /{id}
+
+  // SHOPS & CATEGORIES
+  shopCategories: "/admin/shop-categories",
+  itemCategories: "/admin/item-categories",
 };
 //----------------------------------------------------------------
