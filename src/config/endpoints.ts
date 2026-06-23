@@ -90,5 +90,15 @@ export const ENDPOINTS = {
   // SHOPS & CATEGORIES
   shopCategories: "/admin/shop-categories",
   itemCategories: "/admin/item-categories",
+
+  // REVIEWS
+  reviews: "/admin/reviews",
+  reviewsReported: "/admin/reviews/reported",
+  resolveReviewReport: (reportId: string) => `/admin/reviews/reports/${reportId}/resolve`,
+
+  // COMMENTS
+  comments: "/admin/comments",
+  commentsReported: "/admin/comments/reported",
+  resolveCommentReport: (reportId: string) => `/admin/comments/reports/${reportId}/resolve`,
 };
 //----------------------------------------------------------------

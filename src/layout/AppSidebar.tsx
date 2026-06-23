@@ -15,7 +15,7 @@ import {
   TimeIcon,
   TicketIcon,
 } from "../icons/index";
-import { DiamondPlus, FlagTriangleRight, Megaphone, Store } from "lucide-react";
+import { DiamondPlus, FlagTriangleRight, Megaphone, Store, MessageSquare, Star } from "lucide-react";
 import { useLanguage } from "@/components/common/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { getAllVendorAPI } from "@/services/vendor/get-all-vendor/get-all-vendor-api";
@@ -119,6 +119,16 @@ const AppSidebar: React.FC = () => {
       icon: <Megaphone className="w-5 h-5" />,
       name: "Broadcasts",
       path: "/notifications",
+    },
+    {
+      icon: <Star className="w-5 h-5" />,
+      name: "Reviews",
+      path: "/reviews",
+    },
+    {
+      icon: <MessageSquare className="w-5 h-5" />,
+      name: "Comments",
+      path: "/comments",
     },
     // {
     //   icon: <PlugInIcon />,

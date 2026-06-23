@@ -19,6 +19,7 @@ import Button from "../ui/button/Button";
 import { Modal } from "../ui/modal";
 import dayjs from "dayjs";
 import Badge from "../ui/badge/Badge";
+import { ConfirmModal } from "../ui/modal/ConfirmModal";
 
 interface Props {
   categoryId: string;
@@ -38,6 +39,11 @@ const ShopCategoryDetails: React.FC<Props> = ({ categoryId }) => {
   const [editingItemCategoryName, setEditingItemCategoryName] = useState("");
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newItemCategoryName, setNewItemCategoryName] = useState("");
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    action: "remove" | "delete" | null;
+    id: string | null;
+  }>({ isOpen: false, action: null, id: null });
 
   const { data, isLoading } = useQuery({
     queryKey: ["shops-by-category", categoryId],
@@ -82,6 +88,7 @@ const ShopCategoryDetails: React.FC<Props> = ({ categoryId }) => {
     onSuccess: () => {
       toast.success("Item category removed successfully");
       queryClient.invalidateQueries({ queryKey: ["shop-categories"] });
+      setConfirmModal({ isOpen: false, action: null, id: null });
     },
     onError: () => toast.error("Failed to remove item category"),
   });
@@ -114,6 +121,7 @@ const ShopCategoryDetails: React.FC<Props> = ({ categoryId }) => {
       toast.success("Item category deleted");
       queryClient.invalidateQueries({ queryKey: ["item-categories"] });
       queryClient.invalidateQueries({ queryKey: ["shop-categories"] }); // In case it was assigned
+      setConfirmModal({ isOpen: false, action: null, id: null });
     },
     onError: () => toast.error("Failed to delete item category"),
   });
@@ -140,6 +148,14 @@ const ShopCategoryDetails: React.FC<Props> = ({ categoryId }) => {
     setSelectedItemCategories((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmModal.action === "remove" && confirmModal.id) {
+      removeMutation.mutate(confirmModal.id);
+    } else if (confirmModal.action === "delete" && confirmModal.id) {
+      deleteItemCategoryMutation.mutate(confirmModal.id);
+    }
   };
 
   if (isLoading) {
@@ -221,15 +237,7 @@ const ShopCategoryDetails: React.FC<Props> = ({ categoryId }) => {
                       {ic.categoryName}
                     </span>
                     <button
-                      onClick={() => {
-                        if (
-                          confirm(
-                            "Are you sure you want to remove this item category?",
-                          )
-                        ) {
-                          removeMutation.mutate(ic.id);
-                        }
-                      }}
+                      onClick={() => setConfirmModal({ isOpen: true, action: "remove", id: ic.id })}
                       className="text-gray-400 hover:text-error-500 transition-colors"
                     >
                       <Trash2 size={16} />
@@ -477,13 +485,7 @@ const ShopCategoryDetails: React.FC<Props> = ({ categoryId }) => {
                             type="button"
                             onClick={(e) => {
                               e.preventDefault();
-                              if (
-                                confirm(
-                                  "Are you sure you want to delete this item category completely?",
-                                )
-                              ) {
-                                deleteItemCategoryMutation.mutate(ic.id);
-                              }
+                              setConfirmModal({ isOpen: true, action: "delete", id: ic.id });
                             }}
                             className="p-1.5 text-gray-400 hover:text-error-500 rounded-lg transition-colors"
                           >
@@ -511,6 +513,21 @@ const ShopCategoryDetails: React.FC<Props> = ({ categoryId }) => {
           </form>
         </div>
       </Modal>
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, action: null, id: null })}
+        onConfirm={handleConfirmAction}
+        title={confirmModal.action === "remove" ? "Remove Item Category" : "Delete Item Category"}
+        message={
+          confirmModal.action === "remove"
+            ? "Are you sure you want to remove this item category from this shop category?"
+            : "Are you sure you want to delete this item category completely? This action cannot be undone."
+        }
+        confirmText={confirmModal.action === "remove" ? "Remove" : "Delete"}
+        isDestructive={true}
+        isLoading={removeMutation.isPending || deleteItemCategoryMutation.isPending}
+      />
     </div>
   );
 };

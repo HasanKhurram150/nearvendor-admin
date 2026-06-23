@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import Button from "../ui/button/Button";
 import { Modal } from "../ui/modal";
 import dayjs from "dayjs";
+import { ConfirmModal } from "../ui/modal/ConfirmModal";
 
 const ShopCategoriesManagement: React.FC = () => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const ShopCategoriesManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<any>(null);
   const [formData, setFormData] = useState({ name: "", iconUrl: "", parentId: "" });
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string | null }>({ isOpen: false, id: null });
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["shop-categories"],
@@ -59,6 +61,7 @@ const ShopCategoriesManagement: React.FC = () => {
     onSuccess: () => {
       toast.success("Shop category deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["shop-categories"] });
+      setDeleteModal({ isOpen: false, id: null });
     },
     onError: () => toast.error("Failed to delete category"),
   });
@@ -102,8 +105,12 @@ const ShopCategoriesManagement: React.FC = () => {
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm("Are you sure you want to delete this category?")) {
-      deleteMutation.mutate(id);
+    setDeleteModal({ isOpen: true, id });
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteModal.id) {
+      deleteMutation.mutate(deleteModal.id);
     }
   };
 
@@ -233,6 +240,17 @@ const ShopCategoriesManagement: React.FC = () => {
           </form>
         </div>
       </Modal>
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, id: null })}
+        onConfirm={handleConfirmDelete}
+        title="Delete Category"
+        message="Are you sure you want to delete this category? This action cannot be undone."
+        confirmText="Delete"
+        isDestructive={true}
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 };
